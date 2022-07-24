@@ -11,5 +11,8 @@
 > * OpenVidu 커스터마이징 - Velog : https://velog.io/@kimyunbin/Openvidu-%EC%BB%A4%EC%8A%A4%ED%84%B0%EB%A7%88%EC%9D%B4%EC%A7%95-%ED%95%98%EA%B8%B0
 > * OpenVidu 튜토리얼 - Tistory : https://jini-space.tistory.com/18
 > 딱 뭐했는지만 적어두심
+> * KMS의 필요성 - Tistory : https://gh402.tistory.com/43
+> 결과적으론 우린 P2P는 하지않게되는것 같다
+> * OpenVidu 정식 튜토리얼 사이트 : https://docs.openvidu.io/en/2.19.0/tutorials/
 
 ### JPA
