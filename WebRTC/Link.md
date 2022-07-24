@@ -14,5 +14,7 @@
 > * KMS의 필요성 - Tistory : https://gh402.tistory.com/43
 > 결과적으론 우린 P2P는 하지않게되는것 같다
 > * OpenVidu 정식 튜토리얼 사이트 : https://docs.openvidu.io/en/2.19.0/tutorials/
+> * OpenVidu vs Kurento : https://2jinishappy.tistory.com/335
+> 결과적으로 우린 KMS를 사용하고 OpenVidu가 그냥 Kurento를 쓰는 것보다 더 쉽다
 
 ### JPA
