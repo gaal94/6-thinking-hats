@@ -4,5 +4,6 @@ public class gitTest {
     public static void test (){
         System.out.println("System.out.println은 sout");
         System.out.println("git push test");
+        System.out.println("git push test 2");
     }
 }
