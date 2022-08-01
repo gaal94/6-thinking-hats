@@ -17,7 +17,6 @@ public class TestController {
 
     @PostMapping("")
     public TestVO postTest(TestVO testVO) {
-        System.out.println(testVO);
         return testRepository.save(testVO);
     }
 
