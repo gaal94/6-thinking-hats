@@ -67,6 +67,7 @@ public class UserController {
     /*
     Logout
     Social Login 과 General Login을 구분하는 로직 필요
+    향후에 클라이언트에서 JWT로 삭제하기로 하면 Method 자체를 삭제 가능
      */
     @PostMapping("logout")
     public ResponseEntity logout(){
@@ -74,17 +75,17 @@ public class UserController {
     }
 
     @PutMapping("{userId}")
-    public ResponseEntity updateUser(@PathVariable String userId){
+    public ResponseEntity updateUser(@PathVariable int userId){
         return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity getUser(@PathVariable String userId){
+    public ResponseEntity getUser(@PathVariable int userId){
         return new ResponseEntity("get user", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{userId}/rooms")
-    public ResponseEntity getUserRooms(@PathVariable String userId){
+    public ResponseEntity getUserRooms(@PathVariable int userId){
         return new ResponseEntity("get user rooms", HttpStatus.NO_CONTENT);
     }
 
@@ -104,7 +105,7 @@ public class UserController {
     }
     
     @DeleteMapping("{userId}")
-    public ResponseEntity deleteUser(@PathVariable String userId){
+    public ResponseEntity deleteUser(@PathVariable int userId){
         return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 }
