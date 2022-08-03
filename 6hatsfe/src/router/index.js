@@ -57,6 +57,13 @@ const routes = [
     //qna router
 
     component: () => import('@/views/main/team/TeamPage.vue')
+  },
+  {
+    path: '/signuppage',
+    name: 'SigunupPage',
+    //explain router
+
+    component: () => import('@/views/main/history/HistoryPage.vue')
   }
 ]
 
