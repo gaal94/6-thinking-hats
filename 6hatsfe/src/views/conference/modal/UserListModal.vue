@@ -29,6 +29,16 @@
 <script>
 export default {
   name: 'UserListModal',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

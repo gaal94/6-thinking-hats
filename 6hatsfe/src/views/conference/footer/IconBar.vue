@@ -18,6 +18,16 @@
 <script>
 export default {
   name: 'IconBar',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

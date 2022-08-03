@@ -10,6 +10,16 @@
 <script>
 export default {
   name: 'CamScreen',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

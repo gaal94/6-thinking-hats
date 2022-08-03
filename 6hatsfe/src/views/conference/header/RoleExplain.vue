@@ -25,7 +25,16 @@
 <script>
 export default {
   name: 'RoleExplain',
-  
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

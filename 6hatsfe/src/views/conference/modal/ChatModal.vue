@@ -26,6 +26,16 @@
 <script>
 export default {
   name: 'ChatModal',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

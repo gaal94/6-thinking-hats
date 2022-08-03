@@ -14,7 +14,15 @@ export default {
   name: 'HatSelect',
   components: {
     UserListItem,
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

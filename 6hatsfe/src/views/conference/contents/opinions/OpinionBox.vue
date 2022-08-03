@@ -31,7 +31,15 @@ export default {
   name: 'OpinionBox',
   components: {
     OpinionItem,
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

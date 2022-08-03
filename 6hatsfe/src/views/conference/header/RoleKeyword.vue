@@ -12,6 +12,16 @@
 <script>
 export default {
   name: 'RoleKeyword',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

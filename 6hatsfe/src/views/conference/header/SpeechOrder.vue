@@ -12,6 +12,16 @@
 <script>
 export default {
   name: 'SpeechOrder',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 
