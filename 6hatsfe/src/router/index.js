@@ -19,14 +19,14 @@ const routes = [
   {
     path: '/explainpage',
     name: 'ExplainPage',
-    //설명페이지 라우터
+    //explainpage
 
     component: () => import('@/views/main/explain/ExplainPage.vue')
   },
   {
     path: '/historypage',
     name: 'HistoryPage',
-    //explain router
+    //history router
 
     component: () => import('@/views/main/history/HistoryPage.vue')
   },
@@ -47,21 +47,21 @@ const routes = [
   {
     path: '/noticepage',
     name: 'NoticePage',
-    //qna router
+    //notice router
 
     component: () => import('@/views/main/notice/NoticePage.vue')
   },
   {
     path: '/teampage',
     name: 'TeamPage',
-    //qna router
+    //team router
 
     component: () => import('@/views/main/team/TeamPage.vue')
   },
   {
     path: '/signuppage',
     name: 'SigunupPage',
-    //explain router
+    //signup router
 
     component: () => import('@/views/main/signup/SignupPage.vue')
   }
