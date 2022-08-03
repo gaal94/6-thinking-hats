@@ -1,12 +1,10 @@
 <template>
-  <body>
-    <img class="logo" src="@/assets/logo.png" alt="logo">
-  </body>
+  <img class="wave" src="@/assets/wave.png" alt="wave">
 </template>
 
 <script>
 export default {
-	name: 'LandingPage',
+	name: 'BackgroundWave',
 	components: {
 	},
 	data: () => {
@@ -21,5 +19,5 @@ export default {
 </script>
 
 <style>
-  @import url("@/assets/css/views/main/landing/LandingPage.css");
+  @import url("@/assets/css/views/main/background/BackgroundWave.css");
 </style>
