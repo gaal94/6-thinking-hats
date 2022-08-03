@@ -36,8 +36,8 @@ public class UserController {
         try {
             UserVO userVO = userService.loginGeneral(userLoginForm);
             if(userVO != null){
-                String token = jwtService.createToken("userid", userVO.getUserId(), "accessToken");
-                resultMap.put("accessToken", token);
+                String token = jwtService.createToken("userid", userVO.getUserId(), "access-token");
+                resultMap.put("access-token", token);
                 resultMap.put("message", "Login Success");
                 status = HttpStatus.OK;
             } else {
