@@ -3,6 +3,6 @@ package com.ssafy.sixhats.vo.form;
 import lombok.Data;
 
 @Data
-public class UserLoginForm {
+public class UserForm {
     String email, password;
 }

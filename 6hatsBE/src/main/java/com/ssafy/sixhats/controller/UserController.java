@@ -2,7 +2,7 @@ package com.ssafy.sixhats.controller;
 
 import com.ssafy.sixhats.service.JwtService;
 import com.ssafy.sixhats.service.UserService;
-import com.ssafy.sixhats.vo.form.UserLoginForm;
+import com.ssafy.sixhats.vo.form.UserForm;
 import com.ssafy.sixhats.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity loginGeneral(UserLoginForm userLoginForm){
+    public ResponseEntity loginGeneral(UserForm userLoginForm){
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.NOT_FOUND;
 
@@ -37,7 +37,7 @@ public class UserController {
             UserVO userVO = userService.loginGeneral(userLoginForm);
             if(userVO != null){
                 String token = jwtService.createToken("userid", userVO.getUserId(), "access-token");
-                resultMap.put("access-token", token);
+                resultMap.put("accessToken", token);
                 resultMap.put("message", "Login Success");
                 status = HttpStatus.OK;
             } else {
