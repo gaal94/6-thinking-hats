@@ -2,14 +2,15 @@ package com.ssafy.sixhats.controller;
 
 import com.ssafy.sixhats.service.JwtService;
 import com.ssafy.sixhats.service.UserService;
-import com.ssafy.sixhats.vo.UserLoginForm;
+import com.ssafy.sixhats.vo.form.UserLoginForm;
 import com.ssafy.sixhats.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("user")
@@ -22,13 +23,31 @@ public class UserController {
     JwtService jwtService;
 
     @PostMapping("")
-    public ResponseEntity createUser(UserVO userVO){
+    public ResponseEntity<String> createUser(UserVO userVO){
+        userService.createUser(userVO);
         return new ResponseEntity("signin success", HttpStatus.CREATED);
     }
 
     @PostMapping("login")
     public ResponseEntity loginGeneral(UserLoginForm userLoginForm){
-        return new ResponseEntity(userLoginForm.getEmail(), HttpStatus.OK);
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        try {
+            UserVO userVO = userService.loginGeneral(userLoginForm);
+            if(userVO != null){
+                String token = jwtService.createToken("userid", userVO.getUserId(), "access-token");
+                resultMap.put("access-token", token);
+                resultMap.put("message", "Login Success");
+                status = HttpStatus.OK;
+            } else {
+                resultMap.put("message", "User Not Found");
+            }
+        } catch (Exception e) {
+            resultMap.put("message", "Sever Error");
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity(resultMap, status);
     }
 
     /*
@@ -55,17 +74,17 @@ public class UserController {
     }
 
     @PutMapping("{userId}")
-    public ResponseEntity updateUser(){
+    public ResponseEntity updateUser(@PathVariable String userId){
         return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity getUser(){
+    public ResponseEntity getUser(@PathVariable String userId){
         return new ResponseEntity("get user", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{userId}/rooms")
-    public ResponseEntity getUserRooms(){
+    public ResponseEntity getUserRooms(@PathVariable String userId){
         return new ResponseEntity("get user rooms", HttpStatus.NO_CONTENT);
     }
 
@@ -75,6 +94,7 @@ public class UserController {
      */
     @PostMapping("passoword")
     public ResponseEntity renewPassword(){
+        // 랜덤으로 String 생성하고 email 보내줘야 함
         return new ResponseEntity("renew password", HttpStatus.NO_CONTENT);
     }
 
@@ -84,7 +104,7 @@ public class UserController {
     }
     
     @DeleteMapping("{userId}")
-    public ResponseEntity deleteUser(){
+    public ResponseEntity deleteUser(@PathVariable String userId){
         return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 }

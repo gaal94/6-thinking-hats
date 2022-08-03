@@ -1,4 +1,4 @@
-package com.ssafy.sixhats.vo;
+package com.ssafy.sixhats.vo.type;
 
 public enum Job {
     MIDDLESCHOOL,

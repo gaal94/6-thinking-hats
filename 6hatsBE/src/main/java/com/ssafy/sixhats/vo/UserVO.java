@@ -1,5 +1,9 @@
 package com.ssafy.sixhats.vo;
 
+import com.ssafy.sixhats.vo.type.Gender;
+import com.ssafy.sixhats.vo.type.Job;
+import com.ssafy.sixhats.vo.type.LoginType;
+import com.ssafy.sixhats.vo.type.UserType;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
