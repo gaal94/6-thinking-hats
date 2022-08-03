@@ -14,6 +14,16 @@
 <script>
 export default {
   name: 'ScreenShare',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

@@ -27,6 +27,16 @@
 <script>
 export default {
   name: 'ModeSettingView',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

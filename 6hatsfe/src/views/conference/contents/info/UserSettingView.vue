@@ -29,7 +29,15 @@ export default {
   name: 'UserSettingView',
   components: {
     HatSelect,
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

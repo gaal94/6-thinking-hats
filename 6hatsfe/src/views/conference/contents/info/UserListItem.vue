@@ -17,6 +17,16 @@
 <script>
 export default {
   name: 'UserListItme',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

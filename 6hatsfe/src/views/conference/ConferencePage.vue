@@ -43,7 +43,15 @@ export default {
     RoleExplain,
     RoleKeyword,
     SpeechOrder,
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

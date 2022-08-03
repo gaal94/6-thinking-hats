@@ -14,7 +14,15 @@ export default {
   components: {
     UserSettingView,
     ModeSettingView
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

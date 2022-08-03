@@ -12,6 +12,16 @@
 <script>
 export default {
   name: 'OpinionItem',
+  components: {
+	},
+	data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 

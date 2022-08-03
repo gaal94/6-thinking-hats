@@ -13,7 +13,15 @@ export default {
   name: 'CamScreenBox',
   components: {
     CamScreen,
-  }
+  },
+  data: () => {
+		return {
+		}
+	},
+	computed: {
+	},
+	methods: {
+	},
 }
 </script>
 
