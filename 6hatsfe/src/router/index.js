@@ -63,7 +63,7 @@ const routes = [
     name: 'SigunupPage',
     //explain router
 
-    component: () => import('@/views/main/history/HistoryPage.vue')
+    component: () => import('@/views/main/signup/SignupPage.vue')
   }
 ]
 

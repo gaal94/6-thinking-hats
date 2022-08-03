@@ -3,6 +3,7 @@
       <h2>Log In</h2>
       <form @submit="onSubmit">
           <input placeholder="ID" v-model="uid">
+          <br>
           <input placeholder="password" v-model="password">
           <button type="submit">Login</button>
       </form>
