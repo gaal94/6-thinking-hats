@@ -9,6 +9,7 @@
 </template>
 <script>
 import http from "@/api/http";
+
 export default {
   data() {
     return {
@@ -26,7 +27,7 @@ export default {
         .post("/user/login", null, { params: this.user })
         .then((data) => {
           alert();
-          console.log(data);
+          localStorage.setItem("access-token", data.data["access-token"]);//access-token 로컬 스토리지에 저장
         })
         .catch((err) => {
           alert(err);
