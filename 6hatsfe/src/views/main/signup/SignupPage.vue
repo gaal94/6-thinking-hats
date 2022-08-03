@@ -1,7 +1,6 @@
 <template>
   <div>
       <h2>회원가입</h2>
-      <form @submit="onSubmit">
         Email
         <input placeholder="입력해주세요" v-model="user.email">
         <br>
@@ -10,6 +9,9 @@
         <br>
         비밀번호 확인
         <input placeholder="입력해주세요">
+        <br>
+        이름
+        <input placeholder="입력해주세요" v-model="user.name">
         <br>
         성별
         <input type="radio" v-model="user.gender" value="MAN">남
@@ -26,7 +28,6 @@
   <option value="OTHER">기타</option>
 </select>
         <button type="submit" v-on:click="getUserInfo">회원가입</button>
-      </form>
   </div>
 </template>
 
@@ -42,7 +43,8 @@ export default {
         password: '',
         gender: '',
         birth: '',
-        job: ''
+        job: '',
+        name:''
       }
     };
   },

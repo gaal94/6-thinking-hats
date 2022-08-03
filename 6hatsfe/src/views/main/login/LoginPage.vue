@@ -1,25 +1,36 @@
 <template>
   <div>
       <h2>Log In</h2>
-      <form @submit="onSubmit">
-          <input placeholder="ID" v-model="uid">
+          <input placeholder="ID" v-model="user.email">
           <br>
-          <input placeholder="password" v-model="password">
-          <button type="submit">Login</button>
-      </form>
+          <input placeholder="password" v-model="user.password">
+          <button type="submit" v-on:click="getUserInfo">Login</button>
   </div>
 </template>
 <script>
+import http from "@/api/http";
 export default {
-    name : 'LoginPage',
-    data: () => ({
-    uid: '',
-    password: ''
-  }),
+  data() {
+    return {
+      user: {
+        email: '',
+        password: '',
+      }
+    };
+  },
   methods: {
-    onSubmit () {
-      console.log(this.uid)
-      console.log(this.password)
+    getUserInfo() {
+      console.log(this.user);
+      alert("");
+      http
+        .post("/user/login", null, { params: this.user })
+        .then((data) => {
+          alert();
+          console.log(data);
+        })
+        .catch((err) => {
+          alert(err);
+        });
     }
   }
 }
