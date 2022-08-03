@@ -22,6 +22,41 @@ const routes = [
     //설명페이지 라우터
 
     component: () => import('@/views/main/explain/ExplainPage.vue')
+  },
+  {
+    path: '/historypage',
+    name: 'HistoryPage',
+    //explain router
+
+    component: () => import('@/views/main/history/HistoryPage.vue')
+  },
+  {
+    path: '/loginpage',
+    name: 'LoginPage',
+    //login page router
+
+    component: () => import('@/views/main/login/LoginPage.vue')
+  },
+  {
+    path: '/qnapage',
+    name: 'QnaPage',
+    //qna router
+
+    component: () => import('@/views/main/qna/QnaPage.vue')
+  },
+  {
+    path: '/noticepage',
+    name: 'NoticePage',
+    //qna router
+
+    component: () => import('@/views/main/notice/NoticePage.vue')
+  },
+  {
+    path: '/teampage',
+    name: 'TeamPage',
+    //qna router
+
+    component: () => import('@/views/main/team/TeamPage.vue')
   }
 ]
 

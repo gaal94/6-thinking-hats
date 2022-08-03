@@ -1,5 +1,5 @@
 <template>
-  ㅎㅎ
+  설명
 </template>
 
 <script>
