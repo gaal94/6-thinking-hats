@@ -1,5 +1,5 @@
 <template>
-  <body>
+  <body class="container d-flex justify-content-center align-items-center">
     <img class="logo" src="@/assets/logo.png" alt="logo">
   </body>
 </template>
