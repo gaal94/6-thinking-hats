@@ -46,7 +46,7 @@ ul {
   padding: 0;
   overflow: hidden;
   background-color: white;
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
 

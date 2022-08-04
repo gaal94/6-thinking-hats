@@ -34,7 +34,7 @@
 
 <script>
 import http from "@/api/http.js";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: 'SignupPage',
@@ -47,6 +47,7 @@ export default {
         birth: '',
         job: '',
         name:'',
+
       },
     };
   },
@@ -66,7 +67,7 @@ export default {
     }
   },
   computed:{
-    ...mapState({token:'token',})
+    ...mapGetters(['token'])
   }
 }
 </script>
