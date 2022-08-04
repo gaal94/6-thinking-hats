@@ -1,5 +1,6 @@
 package com.ssafy.sixhats.controller;
 
+import com.ssafy.sixhats.exception.UnAuthorizedException;
 import com.ssafy.sixhats.service.JwtService;
 import com.ssafy.sixhats.service.UserService;
 import com.ssafy.sixhats.vo.UserVO;
@@ -63,16 +64,6 @@ public class UserController {
     public ResponseEntity loginGoogle(){
         return new ResponseEntity("google login", HttpStatus.OK);
     }
-    
-    /*
-    Logout
-    Social Login 과 General Login을 구분하는 로직 필요
-    향후에 클라이언트에서 JWT로 삭제하기로 하면 Method 자체를 삭제 가능
-     */
-    @PostMapping("logout")
-    public ResponseEntity logout(){
-        return new ResponseEntity("logout success", HttpStatus.OK);
-    }
 
     /*
     JWT를 받아서 유효성 확인
@@ -80,26 +71,56 @@ public class UserController {
     같다면 service로 넘기기
      */
     @PutMapping("{userId}")
-    public ResponseEntity updateUser(@PathVariable int userId, UserVO userVO){
-        return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
+    public ResponseEntity updateUser(@PathVariable int userId, UserVO userVO, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
+        try{
+            userVO = userService.updateUser(userVO);
+            userVO.setPassword(null);
+            resultMap.put("message", "");
+            resultMap.put("user", userVO);
+        } catch (Exception e){
+            resultMap.put("message", "");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity(resultMap, status);
     }
 
     @GetMapping("{userId}")
     public ResponseEntity getUser(@PathVariable Long userId, HttpServletRequest request){
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
         UserVO userVO = userService.getUser(userId);
-        userVO.setPassword(null);
+        userVO.setPassword(null); // 비밀번호는 빼고 전송
+
+        // user가 있는지 없는지 검사
         if(userVO != null){
+            resultMap.put("messge", "get user info success");
             resultMap.put("user", userVO);
-            resultMap.put("messge", "");
         } else {
-            resultMap.put("messge", "");
+            resultMap.put("messge", "user not found");
             status = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity(resultMap, status);
     }
 
+    @DeleteMapping("{userId}")
+    public ResponseEntity deleteUser(@PathVariable int userId){
+        return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
+    }
     @GetMapping("{userId}/rooms")
     public ResponseEntity getUserRooms(@PathVariable int userId){
         return new ResponseEntity("get user rooms", HttpStatus.NO_CONTENT);
@@ -115,13 +136,8 @@ public class UserController {
         return new ResponseEntity("renew password", HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("password")
+    @PatchMapping("{userId}/password")
     public ResponseEntity updatePassword(){
         return new ResponseEntity("update password", HttpStatus.NO_CONTENT);
-    }
-    
-    @DeleteMapping("{userId}")
-    public ResponseEntity deleteUser(@PathVariable int userId){
-        return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 }
