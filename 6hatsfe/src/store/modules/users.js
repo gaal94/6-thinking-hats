@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
-import users from '@/store/modules/users.js'
 
 export default createStore({
   state: {
+    token: localStorage.getItem('access-token') ? localStorage.getItem('access-token') : ""
   },
   getters: {
   },
@@ -11,6 +11,5 @@ export default createStore({
   actions: {
   },
   modules: {
-    users
   }
 })

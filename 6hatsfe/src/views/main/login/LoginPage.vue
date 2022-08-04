@@ -1,11 +1,12 @@
 <template>
   <div>
       <h2>Log In</h2>
-          <input placeholder="ID" v-model="user.email">
+          <input placeholder="ID" v-model="user.email" >
           <br>
-          <input placeholder="password" v-model="user.password">
-          <button type="submit" v-on:click="getUserInfo">Login</button>
+          <input placeholder="password" v-model="user.password" type = "password">
+          <button type="submit" v-on:click="getUserToken">Login</button>
   </div>
+  <div>{{token}}</div>
 </template>
 <script>
 import http from "@/api/http";
@@ -20,7 +21,7 @@ export default {
     };
   },
   methods: {
-    getUserInfo() {
+    getUserToken() {
       console.log(this.user);
       alert("");
       http

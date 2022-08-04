@@ -5,10 +5,10 @@
         <input placeholder="입력해주세요" v-model="user.email">
         <br>
         비밀번호
-        <input placeholder="입력해주세요" v-model="user.password">
+        <input placeholder="입력해주세요" v-model="user.password" type="password">
         <br>
         비밀번호 확인
-        <input placeholder="입력해주세요">
+        <input placeholder="입력해주세요" type="password">
         <br>
         이름
         <input placeholder="입력해주세요" v-model="user.name">
@@ -27,12 +27,14 @@
   <option value="JOBLESS">무직</option>
   <option value="OTHER">기타</option>
 </select>
-        <button type="submit" v-on:click="getUserInfo">회원가입</button>
+        <button type="submit" v-on:click="SignupUser">회원가입</button>
   </div>
+  <div>{{token}}</div>
 </template>
 
 <script>
 import http from "@/api/http.js";
+import { mapState } from "vuex";
 
 export default {
     name: 'SignupPage',
@@ -44,12 +46,12 @@ export default {
         gender: '',
         birth: '',
         job: '',
-        name:''
-      }
+        name:'',
+      },
     };
   },
   methods: {
-    getUserInfo() {
+    SignupUser() { // user 회원가입 함수
       console.log(this.user);
       alert("");
       http
@@ -62,13 +64,11 @@ export default {
           alert(err);
         });
     }
+  },
+  computed:{
+    ...mapState({token:'token',})
   }
-
 }
 </script>
-
 <style>
-div{
-    border : 1px solid black;
-}
 </style>
