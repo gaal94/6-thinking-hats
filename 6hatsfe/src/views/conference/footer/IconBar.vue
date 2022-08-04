@@ -14,7 +14,7 @@
       <span v-if="!isConferencing">회의 시작</span>
       <span v-else-if="isConferencing">회의 종료</span>
       </button>
-    <button><i class='bx bxs-x-circle'></i></button>
+    <button @click="outToMain()"><i class='bx bxs-x-circle'></i></button>
   </div>
 </template>
 
@@ -36,6 +36,10 @@ export default {
 	methods: {
     changeConference() {
       this.$emit('changeConferenceStatus')
+    },
+    outToMain() {
+      alert('회의에서 나가시겠습니까?')
+      this.$router.push({name: 'home'})
     }
 	},
 }
