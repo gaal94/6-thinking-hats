@@ -54,9 +54,9 @@ public class JwtService {
         }
     }
 
-    public Long getUserId(String jwt){
+    public Long getUserId(HttpServletRequest request){
         try {
-            return (Long) getClaims(jwt).get("userId");
+            return Long.parseLong(String.valueOf(getClaims(getJwtToken(request)).get("userId")));
         } catch (Exception e){
             e.printStackTrace();
             throw new UnAuthorizedException();
