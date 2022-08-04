@@ -9,6 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
@@ -18,7 +19,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (HttpMethod.OPTIONS.matches(request.getMethod())) {
+        if (isPreflightRequest(request)) {
             return true;
         }
         String token = jwtService.getJwtToken(request);
@@ -27,5 +28,25 @@ public class JwtInterceptor implements HandlerInterceptor {
         } else {
             throw new UnAuthorizedException();
         }
+    }
+
+    private boolean isPreflightRequest(HttpServletRequest request) {
+        return isOptions(request) && hasHeaders(request) && hasMethod(request) && hasOrigin(request);
+    }
+
+    private boolean isOptions(HttpServletRequest request) {
+        return request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.toString());
+    }
+
+    private boolean hasHeaders(HttpServletRequest request) {
+        return Objects.nonNull(request.getHeader("Access-Control-Request-Headers"));
+    }
+
+    private boolean hasMethod(HttpServletRequest request) {
+        return Objects.nonNull(request.getHeader("Access-Control-Request-Method"));
+    }
+
+    private boolean hasOrigin(HttpServletRequest request) {
+        return Objects.nonNull(request.getHeader("Origin"));
     }
 }
