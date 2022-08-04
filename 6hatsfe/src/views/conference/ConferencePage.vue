@@ -6,10 +6,10 @@
     <div class="left-cam-screens">
       <cam-screen-box></cam-screen-box>
     </div>
-    <div class="join-screen">
+    <div class="join-screen" v-if="!isConferencing">
       <info-box></info-box>
     </div>
-    <div class="in-conference-screen">
+    <div class="in-conference-screen" v-else-if="isConferencing">
       <div class="in-conference-">
         <role-explain></role-explain>
         <role-keyword></role-keyword>
@@ -21,7 +21,7 @@
       <cam-screen-box></cam-screen-box>
     </div>  
   </div>
-  <icon-bar></icon-bar>
+  <icon-bar :isConferencing="isConferencing" @changeConferenceStatus=changeConference()></icon-bar>
 </template>
 
 <script>
@@ -46,11 +46,15 @@ export default {
   },
   data: () => {
 		return {
+      isConferencing: false,
 		}
 	},
 	computed: {
 	},
 	methods: {
+    changeConference() {
+      this.isConferencing = !this.isConferencing
+    }
 	},
 }
 </script>

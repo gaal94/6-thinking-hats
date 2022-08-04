@@ -6,7 +6,7 @@
       </p>
     </div>
     <button class="screen-share-modal-close-btn">
-      <i></i>
+      <i class='bx bx-up-arrow-circle'></i>
     </button>
   </div>
 </template>
