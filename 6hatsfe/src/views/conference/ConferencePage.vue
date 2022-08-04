@@ -10,7 +10,7 @@
       <info-box></info-box>
     </div>
     <div class="in-conference-screen" v-else-if="isConferencing">
-      <div class="in-conference-">
+      <div class="in-conference-box">
         <role-explain></role-explain>
         <role-keyword></role-keyword>
         <speech-order></speech-order>
@@ -21,7 +21,7 @@
       <cam-screen-box></cam-screen-box>
     </div>  
   </div>
-  <icon-bar :isConferencing="isConferencing" @changeConferenceStatus=changeConference()></icon-bar>
+  <icon-bar :isConferencing="isConferencing" @changeConferenceStatus="changeConf()"></icon-bar>
 </template>
 
 <script>
@@ -52,7 +52,7 @@ export default {
 	computed: {
 	},
 	methods: {
-    changeConference() {
+    changeConf() {
       this.isConferencing = !this.isConferencing
     }
 	},
