@@ -8,7 +8,7 @@
     <li><router-link to="/signuppage" class = 'right'>회원가입</router-link></li>
     <li><router-link to="/loginpage" class = "right">로그인</router-link></li>
     <li><router-link to="/loginpage" class = "right">방 생성</router-link></li>
-    <li><router-link to="/loginpage" class = "right">방 참가</router-link></li>
+    <li><router-link to="/conferencepage" class = "right">방 참가</router-link></li>
   </ul>
 </template>
 
