@@ -2,13 +2,13 @@ package com.ssafy.sixhats.controller;
 
 import com.ssafy.sixhats.service.JwtService;
 import com.ssafy.sixhats.service.UserService;
-import com.ssafy.sixhats.vo.form.UserForm;
 import com.ssafy.sixhats.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +29,14 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity loginGeneral(UserForm userLoginForm){
+    public ResponseEntity loginGeneral(UserVO userVO){
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.NOT_FOUND;
 
         try {
-            UserVO userVO = userService.loginGeneral(userLoginForm);
+            userVO = userService.loginGeneral(userVO);
             if(userVO != null){
-                String token = jwtService.createToken("userid", userVO.getUserId(), "access-token");
+                String token = jwtService.createToken(userVO);
                 resultMap.put("access-token", token);
                 resultMap.put("message", "Login Success");
                 status = HttpStatus.OK;
@@ -74,14 +74,30 @@ public class UserController {
         return new ResponseEntity("logout success", HttpStatus.OK);
     }
 
+    /*
+    JWT를 받아서 유효성 확인
+    userId와 같은지 확인
+    같다면 service로 넘기기
+     */
     @PutMapping("{userId}")
-    public ResponseEntity updateUser(@PathVariable int userId){
+    public ResponseEntity updateUser(@PathVariable int userId, UserVO userVO){
         return new ResponseEntity("delete user success", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity getUser(@PathVariable int userId){
-        return new ResponseEntity("get user", HttpStatus.NO_CONTENT);
+    public ResponseEntity getUser(@PathVariable Long userId, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.ACCEPTED;
+        UserVO userVO = userService.getUser(userId);
+        userVO.setPassword(null);
+        if(userVO != null){
+            resultMap.put("user", userVO);
+            resultMap.put("messge", "");
+        } else {
+            resultMap.put("messge", "");
+            status = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity(resultMap, status);
     }
 
     @GetMapping("{userId}/rooms")
@@ -92,7 +108,7 @@ public class UserController {
     /*
     Password 관련 Method
     Password는 따로 관리
-     */
+    */
     @PostMapping("passoword")
     public ResponseEntity renewPassword(){
         // 랜덤으로 String 생성하고 email 보내줘야 함

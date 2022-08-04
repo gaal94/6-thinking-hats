@@ -19,55 +19,69 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private static final String secretKey = "ssafySecret";
-    private static final int EXPIRE_MINUTES = 60;
+    private final String secretKey = "ssafySecret";
+    private final int EXPIRE_MINUTES = 60;
 
-    public <T> String createToken(String key, T data, String subject) {
+    public String getJwtToken(HttpServletRequest request) {
+        return request.getHeader("access-token");
+    }
+    /*
+    Token을 생성하는 Method
+    claim에 userid를 집어넣는다 -> long type을 집어넣을 수 없음
+     */
+    public String createToken(UserVO userVO) {
         String jwt = Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setHeaderParam("regDate", System.currentTimeMillis())
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * EXPIRE_MINUTES))
-                .setSubject(subject)
-                .claim(key, data).signWith(SignatureAlgorithm.HS256, this.generateKey()).compact();
+                .claim("userId", userVO.getUserId())
+                .signWith(SignatureAlgorithm.HS256, generateKey()).compact();
         return jwt;
     }
 
 
-    private byte[] generateKey() {
-        byte[] key = null;
+    /*
+     토큰 유효성 검증
+     1. claim을 획득할 수 있는지
+     2. 유효 기간을 지났는지 확인
+     */
+    public boolean checkJwtToken(String jwt) {
         try {
-            key = secretKey.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-        }
-        return key;
-    }
-
-    // 토큰 유효성 검증
-    public boolean isUsable(String jwt) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(generateKey()).parseClaimsJws(jwt);
-            return true;
+            return getClaims(jwt).getExpiration().after(new Date());
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-
     }
 
-    public Map<String, Object> get(String key) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-        String jwt = request.getHeader("access-token");
-        Jws<Claims> claims = null;
+    public Long getUserId(String jwt){
         try {
-            claims = Jwts.parser().setSigningKey(secretKey.getBytes("UTF-8")).parseClaimsJws(jwt);
-        } catch (Exception e) {
+            return (Long) getClaims(jwt).get("userId");
+        } catch (Exception e){
+            e.printStackTrace();
             throw new UnAuthorizedException();
         }
-        Map<String, Object> value = claims.getBody();
-        return value;
     }
 
-    public String getUserId(){
-        return (String)this.get("user").get("userId");
+    private Claims getClaims(String jwt) {
+        try {
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(generateKey())
+                    .parseClaimsJws(jwt);
+            return claims.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
+
+    private byte[] generateKey() {
+        try {
+            return secretKey.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

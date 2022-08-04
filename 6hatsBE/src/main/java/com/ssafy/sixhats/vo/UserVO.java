@@ -25,16 +25,16 @@ public class UserVO {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String password;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     @Enumerated(EnumType.STRING)
     private Job job;
 
@@ -48,11 +48,10 @@ public class UserVO {
     @ColumnDefault("'USER'")
     private UserType userType;
 
-    @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
 
-    @Column(nullable = false, length = 5)
+    @Column(length = 5)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
