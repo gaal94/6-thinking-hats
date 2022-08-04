@@ -64,6 +64,13 @@ const routes = [
     //signup router
 
     component: () => import('@/views/main/signup/SignupPage.vue')
+  },
+  {
+    path: '/conferencepage',
+    name: 'ConferencePage',
+    //conference router
+
+    component: () => import('@/views/conference/ConferencePage.vue')
   }
 ]
 

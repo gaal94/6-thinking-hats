@@ -122,44 +122,11 @@ export default {
             "title": "제목1",
             "author": "작성자1",
             "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
-        },
-        {
-            "idx":1,
-            "title": "제목1",
-            "author": "작성자1",
-            "created_at": "작성일시1"
         }
       ]
+    },
+    Logincheck(){
+      if(localStorage.getItem("access-token")===null)console.log("state:logout")
     }
     }
 }
