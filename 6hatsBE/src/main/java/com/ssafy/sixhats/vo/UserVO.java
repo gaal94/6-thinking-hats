@@ -1,5 +1,6 @@
 package com.ssafy.sixhats.vo;
 
+import com.ssafy.sixhats.dto.UserPutRequestDTO;
 import com.ssafy.sixhats.vo.type.Gender;
 import com.ssafy.sixhats.vo.type.Job;
 import com.ssafy.sixhats.vo.type.LoginType;
@@ -76,5 +77,17 @@ public class UserVO {
         this.job = job;
         this.birth = birth;
         this.gender = gender;
+    }
+
+    public void update(UserPutRequestDTO userPutRequestDTO) {
+        this.email = userPutRequestDTO.getEmail();
+        this.name = userPutRequestDTO.getName();
+        this.job = userPutRequestDTO.getJob();
+        this.birth = userPutRequestDTO.getBirth();
+        this.gender = userPutRequestDTO.getGender();
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
     }
 }
