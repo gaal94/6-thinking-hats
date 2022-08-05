@@ -1,8 +1,6 @@
 package com.ssafy.sixhats.controller;
 
-import com.ssafy.sixhats.dto.UserGetResponseDTO;
-import com.ssafy.sixhats.dto.UserPostRequestDTO;
-import com.ssafy.sixhats.dto.UserLoginRequestDTO;
+import com.ssafy.sixhats.dto.*;
 import com.ssafy.sixhats.exception.UnAuthorizedException;
 import com.ssafy.sixhats.service.JwtService;
 import com.ssafy.sixhats.service.UserService;
@@ -28,12 +26,14 @@ public class UserController {
 
     // User Create (POST)
     @PostMapping("")
-    public ResponseEntity<String> postUser(@RequestBody UserPostRequestDTO userPostRequestDTO){
+    public ResponseEntity postUser(@RequestBody UserPostRequestDTO userPostRequestDTO){
         userService.postUser(userPostRequestDTO);
+
         // email 확인 로직과 관련해서 고민중
         return new ResponseEntity("signin success", HttpStatus.CREATED);
     }
 
+    // User Read (READ)
     @GetMapping("{userId}")
     public ResponseEntity getUser(@PathVariable Long userId, HttpServletRequest request){
         Map<String, Object> resultMap = new HashMap<>();
@@ -45,35 +45,74 @@ public class UserController {
         }
 
         UserGetResponseDTO userGetResponseDTO = userService.getUser(userId);
-        if(userGetResponseDTO != null){
-            resultMap.put("messge", "get user info success");
-            resultMap.put("user", userGetResponseDTO);
-        } else {
-            resultMap.put("messge", "user not found");
-            status = HttpStatus.NOT_FOUND;
-        }
+
+        resultMap.put("messge", "get user info success");
+        resultMap.put("user", userGetResponseDTO);
 
         return new ResponseEntity(resultMap, status);
     }
+
+    // User Update (PUT)
+    @PutMapping("{userId}")
+    public ResponseEntity putUser(@PathVariable Long userId, @RequestBody UserPutRequestDTO userPutRequestDTO, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
+        UserGetResponseDTO userGetResponseDTO = userService.putUser(userId, userPutRequestDTO);
+        resultMap.put("messge", "update user info success");
+        resultMap.put("user", userGetResponseDTO);
+
+        return new ResponseEntity(resultMap, status);
+    }
+
+    // User Delete (DELETE)
+    @DeleteMapping ("{userId}")
+    public ResponseEntity deleteUser(@PathVariable Long userId, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
+        userService.deleteUser(userId);
+        return new ResponseEntity(resultMap, status);
+    }
+
+    // User password Update (PATCH)
+    @PatchMapping("{userId}")
+    public ResponseEntity patchUser(@PathVariable Long userId, @RequestBody UserPatchRequestDTO userPatchRequestDTO, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
+        userService.patchUser(userId, userPatchRequestDTO.getPassword());
+        resultMap.put("messge", "update password success");
+
+        return new ResponseEntity(resultMap, status);
+    }
+
+    // User Login General
     @PostMapping("login")
     public ResponseEntity loginGeneral(@RequestBody UserLoginRequestDTO userLoginRequestDTO){
         Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.OK;
 
-        try {
-            UserVO userVO = userService.loginGeneral(userLoginRequestDTO);
-            if(userVO != null){
-                String token = jwtService.createToken(userVO);
-                resultMap.put("access-token", token);
-                resultMap.put("message", "Login Success");
-                status = HttpStatus.OK;
-            } else {
-                resultMap.put("message", "User Not Found");
-            }
-        } catch (Exception e) {
-            resultMap.put("message", "Sever Error");
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+        UserVO userVO = userService.loginGeneral(userLoginRequestDTO);
+        String token = jwtService.createToken(userVO);
+        resultMap.put("access-token", token);
+        resultMap.put("message", "Login Success");
+
         return new ResponseEntity(resultMap, status);
     }
 
