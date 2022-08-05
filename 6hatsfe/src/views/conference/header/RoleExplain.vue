@@ -38,6 +38,51 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+* {
+  box-sizing: border-box;
+}
 
+.explain-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.explain-line {
+  display: flex;
+  gap: 4px;
+}
+
+.explain-line .explain-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 2px 20px;
+  margin: 0;
+  background-color: #34A853;
+  color: white;
+  border-radius: 8px;
+}
+
+.explain-1 {
+  width: 362px;
+}
+
+.explain-2 {
+  width: 248px;
+}
+
+.explain-3 {
+  width: 424px;
+}
+
+.explain-4 {
+  width: 612px;
+}
+
+.explain-5 {
+  width: 426px;
+}
 </style>

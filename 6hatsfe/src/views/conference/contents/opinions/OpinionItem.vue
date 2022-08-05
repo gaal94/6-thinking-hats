@@ -25,6 +25,37 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  * {
+  box-sizing: border-box;
+}
 
+p {
+  margin: 0;
+}
+
+.opinion-item-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #CFF3D9;
+  border-radius: 50px;
+  width: 1020px;
+  height: 52px;
+}
+
+.opinion-item-hatface {
+  width: 44px;
+  height: 44px;
+  margin-left: 4px;
+}
+
+.username {
+  font-size: 14px;
+}
+
+.hatname {
+  margin-right: 14px;
+  font-size: 16px;
+}
 </style>
