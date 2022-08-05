@@ -1,0 +1,58 @@
+package com.ssafy.sixhats.dto;
+
+import com.ssafy.sixhats.vo.UserVO;
+import com.ssafy.sixhats.vo.type.Gender;
+import com.ssafy.sixhats.vo.type.Job;
+import com.ssafy.sixhats.vo.type.LoginType;
+import com.ssafy.sixhats.vo.type.UserType;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Getter
+@NoArgsConstructor
+public class UserCreateRequestDTO {
+    private Long userId;
+    private String email;
+    private String password;
+    private String name;
+    private Job job;
+    private LocalDate birth;
+    private Gender gender;
+
+    @Builder
+    public UserCreateRequestDTO(String email, String password, String name, Job job, LocalDate birth, Gender gender){
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.job = job;
+        this.birth = birth;
+        this.gender = gender;
+    }
+
+    public UserVO toEntity() {
+        return UserVO.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .job(job)
+                .birth(birth)
+                .gender(gender)
+                .build();
+    }
+
+    @Override
+    public String toString() {
+        return "UserCreateRequestDTO{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", job=" + job +
+                ", birth=" + birth +
+                ", gender=" + gender +
+                '}';
+    }
+}
