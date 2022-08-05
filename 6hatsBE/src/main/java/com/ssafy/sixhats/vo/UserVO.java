@@ -90,4 +90,7 @@ public class UserVO {
     public void updatePassword(String password){
         this.password = password;
     }
+    public void updateIsActive() {
+        this.isActive = false;
+    }
 }

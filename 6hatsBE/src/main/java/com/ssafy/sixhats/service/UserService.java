@@ -6,12 +6,9 @@ import com.ssafy.sixhats.dto.UserPostRequestDTO;
 import com.ssafy.sixhats.dto.UserLoginRequestDTO;
 import com.ssafy.sixhats.dto.UserPutRequestDTO;
 import com.ssafy.sixhats.vo.UserVO;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 
 @Service
 public class UserService {
@@ -24,7 +21,7 @@ public class UserService {
     }
     public UserGetResponseDTO getUser(Long userId) {
         UserVO userVO = userDAO.findById(userId).orElse(null);
-        if(userVO != null){
+        if(userVO != null && userVO.isActive()){
             UserGetResponseDTO userGetResponseDTO = new UserGetResponseDTO().builder()
                     .email(userVO.getEmail())
                     .name(userVO.getName())
@@ -37,10 +34,11 @@ public class UserService {
             throw new NullPointerException("User Not Found");
         }
     }
+
     @Transactional
     public UserGetResponseDTO putUser(Long userId, UserPutRequestDTO userPutRequestDTO) {
         UserVO userVO = userDAO.findById(userId).orElse(null);
-        if(userVO != null){
+        if(userVO != null && userVO.isActive()){
             // update를 바로 실행
             userVO.update(userPutRequestDTO);
             UserGetResponseDTO userGetResponseDTO = new UserGetResponseDTO().builder()
@@ -55,10 +53,26 @@ public class UserService {
             throw new NullPointerException("User Not Found");
         }
     }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        UserVO userVO = userDAO.findById(userId).orElse(null);
+        if(userVO != null && userVO.isActive()){
+            // is active 부분 변경
+            userVO.updateIsActive();
+        } else {
+            throw new NullPointerException("User Not Found");
+        }
+    }
+
     public UserVO loginGeneral(UserLoginRequestDTO userLoginRequestDTO){
         String email = userLoginRequestDTO.getEmail();
         String password = userLoginRequestDTO.getPassword();
-        return userDAO.findByEmailAndPassword(email, password);
+        UserVO userVO = userDAO.findByEmailAndPassword(email, password).orElse(null);
+        if(userVO != null && userVO.isActive()){
+            return userVO;
+        } else {
+            throw new NullPointerException("User Not Found");
+        }
     }
-
 }

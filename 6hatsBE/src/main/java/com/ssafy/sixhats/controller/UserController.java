@@ -72,26 +72,32 @@ public class UserController {
 
         return new ResponseEntity(resultMap, status);
     }
+
+    @DeleteMapping ("{userId}")
+    public ResponseEntity deleteUser(@PathVariable Long userId, HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.NO_CONTENT;
+
+        // 유저가 다른 유저의 정보를 요청했을 때
+        if(jwtService.getUserId(request) != userId){
+            throw new UnAuthorizedException();
+        }
+
+        resultMap.put("message", "user delete success");
+        return new ResponseEntity(resultMap, status);
+    }
+
     // User Login General
     @PostMapping("login")
     public ResponseEntity loginGeneral(@RequestBody UserLoginRequestDTO userLoginRequestDTO){
         Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.OK;
 
-        try {
-            UserVO userVO = userService.loginGeneral(userLoginRequestDTO);
-            if(userVO != null){
-                String token = jwtService.createToken(userVO);
-                resultMap.put("access-token", token);
-                resultMap.put("message", "Login Success");
-                status = HttpStatus.OK;
-            } else {
-                resultMap.put("message", "User Not Found");
-            }
-        } catch (Exception e) {
-            resultMap.put("message", "Sever Error");
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+        UserVO userVO = userService.loginGeneral(userLoginRequestDTO);
+        String token = jwtService.createToken(userVO);
+        resultMap.put("access-token", token);
+        resultMap.put("message", "Login Success");
+
         return new ResponseEntity(resultMap, status);
     }
 
