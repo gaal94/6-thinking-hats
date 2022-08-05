@@ -83,7 +83,7 @@ public class UserController {
             throw new UnAuthorizedException();
         }
 
-        resultMap.put("message", "user delete success");
+        userService.deleteUser(userId);
         return new ResponseEntity(resultMap, status);
     }
 
