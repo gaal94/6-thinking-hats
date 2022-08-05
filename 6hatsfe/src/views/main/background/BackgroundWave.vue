@@ -1,5 +1,5 @@
 <template>
-  <img class="wave" src="@/assets/wave.png" alt="wave">
+  <img class="wave" src="@/assets/wave.svg" alt="wave">
 </template>
 
 <script>

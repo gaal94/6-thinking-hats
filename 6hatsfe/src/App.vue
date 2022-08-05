@@ -1,12 +1,18 @@
 <template>
   <nav-bar></nav-bar>
   <router-view/>
+  <background-wave></background-wave>
 </template>
 
 <script>
 import NavBar from "@/views/main/header/NavBar.vue"
+import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
+
 export default{
-  components : { NavBar }
+  components : {
+    NavBar,
+    BackgroundWave
+  }
 }
 </script>
 
