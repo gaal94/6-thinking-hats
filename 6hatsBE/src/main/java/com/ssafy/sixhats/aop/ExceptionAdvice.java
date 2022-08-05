@@ -27,7 +27,6 @@ public class ExceptionAdvice {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("message", e.getMessage());
         HttpStatus status = HttpStatus.NOT_FOUND;
-
         return new ResponseEntity(resultMap, status);
     }
 
