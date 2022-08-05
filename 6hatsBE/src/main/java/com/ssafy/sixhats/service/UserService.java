@@ -1,10 +1,7 @@
 package com.ssafy.sixhats.service;
 
 import com.ssafy.sixhats.dao.UserDAO;
-import com.ssafy.sixhats.dto.UserGetResponseDTO;
-import com.ssafy.sixhats.dto.UserPostRequestDTO;
-import com.ssafy.sixhats.dto.UserLoginRequestDTO;
-import com.ssafy.sixhats.dto.UserPutRequestDTO;
+import com.ssafy.sixhats.dto.*;
 import com.ssafy.sixhats.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +52,16 @@ public class UserService {
     }
 
     @Transactional
+    public void patchUser(Long userId, String password) {
+        UserVO userVO = userDAO.findById(userId).orElse(null);
+        if(userVO != null && userVO.isActive()){
+            // update를 바로 실행
+            userVO.updatePassword(password);
+        } else {
+            throw new NullPointerException("User Not Found");
+        }
+    }
+    @Transactional
     public void deleteUser(Long userId) {
         UserVO userVO = userDAO.findById(userId).orElse(null);
         if(userVO != null && userVO.isActive()){
@@ -75,4 +82,5 @@ public class UserService {
             throw new NullPointerException("User Not Found");
         }
     }
+
 }
