@@ -3,8 +3,6 @@ package com.ssafy.sixhats.dto;
 import com.ssafy.sixhats.vo.UserVO;
 import com.ssafy.sixhats.vo.type.Gender;
 import com.ssafy.sixhats.vo.type.Job;
-import com.ssafy.sixhats.vo.type.LoginType;
-import com.ssafy.sixhats.vo.type.UserType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class UserCreateRequestDTO {
+public class UserPostRequestDTO {
     private Long userId;
     private String email;
     private String password;
@@ -23,7 +21,7 @@ public class UserCreateRequestDTO {
     private Gender gender;
 
     @Builder
-    public UserCreateRequestDTO(String email, String password, String name, Job job, LocalDate birth, Gender gender){
+    public UserPostRequestDTO(String email, String password, String name, Job job, LocalDate birth, Gender gender){
         this.email = email;
         this.password = password;
         this.name = name;
