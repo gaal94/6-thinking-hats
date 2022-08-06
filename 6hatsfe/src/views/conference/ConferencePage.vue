@@ -1,12 +1,11 @@
 <template>
   <div class="conference-page">
     <button @click="seeScreenShare" class="screen-share-btn"
-    v-if="!seeScreen">
+    v-if="!seeScreen && !screenPublisher">
       <i class="screen-share-btn-icon bx bxs-caret-down-circle"></i>
     </button>
     <screen-share class="screen-share" v-if="seeScreen"
     @closeScreenShareModal="closeScreenShare"
-    :screen-publish="screenPublisher"
     :screen-sub="screenSub"></screen-share>
     <div class="conference-body">
       <div class="left-cam-screens">
@@ -30,7 +29,7 @@
     </div>
     <icon-bar 
     :isConferencing="isConferencing" 
-    @changeConferenceStatus="changeConf()"
+    @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
     @changeVideo="changeVideo"
@@ -73,6 +72,7 @@ export default {
 		return {
       isConferencing: false,
       OV: undefined,
+      screenOV: undefined,
 			session: undefined,
       screenSession: undefined,
 			mainStreamManager: undefined,
@@ -99,10 +99,33 @@ export default {
 			// --- Get an OpenVidu object ---
 			this.OV = new OpenVidu();
 
+      this.screenOV = new OpenVidu()
+
 			// --- Init a session ---
 			this.session = this.OV.initSession();
 
+      this.screenSession = this.screenOV.initSession()
 			// --- Specify the actions when events take place in the session ---
+
+      this.screenSession.on('streamCreated', ({stream}) => {
+				const screen = this.screenSession.subscribe(stream);
+				this.screenSub = screen
+			});
+
+      this.screenSession.on('streamDestroyed', () => {
+				this.screenSub = undefined
+        this.screenSession.disconnect()
+			});
+
+      this.getToken(this.mySessionId).then(token => {
+				this.screenSession.connect(token)
+					.then(() => {
+
+					})
+					.catch(error => {
+						console.log('There was an error connecting to the session:', error.code, error.message);
+					});
+			});
 
 			// On every new Stream received...
 			this.session.on('streamCreated', ({ stream }) => {
@@ -117,7 +140,6 @@ export default {
 					this.subscribers.splice(index, 1);
 				}
 			});
-
 
 			// On every asynchronous exception...
 			this.session.on('exception', ({ exception }) => {
@@ -248,18 +270,6 @@ export default {
     },
     
     shareScreen() {
-      const OV = new OpenVidu()
-
-      this.screenSession = OV.initSession()
-
-      this.screenSession.on('streamCreated', ({ stream }) => {
-				const screen = this.screenSession.subscribe(stream);
-				this.screenSub = screen
-			});
-
-      this.screenSession.on('streamDestroyed', () => {
-				this.screenSub = undefined
-			});
 
       this.getToken(this.mySessionId).then(token => {
 				this.screenSession.connect(token)
@@ -267,18 +277,18 @@ export default {
 
 						// --- Get your own camera stream with the desired properties ---
 
-            const screenPublisher = OV.initPublisher(undefined, { videoSource: 'screen'})
+            let screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen'})
 
 
             screenPublisher.once('accessAllowed', () => {
               screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
                 this.screenSession.disconnect()
-                this.screenSession = undefined
                 this.screenPublisher = undefined
+                this.screenSub = undefined
               })
             })
 						this.screenPublisher = screenPublisher
-            this.session.publish(this.screenPublisher)
+            this.screenSession.publish(this.screenPublisher)
 
 					})
 					.catch(error => {

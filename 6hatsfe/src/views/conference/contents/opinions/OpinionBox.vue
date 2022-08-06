@@ -18,7 +18,7 @@
       </div>
       <div class="input-box">
         <input type="text" class="input-box-content">
-        <i class="send-icon"></i>
+        <i class='bx bxs-send'></i>
       </div>
     </div>
   </div>
@@ -34,6 +34,7 @@ export default {
   },
   data: () => {
 		return {
+      message: '',
 		}
 	},
 	computed: {
@@ -116,5 +117,9 @@ export default {
 
 .input-box-content:focus {
   outline: none;
+}
+
+.bxs-send:hover {
+  cursor: pointer;
 }
 </style>

@@ -2,12 +2,10 @@
   <div class="screen-share-modal-box">
     <div class="screen-share-window">
       <p 
-      class="no-screen-share-word">
+      class="no-screen-share-word"
+      v-if="!screenSub">
         화면 공유 안 하고 있음
       </p>
-      <ov-video 
-      class="cam-screen" :stream-manager="screenShare"
-      v-if="screenShare"/>
       <ov-video 
       class="cam-screen" :stream-manager="screenSub"
       v-if="screenSub"/>
@@ -33,7 +31,6 @@ export default {
       }
   },
   props: {
-    screenShare: Object,
     screenSub: Object
   },
   computed: {},
