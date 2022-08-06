@@ -71,6 +71,13 @@ const routes = [
     //conference router
 
     component: () => import('@/views/conference/ConferencePage.vue')
+  },
+  {
+    path: '/profilepage',
+    name: 'ProfilePage',
+    //profile router
+
+    component: () => import('@/views/main/profile/ProfilePage')
   }
 ]
 

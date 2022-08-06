@@ -5,11 +5,14 @@
           <br>
           <input placeholder="password" v-model="user.password" type = "password">
           <button type="submit" v-on:click="getUserToken">Login</button>
+          <button v-on:click="decodeToken">decoded</button>
   </div>
-  <div>{{token}}</div>
+  <div>{{id}}</div>
 </template>
 <script>
 import http from "@/api/http";
+import jwt_decode from "jwt-decode";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -22,20 +25,29 @@ export default {
   },
   methods: {
     getUserToken() {
-      console.log(this.user);
-      alert("");
       http
         .post("/user/login", null, { params: this.user })
         .then((data) => {
-          alert();
           localStorage.setItem("access-token", data.data["access-token"]);//access-token 로컬 스토리지에 저장
+          this.$store.commit('ChangeToken')
+          var token=localStorage.getItem('access-token');
+          var decoded = jwt_decode(token);//token 디코드
+          this.$store.commit('ChangeId',decoded.userId);//id저장
         })
         .catch((err) => {
           alert(err);
         });
+      http
+        .post("/user/"+this.$store.id,{ accessToken: this.$store.token })
+
     }
-  }
-}
+
+
+},
+  computed:{
+    ...mapGetters(['id'])
+  }}
+
 </script>
 
 <style>
