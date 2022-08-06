@@ -25,6 +25,27 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+* {
+  box-sizing: border-box;
+}
 
+.role-keyword-box {
+  width: 132px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.role-keyword-face {
+  width: 72px;
+  height: 72px;
+}
+
+.role-keyword {
+  font-size: 14px;
+  margin: 0;
+  padding: 2px;
+  color: black;
+}
 </style>

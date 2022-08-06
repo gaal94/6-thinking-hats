@@ -26,6 +26,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .info-box {
+    display: flex;
+    align-items: center;
+  }
 </style>

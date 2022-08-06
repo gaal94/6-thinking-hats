@@ -41,6 +41,20 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+* {
+  box-sizing: border-box;
+}
 
+.user-setting-box, .hat-setting-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hat-setting-row {
+  display: flex;
+  align-items: center;
+}
 </style>
