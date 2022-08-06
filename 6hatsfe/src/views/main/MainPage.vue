@@ -1,5 +1,5 @@
 <template>
 header
-  <v-if: LandingPage>
+<v-if: LandingPage>
 footer
 </template>

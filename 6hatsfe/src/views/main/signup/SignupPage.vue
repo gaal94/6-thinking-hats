@@ -29,7 +29,6 @@
 </select>
         <button type="submit" v-on:click="SignupUser">회원가입</button>
   </div>
-  <div>{{token}}</div>
 </template>
 
 <script>
@@ -46,7 +45,7 @@ export default {
         gender: '',
         birth: '',
         job: '',
-        name:'',
+        name:''
 
       },
     };
@@ -56,7 +55,7 @@ export default {
       console.log(this.user);
       alert("");
       http
-        .post("/user", null,{ params: this.user })
+        .post("/user", this.user)
         .then((data) => {
           console.log(data);
           alert();
@@ -72,4 +71,7 @@ export default {
 }
 </script>
 <style>
+ div{
+
+}
 </style>
