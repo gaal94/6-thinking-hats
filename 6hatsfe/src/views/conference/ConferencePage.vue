@@ -25,7 +25,8 @@
       <div class="in-conference-screen" v-else-if="isConferencing">
         <role-explain :hat-color="myHat"></role-explain>
         <opinion-box :hat-color="myHat"
-        @updateSubject="updateSubject"></opinion-box>
+        @updateSubject="updateSubject"
+        :session="session"></opinion-box>
       </div>
 
       <div class="right-side">
@@ -40,6 +41,7 @@
     :isConferencing="isConferencing"
     :hat-color="myHat"
     :role="host"
+    :session="session"
     @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
@@ -108,22 +110,15 @@ export default {
 	computed: {
 	},
 	methods: {
-    ...mapActions(['setConfSubject']),
+    ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession',]),
     changeConf() {
-      this.isConferencing = !this.isConferencing
-    },
-    updateSubject(changedSub) {
-        this.session.signal({
-        data: changedSub,  // Any string (optional)
-        to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-        type: 'update-subject'             // The type of message (optional)
+      this.session.signal({
+        to: [],
+        type: 'changeConf'
       })
       .then(() => {
-          console.log('Message successfully sent');
+        console.log('conference just started!');
       })
-      .catch(error => {
-          console.error(error);
-      });
     },
     joinSession () {
 			// --- Get an OpenVidu object ---
@@ -133,6 +128,8 @@ export default {
 
 			// --- Init a session ---
 			this.session = this.OV.initSession();
+      
+      this.setSession(this.session)
 
       this.screenSession = this.screenOV.initSession()
 			// --- Specify the actions when events take place in the session ---
@@ -181,8 +178,16 @@ export default {
 				console.warn(exception);
 			});
 
-      this.session.on('signal:update-subject', event => {
-        this.setConfSubject(event.data)
+      // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
+      this.session.on('signal:changeConf', () => {
+        if (this.isConferencing) {
+          this.resetTurn()
+          this.resetTimer()
+        } else {
+          this.resetTurn()
+          this.startTimer()
+        }
+        this.isConferencing = !this.isConferencing
       })
 
 			// --- Connect to the session with a valid user token ---

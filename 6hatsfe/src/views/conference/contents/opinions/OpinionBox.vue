@@ -6,18 +6,18 @@
         <div class="time">
           {{ minutes }} : {{ seconds }}
         </div>
-        <i class='bx bx-play' @click="startTimer"
+        <i class='bx bx-play' @click="clickStartTimer"
         v-if="hatColor === 'blue-hat'"></i>
-        <i class='bx bx-pause' @click="stopTimer"
+        <i class='bx bx-pause' @click="clickStopTimer"
         v-if="hatColor === 'blue-hat'"></i>
-        <i class='bx bx-revision' @click="resetTimer"
+        <i class='bx bx-revision' @click="clickResetTimer"
         v-if="hatColor === 'blue-hat'"></i>
       </div>
 
       <div class="subject-content">
         <p v-if="!subUpdating">{{ confSubject }}</p>
         <input class="sub-input" 
-        v-else-if="subUpdating" type="text" :value="confSubject">
+        v-else-if="subUpdating" type="text">
       </div>
 
       <div class="subject-btn" v-if="hatColor === 'blue-hat'">
@@ -69,7 +69,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['minutes', 'seconds', 'confSubject']),
+    ...mapGetters(['minutes', 'seconds', 'confSubject', 'session']),
 	},
 	methods: {
     ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
@@ -80,7 +80,32 @@ export default {
       const changedSub = document.querySelector('.sub-input').value
       this.setConfSubject(changedSub)
       this.subUpdating = false
-      this.$emit('updateSubject', changedSub)
+      this.session.signal({
+        data: changedSub,  // Any string (optional)
+        to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+        type: 'update-subject'             // The type of message (optional)
+      })
+      .then(() => {
+          console.log('Message successfully sent');
+      })
+      .catch(error => {
+          console.error(error);
+      });
+    },
+    clickStartTimer() {
+      this.session.signal({
+        type: 'start-timer'
+      })
+    },
+    clickStopTimer() {
+      this.session.signal({
+        type: 'stop-timer'
+      })
+    },
+    clickResetTimer() {
+      this.session.signal({
+        type: 'reset-timer'
+      })
     },
     sendMessage(op) {
       if (op) {
@@ -92,6 +117,23 @@ export default {
       this.opinions.splice(index, 1)
     }
 	},
+  mounted() {
+  this.session.on('signal:update-subject', event => {
+      this.setConfSubject(event.data)
+    })
+  
+  this.session.on('signal:start-timer', () => {
+    this.startTimer()
+  })
+  
+  this.session.on('signal:stop-timer', () => {
+    this.stopTimer()
+  })
+  this.session.on('signal:reset-timer', () => {
+    this.resetTimer()
+  })
+
+  }
 }
 </script>
 

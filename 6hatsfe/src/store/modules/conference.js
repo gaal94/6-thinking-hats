@@ -6,8 +6,10 @@ export default {
     totalTime: 60,
     timer: null,
     confSubject: '',
+    session: undefined,
   },
   getters: {
+    session: state => state.session,
     ideaMode: state => state.ideaMode,
     currentTurn: state => state.currentTurn,
     baseTime: state => state.baseTime,
@@ -24,6 +26,9 @@ export default {
     },
   },
   mutations: {
+    setSession(state, session) {
+      state.session = session
+    },
     changeIdeaMode(state, whichMode) {
       if (whichMode === 'ideaSuggest') {
         state.ideaMode = ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat']
@@ -75,6 +80,9 @@ export default {
     }
   },
   actions: {
+    setSession({commit}, session) {
+      commit('setSession', session)
+    },
     changeIdeaMode({commit}, whichMode) {
       commit('changeIdeaMode', whichMode)
     },

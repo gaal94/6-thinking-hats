@@ -8,13 +8,13 @@
     <button v-if="role"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button><i class='bx bx-link-alt' ></i></button>
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
-    @click="backToPreTurn"
+    @click="clickBackToPreTurn"
     :class="ideaMode[(currentTurn+5)%6]"><i class='bx bx-chevron-left'></i></button>
     <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"
-    @click="passTurn"
+    @click="clickPassTurn"
     :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
     <button class="pass-btn" v-if="isConferencing" :class="hatColor"
-    @click="passTurn">차례 넘기기</button>
+    @click="clickPassTurn">차례 넘기기</button>
     <button class="end-btn" @click="startConference()" 
     v-if="!isConferencing && role">
       <span>회의 시작</span>
@@ -44,19 +44,15 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['ideaMode', 'currentTurn',]),
+    ...mapGetters(['ideaMode', 'currentTurn', 'session']),
 	},
 	methods: {
     ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',]),
     startConference() {
       this.$emit('changeConferenceStatus')
-      this.resetTurn()
-      this.startTimer()
     },
     endConference() {
       this.$emit('changeConferenceStatus')
-      this.resetTurn()
-      this.resetTimer()
     },
     outToMain() {
       alert('회의에서 나가시겠습니까?')
@@ -83,8 +79,26 @@ export default {
     },
     shareScreen() {
       this.$emit('shareScreen')
-    }
+    },
+    clickBackToPreTurn() {
+      this.session.signal({
+        type: 'back-to-pre-turn'
+      })
+    },
+    clickPassTurn() {
+      this.session.signal({
+        type: 'pass-turn'
+      })
+    },
 	},
+  mounted() {
+    this.session.on('signal:back-to-pre-turn', () => {
+      this.backToPreTurn()
+    })
+    this.session.on('signal:pass-turn', () => {
+      this.passTurn()
+    })
+  }
 }
 </script>
 
