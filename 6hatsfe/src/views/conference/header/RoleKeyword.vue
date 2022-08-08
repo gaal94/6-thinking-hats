@@ -1,6 +1,11 @@
 <template>
   <div class="role-keyword-box">
-    <img src="" alt="" class="role-keyword-face">
+    <img v-if="hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="hat-img">
+    <img v-else-if="hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="hat-img">
+    <img v-else-if="hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="hat-img">
+    <img v-else-if="hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="hat-img">
+    <img v-else-if="hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="hat-img">
+    <img v-else-if="hatColor === 'white-hat'" src="@/assets/whitehat_circle.png" alt="" class="hat-img">
     <div class="role-keyword-list">
       <p class="role-keyword">창의적</p>
       <p class="role-keyword">혁신적</p>
@@ -14,6 +19,9 @@ export default {
   name: 'RoleKeyword',
   components: {
 	},
+    props: {
+    hatColor: String,
+  },
 	data: () => {
 		return {
 		}
@@ -46,6 +54,6 @@ export default {
   font-size: 14px;
   margin: 0;
   padding: 2px;
-  color: black;
+  color: white;
 }
 </style>

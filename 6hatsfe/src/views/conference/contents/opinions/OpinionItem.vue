@@ -1,11 +1,25 @@
 <template>
-  <div class="opinion-item-box">
-    <img src="" alt="" class="opinion-item-hatface">
+  <div class="opinion-item-box" :class="hatColor">
+    <img v-if="hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="hatColor === 'white-hat'" src="@/assets/whitehat_border_circle.png" alt="" class="opinion-item-hatface">
     <div class="user-info">
       <p class="username">권수린</p>
-      <p class="hatname">초록모자</p>
+      <p class="hatname">
+        <span v-if="hatColor === 'red-hat'">빨간모자</span>
+        <span v-else-if="hatColor === 'yellow-hat'">노란모자</span>
+        <span v-else-if="hatColor === 'green-hat'">초록모자</span>
+        <span v-else-if="hatColor === 'blue-hat'">파란모자</span>
+        <span v-else-if="hatColor === 'white-hat'">하얀모자</span>
+        <span v-else-if="hatColor === 'black-hat'">검은모자</span>
+      </p>
     </div>
-    <span class="opinion-word">라면</span>
+    <span class="opinion-word">{{ message }}</span>
+    <i class='bx bx-x delete-icon' v-if="hatColor === 'blue-hat'"
+    @click="deleteMessage"></i>
   </div>
 </template>
 
@@ -14,6 +28,10 @@ export default {
   name: 'OpinionItem',
   components: {
 	},
+  props: {
+    message: String,
+    hatColor: String,
+  },
 	data: () => {
 		return {
 		}
@@ -21,6 +39,9 @@ export default {
 	computed: {
 	},
 	methods: {
+    deleteMessage() {
+      this.$emit('deleteMessage')
+    }
 	},
 }
 </script>
@@ -38,9 +59,7 @@ p {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #CFF3D9;
   border-radius: 50px;
-  width: 1020px;
   height: 52px;
 }
 
@@ -58,4 +77,40 @@ p {
   margin-right: 14px;
   font-size: 16px;
 }
+
+.delete-icon {
+  font-size: 24px;
+  color: rgb(240, 63, 63);
+  margin-left: auto;
+  margin-right: 12px;
+}
+
+.delete-icon:hover {
+  cursor: pointer;
+}
+
+.red-hat {
+  background-color: #FFDCD9;
+}
+
+.yellow-hat {
+  background-color: #FFF1CA;
+}
+
+.green-hat {
+  background-color: #CFF3D9;
+}
+
+.blue-hat {
+  background-color: #CEE0FF;
+}
+
+.white-hat {
+  background-color: #FFFFFF;
+}
+
+.black-hat {
+  background-color: #8E8E8E;
+}
+
 </style>

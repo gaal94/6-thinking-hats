@@ -8,32 +8,38 @@
     @closeScreenShareModal="closeScreenShare"
     :screen-sub="screenSub"></screen-share>
     <div class="conference-body">
-      <div class="left-cam-screens">
+      <div class="left-side">
+        <role-keyword :hat-color="myHat" class="role-keyword"
+        v-if="isConferencing"></role-keyword>
+        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
         <cam-screen :stream-manager="publisher"></cam-screen>
-        <cam-screen v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
       <div class="join-screen" v-if="!isConferencing">
-        <info-box></info-box>
+        <info-box :all-participants="allParticipants"></info-box>
       </div>
       <div class="in-conference-screen" v-else-if="isConferencing">
-        <div class="in-conference-header">
-          <role-keyword></role-keyword>
-          <role-explain></role-explain>
-          <speech-order></speech-order>
-        </div>
-        <opinion-box></opinion-box>
+        <role-explain :hat-color="myHat"></role-explain>
+        <opinion-box :hat-color="myHat"></opinion-box>
       </div>
-      <div class="right-cam-screens">
-        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+      <div class="right-side">
+        <speech-order class="speech-order" v-if="isConferencing"></speech-order>
+        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
+        <cam-screen v-for="sub in subscribers.slice(2, 5)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>  
     </div>
     <icon-bar 
-    :isConferencing="isConferencing" 
+    :isConferencing="isConferencing"
+    :hat-color="myHat"
+    :role="host"
     @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
     @changeVideo="changeVideo"
-    @shareScreen="shareScreen"></icon-bar>
+    @shareScreen="shareScreen"
+    class="icon-bar"></icon-bar>
   </div>
 </template>
 
@@ -80,13 +86,16 @@ export default {
 			subscribers: [],
       screenPublisher: undefined,
       screenSub: undefined,
+      allParticipants: [],
 
 			mySessionId: 'SessionA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
       isScreenShared: false,
-      seeScreen: false
+      seeScreen: false,
+      myHat: 'blue-hat',
+      host: true,
 		}
 	},
 	computed: {
@@ -131,6 +140,7 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
 				const subscriber = this.session.subscribe(stream);
 				this.subscribers.push(subscriber);
+        this.allParticipants.push(subscriber)
 			});
 
 			// On every Stream destroyed...
@@ -169,6 +179,7 @@ export default {
 
 						this.mainStreamManager = publisher;
 						this.publisher = publisher;
+            this.allParticipants.push(publisher)
 
 						// --- Publish your stream ---
 
@@ -321,24 +332,60 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #121212;
   }
 
-  .in-conference-header {
-    display: flex;
-    align-items: center;
+  .screen-share-btn-icon {
+    color: white;
+    font-size: 24px;
   }
 
   .screen-share-btn {
     border: none;
+    background-color: #121212;
   }
 
   .screen-share-btn:hover {
     cursor: pointer;
   }
 
+  .in-conference-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
   .conference-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .left-side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right-side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left-side, .right-side {
+    align-self: flex-start;
+  }
+
+  .cam-arrow-icon {
+    font-size: 40px;
+    color: white;
+  }
+
+  .cam-arrow-icon:hover {
+    cursor: pointer;
+  }
+
+  .icon-bar {
+    align-self: bottom;
   }
 </style>

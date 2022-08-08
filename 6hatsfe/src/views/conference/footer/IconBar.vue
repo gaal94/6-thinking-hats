@@ -5,15 +5,19 @@
     <button @click="shareScreen"><i class='bx bx-window-open'></i></button>
     <button><i class='bx bx-radio-circle-marked'></i></button>
     <button><i class='bx bxs-smile'></i></button>
-    <button><i class='bx bx-dots-vertical-rounded'></i></button>
+    <button v-if="role"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button><i class='bx bx-link-alt' ></i></button>
-    <button class="pre-btn" v-if="isConferencing"><i class='bx bx-chevron-left'></i></button>
-    <button class="next-btn" v-if="isConferencing"><i class='bx bx-chevron-right' ></i></button>
-    <button class="pass-btn" v-if="isConferencing">차례 넘기기</button>
-    <button class="end-btn" @click="changeConference()">
-      <span v-if="!isConferencing">회의 시작</span>
-      <span v-else-if="isConferencing">회의 종료</span>
-      </button>
+    <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"><i class='bx bx-chevron-left'></i></button>
+    <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"><i class='bx bx-chevron-right' ></i></button>
+    <button class="pass-btn" v-if="isConferencing" :class="hatColor">차례 넘기기</button>
+    <button class="end-btn" @click="changeConference()" 
+    v-if="!isConferencing && role">
+      <span>회의 시작</span>
+    </button>
+    <button class="end-btn" @click="changeConference()" 
+    v-if="hatColor == 'blue-hat' && isConferencing">
+      <span>회의 종료</span>
+    </button>
     <button @click="outToMain()"><i class='bx bxs-x-circle'></i></button>
   </div>
 </template>
@@ -25,6 +29,8 @@ export default {
 	},
   props: {
     isConferencing: Boolean,
+    hatColor: String,
+    role: Boolean,
   },
 	data: () => {
 		return {
@@ -40,7 +46,7 @@ export default {
     outToMain() {
       alert('회의에서 나가시겠습니까?')
       this.$emit('leaveRoom')
-      this.$router.push({name: 'home'})
+      this.$router.push({name: 'LandingPage'})
     },
     changeMic() {
       this.$emit('changeMic')
@@ -112,4 +118,34 @@ i {
   border-radius: 36px;
   color: white;
 }
+
+.end-btn {
+  background-color: #4285F4;
+}
+
+.red-hat {
+  background-color: #EA4335;
+}
+
+.yellow-hat {
+  background-color: #FBBC05;
+}
+
+.green-hat {
+  background-color: #34A853;
+}
+
+.blue-hat {
+  background-color: #4285F4;
+}
+
+.white-hat {
+  background-color: #FFFFFF;
+  color: black;
+}
+
+.black-hat {
+  background-color: #000000;
+}
+
 </style>

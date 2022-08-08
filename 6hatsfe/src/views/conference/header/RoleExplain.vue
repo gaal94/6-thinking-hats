@@ -1,21 +1,26 @@
 <template>
   <div class="explain-box">
     <div class="explain-line">
-      <div class="explain-word explain-1">
+      <div class="explain-word explain-1"
+      :class="hatColor">
         <span>제가 생각한 아이디어는 ~ 입니다</span>
       </div>
-      <div class="explain-word explain-2">
+      <div class="explain-word explain-2"
+      :class="hatColor">
         <span>이런 걸 해보면 어떨까요?</span>
       </div>
-      <div class="explain-word explain-3">
+      <div class="explain-word explain-3"
+      :class="hatColor">
         <span>이 아이디어를 개선할 방안은 ~ 입니다</span>
       </div>
     </div>
     <div class="explain-line">
-      <div class="explain-word explain-5">
+      <div class="explain-word explain-5"
+      :class="hatColor">
         <span>이 아이디어를 개선할 방안은 ~ 입니다</span>
       </div>
-      <div class="explain-word explain-4">
+      <div class="explain-word explain-4"
+      :class="hatColor">
         <span>기존의 사고에서 벗어나 새로운 시각과 창의적인 아이디어 제시</span>
       </div>
     </div>
@@ -27,6 +32,9 @@ export default {
   name: 'RoleExplain',
   components: {
 	},
+  props: {
+    hatColor: String,
+  },
 	data: () => {
 		return {
 		}
@@ -61,8 +69,6 @@ export default {
   height: 36px;
   padding: 2px 20px;
   margin: 0;
-  background-color: #34A853;
-  color: white;
   border-radius: 8px;
 }
 
@@ -84,5 +90,35 @@ export default {
 
 .explain-5 {
   width: 426px;
+}
+
+.white-hat {
+  background-color: white;
+  color: black;
+}
+
+.red-hat {
+  background-color: #EA4335;
+  color: white;
+}
+
+.yellow-hat {
+  background-color: #FBBC05;
+  color: white;
+}
+
+.black-hat {
+  background-color: black;
+  color: white;
+}
+
+.green-hat {
+  background-color: #34A853;
+  color: white;
+}
+
+.blue-hat {
+  background-color: #4285F4;
+  color: white;
 }
 </style>

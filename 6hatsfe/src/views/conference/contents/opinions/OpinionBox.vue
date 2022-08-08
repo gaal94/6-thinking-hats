@@ -2,23 +2,39 @@
   <div class="opinion-box">
     <div class="subject-box">
       <div class="timer-box">
-        <i class="timer-icon"></i>
+        <i class="timer-icon bx bx-stopwatch"></i>
         <div class="time">
   
         </div>
       </div>
       <div class="subject-content">
-  
+        <p v-if="!subUpdating">{{ subject }}</p>
+        <input class="sub-input" 
+        v-else-if="subUpdating" type="text" :value="subject">
       </div>
-      <button class="subject-btn">수정</button>
+      <div class="subject-btn" v-if="hatColor === 'blue-hat'">
+        <button class="sub-update-btn" v-if="!subUpdating"
+        @click="updateToggle">
+        <span v-if="!subject">입력</span>
+        <span v-else-if="subject">수정</span></button>
+        <button class="sub-update-confirm-btn"
+        v-if="subUpdating"
+        @click="updateSubject">확인</button>
+        <button class="sub-update-cancel-btn"
+        v-if="subUpdating"
+        @click="updateToggle">취소</button>
+      </div>
     </div>
     <div class="opinion-content-box">
       <div class="opinion-contents">
-        <opinion-item></opinion-item>
+        <opinion-item v-for="(msg, idx) in messages" :key="`message-${idx}`"
+        :message="msg"
+        :hat-color="hatColor"
+        @deleteMessage="deleteMessage(idx)"></opinion-item>
       </div>
       <div class="input-box">
-        <input type="text" class="input-box-content">
-        <i class='bx bxs-send'></i>
+        <input type="text" class="input-box-content" v-model="message">
+        <i class='bx bxs-send' @click="sendMessage(message)"></i>
       </div>
     </div>
   </div>
@@ -32,14 +48,36 @@ export default {
   components: {
     OpinionItem,
   },
+  props: {
+    hatColor: String,
+  },
   data: () => {
 		return {
+      subject: '',
+      messages: [],
       message: '',
+      subUpdating: false
 		}
 	},
 	computed: {
 	},
 	methods: {
+    updateToggle() {
+      this.subUpdating = !this.subUpdating
+    },
+    updateSubject() {
+      const changedSub = document.querySelector('.sub-input').value
+      this.subject = changedSub
+      this.subUpdating = false
+    },
+    sendMessage(message) {
+      this.messages.push(message)
+      this.message = ''
+    },
+    deleteMessage(index) {
+      console.log('delete');
+      this.messages.splice(index, 1)
+    }
 	},
 }
 </script>
@@ -68,34 +106,58 @@ export default {
   margin-left: 8px;
 }
 
+.timer-icon {
+  font-size: 36px;
+}
+
 .subject-btn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sub-update-btn, .sub-update-confirm-btn, .sub-update-cancel-btn {
   border: none;
-  background-color: #4285F4;
   color: white;
   border-radius: 36px;
   width: 64px;
   height: 36px;
-  margin-right: 8px;
 }
 
-.subject-btn:hover {
+.sub-update-btn:hover, .sub-update-confirm-btn:hover, .sub-update-cancel-btn:hover {
   cursor: pointer;
 }
 
+.sub-update-btn {
+  background-color: #4285F4;
+}
+
+.sub-update-confirm-btn {
+  background-color: #34A853;
+}
+
+.sub-update-cancel-btn {
+  background-color: #EA4335;
+}
+
 .opinion-content-box {
-  display: flex;
-  flex-direction: column;
   background-color: #F6F6F6;
   width: 1080px;
   height: 565px;
   border-radius: 14px;
   margin-left: auto;
   margin-right: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .opinion-contents {
+  width: 1020px;
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .input-box {
@@ -113,6 +175,8 @@ export default {
   width: 980px;
   height: 36px;
   margin-left: 10px;
+  position: relative;
+  bottom: 4px;
 }
 
 .input-box-content:focus {

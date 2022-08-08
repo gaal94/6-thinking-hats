@@ -13,7 +13,7 @@
     </div>
     <div class="timer-setting">
       <p class="timer-word">타이머</p>
-      <select name="timer" id="time-select">
+      <select name="timer" id="time-select" v-model="time">
         <option value="1">1분</option>
         <option value="3">3분</option>
         <option value="5">5분</option>
@@ -31,6 +31,7 @@ export default {
 	},
 	data: () => {
 		return {
+      time: 1
 		}
 	},
 	computed: {
