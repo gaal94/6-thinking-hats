@@ -13,16 +13,18 @@
         <i class='bx bx-revision' @click="resetTimer"
         v-if="hatColor === 'blue-hat'"></i>
       </div>
+
       <div class="subject-content">
-        <p v-if="!subUpdating">{{ subject }}</p>
+        <p v-if="!subUpdating">{{ confSubject }}</p>
         <input class="sub-input" 
-        v-else-if="subUpdating" type="text" :value="subject">
+        v-else-if="subUpdating" type="text" :value="confSubject">
       </div>
+
       <div class="subject-btn" v-if="hatColor === 'blue-hat'">
         <button class="sub-update-btn" v-if="!subUpdating"
         @click="updateToggle">
-        <span v-if="!subject">입력</span>
-        <span v-else-if="subject">수정</span></button>
+        <span v-if="!confSubject">입력</span>
+        <span v-else-if="confSubject">수정</span></button>
         <button class="sub-update-confirm-btn"
         v-if="subUpdating"
         @click="updateSubject">확인</button>
@@ -30,6 +32,7 @@
         v-if="subUpdating"
         @click="updateToggle">취소</button>
       </div>
+
     </div>
     <div class="opinion-content-box">
       <div class="opinion-contents">
@@ -60,24 +63,24 @@ export default {
   },
   data: () => {
 		return {
-      subject: '',
       opinions: [],
       opinion: '',
       subUpdating: false,
 		}
 	},
 	computed: {
-    ...mapGetters(['minutes', 'seconds',]),
+    ...mapGetters(['minutes', 'seconds', 'confSubject']),
 	},
 	methods: {
-    ...mapActions(['startTimer', 'stopTimer', 'resetTimer',]),
+    ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
     updateToggle() {
       this.subUpdating = !this.subUpdating
     },
     updateSubject() {
       const changedSub = document.querySelector('.sub-input').value
-      this.subject = changedSub
+      this.setConfSubject(changedSub)
       this.subUpdating = false
+      this.$emit('updateSubject', changedSub)
     },
     sendMessage(op) {
       if (op) {

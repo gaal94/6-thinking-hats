@@ -7,6 +7,7 @@
     <screen-share class="screen-share" v-if="seeScreen"
     @closeScreenShareModal="closeScreenShare"
     :screen-sub="screenSub"></screen-share>
+
     <div class="conference-body">
       <div class="left-side">
         <role-keyword :hat-color="myHat" class="role-keyword"
@@ -16,13 +17,17 @@
         <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
+
       <div class="join-screen" v-if="!isConferencing">
         <info-box :all-participants="allParticipants"></info-box>
       </div>
+
       <div class="in-conference-screen" v-else-if="isConferencing">
         <role-explain :hat-color="myHat"></role-explain>
-        <opinion-box :hat-color="myHat"></opinion-box>
+        <opinion-box :hat-color="myHat"
+        @updateSubject="updateSubject"></opinion-box>
       </div>
+
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
@@ -30,6 +35,7 @@
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>  
     </div>
+
     <icon-bar 
     :isConferencing="isConferencing"
     :hat-color="myHat"
@@ -54,6 +60,7 @@ import CamScreen from '@/views/conference/user/CamScreen.vue'
 import ScreenShare from '@/views/conference/ScreenShare.vue'
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
+import { mapActions } from 'vuex'
 // import UserVideo from './components/UserVideo';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -101,8 +108,22 @@ export default {
 	computed: {
 	},
 	methods: {
+    ...mapActions(['setConfSubject']),
     changeConf() {
       this.isConferencing = !this.isConferencing
+    },
+    updateSubject(changedSub) {
+        this.session.signal({
+        data: changedSub,  // Any string (optional)
+        to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
+        type: 'update-subject'             // The type of message (optional)
+      })
+      .then(() => {
+          console.log('Message successfully sent');
+      })
+      .catch(error => {
+          console.error(error);
+      });
     },
     joinSession () {
 			// --- Get an OpenVidu object ---
@@ -159,6 +180,10 @@ export default {
 			this.session.on('exception', ({ exception }) => {
 				console.warn(exception);
 			});
+
+      this.session.on('signal:update-subject', event => {
+        this.setConfSubject(event.data)
+      })
 
 			// --- Connect to the session with a valid user token ---
 

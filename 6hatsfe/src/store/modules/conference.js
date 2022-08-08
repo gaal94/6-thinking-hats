@@ -5,6 +5,7 @@ export default {
     baseTime: 60,
     totalTime: 60,
     timer: null,
+    confSubject: '',
   },
   getters: {
     ideaMode: state => state.ideaMode,
@@ -17,6 +18,9 @@ export default {
     seconds(state) {
       const sec = String(state.totalTime % 60)
       return sec.length > 1 ? sec : '0' + sec
+    },
+    confSubject(state) {
+      return state.confSubject
     },
   },
   mutations: {
@@ -66,6 +70,9 @@ export default {
       clearInterval(state.timer);
       state.timer = null;
     },
+    setConfSubject(state, changedSubject) {
+      state.confSubject = changedSubject
+    }
   },
   actions: {
     changeIdeaMode({commit}, whichMode) {
@@ -95,6 +102,9 @@ export default {
     },
     resetTimer({commit}) {
       commit('resetTimer')
+    },
+    setConfSubject({commit}, changedSubject) {
+      commit('setConfSubject', changedSubject)
     }
   },
   modules: {
