@@ -2,12 +2,22 @@ export default {
   state: {
     ideaMode: ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat'],
     currentTurn: 0,
-    baseTime: 60
+    baseTime: 60,
+    totalTime: 60,
+    timer: null,
   },
   getters: {
     ideaMode: state => state.ideaMode,
     currentTurn: state => state.currentTurn,
     baseTime: state => state.baseTime,
+    minutes(state) {
+      const min = parseInt(state.totalTime / 60)
+      return min > 9 ? String(min) : '0' + String(min)
+    },
+    seconds(state) {
+      const sec = String(state.totalTime % 60)
+      return sec.length > 1 ? sec : '0' + sec
+    },
   },
   mutations: {
     changeIdeaMode(state, whichMode) {
@@ -23,13 +33,39 @@ export default {
     backToPreTurn(state) {
       state.currentTurn = (state.currentTurn + 5) % 6
     },
-    endConf(state) {
+    resetTurn(state) {
       state.currentTurn = 0
     },
-    setTime(state, minute) {
-      state.baseTime = minute * 60
-      console.log(state.baseTime);
-    }
+    setTime(state, minutes) {
+      state.baseTime = minutes * 60
+      state.totalTime = minutes * 60
+    },
+    startTimer(state) {
+      const countdown = function() {
+        if(state.totalTime >= 1) {
+          state.totalTime -= 1
+        } else {
+          state.currentTurn = (state.currentTurn + 1) % 6
+
+          state.totalTime = state.baseTime;
+          clearInterval(state.timer);
+          state.timer = null;
+        
+          state.timer = setInterval(() => countdown(), 1000);
+        }
+      }
+
+      state.timer = setInterval(() => countdown(), 1000);
+    },
+    stopTimer(state) {
+      clearInterval(state.timer)
+      state.timer = null
+    },
+    resetTimer(state) {
+      state.totalTime = state.baseTime;
+      clearInterval(state.timer);
+      state.timer = null;
+    },
   },
   actions: {
     changeIdeaMode({commit}, whichMode) {
@@ -37,16 +73,29 @@ export default {
     },
     passTurn({commit}) {
       commit('passTurn')
+      commit('resetTimer')
+      commit('startTimer')
     },
     backToPreTurn({commit}) {
       commit('backToPreTurn')
+      commit('resetTimer')
+      commit('startTimer')
     },
-    endConf({commit}) {
-      commit('endConf')
+    resetTurn({commit}) {
+      commit('resetTurn')
     },
-    setTime({commit}, minute) {
-      commit('setTime', minute)
+    setTime({commit}, minutes) {
+      commit('setTime', minutes)
     },
+    startTimer({commit}) {
+      commit('startTimer')
+    },
+    stopTimer({commit}) {
+      commit('stopTimer')
+    },
+    resetTimer({commit}) {
+      commit('resetTimer')
+    }
   },
   modules: {
   }

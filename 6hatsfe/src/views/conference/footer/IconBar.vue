@@ -15,11 +15,11 @@
     :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
     <button class="pass-btn" v-if="isConferencing" :class="hatColor"
     @click="passTurn">차례 넘기기</button>
-    <button class="end-btn" @click="changeConference()" 
+    <button class="end-btn" @click="startConference()" 
     v-if="!isConferencing && role">
       <span>회의 시작</span>
     </button>
-    <button class="end-btn" @click="changeConference()" 
+    <button class="end-btn" @click="endConference()" 
     v-if="hatColor == 'blue-hat' && isConferencing">
       <span>회의 종료</span>
     </button>
@@ -44,13 +44,19 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['ideaMode', 'currentTurn']),
+    ...mapGetters(['ideaMode', 'currentTurn',]),
 	},
 	methods: {
-    ...mapActions(['passTurn', 'backToPreTurn', 'endConf']),
-    changeConference() {
+    ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',]),
+    startConference() {
       this.$emit('changeConferenceStatus')
-      this.endConf()
+      this.resetTurn()
+      this.startTimer()
+    },
+    endConference() {
+      this.$emit('changeConferenceStatus')
+      this.resetTurn()
+      this.resetTimer()
     },
     outToMain() {
       alert('회의에서 나가시겠습니까?')

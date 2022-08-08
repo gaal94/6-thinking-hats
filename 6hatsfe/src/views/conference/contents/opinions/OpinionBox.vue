@@ -4,8 +4,14 @@
       <div class="timer-box">
         <i class="timer-icon bx bx-stopwatch"></i>
         <div class="time">
-  
+          {{ minutes }} : {{ seconds }}
         </div>
+        <i class='bx bx-play' @click="startTimer"
+        v-if="hatColor === 'blue-hat'"></i>
+        <i class='bx bx-pause' @click="stopTimer"
+        v-if="hatColor === 'blue-hat'"></i>
+        <i class='bx bx-revision' @click="resetTimer"
+        v-if="hatColor === 'blue-hat'"></i>
       </div>
       <div class="subject-content">
         <p v-if="!subUpdating">{{ subject }}</p>
@@ -42,7 +48,7 @@
 
 <script>
 import OpinionItem from '@/views/conference/contents/opinions/OpinionItem.vue'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'OpinionBox',
@@ -61,17 +67,10 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['baseTime']),
-    minute() {
-      const min = parseInt(this.time / 60)
-      return min > 9 ? String(min) : '0' + String(min)
-    },
-    second() {
-      const sec = String(this.time % 60)
-      return sec.length > 1 ? sec : '0' + sec
-    },
+    ...mapGetters(['minutes', 'seconds',]),
 	},
 	methods: {
+    ...mapActions(['startTimer', 'stopTimer', 'resetTimer',]),
     updateToggle() {
       this.subUpdating = !this.subUpdating
     },
@@ -198,4 +197,17 @@ export default {
 .bxs-send:hover {
   cursor: pointer;
 }
+
+.bx-play, .bx-pause {
+  font-size: 24px;
+}
+
+.bx-revision {
+  font-size: 20px;
+}
+
+.bx-play:hover, .bx-pause:hover, .bx-revision:hover {
+  cursor: pointer;
+}
+
 </style>
