@@ -45,10 +45,17 @@ export default {
 <style scoped>
   .screen-share-modal-close-btn {
     border: none;
+    background-color: #121212;
   }
 
   .screen-share-modal-close-btn:hover {
     cursor: pointer;
   }
+
+  .bxs-caret-up-circle {
+    color: white;
+    font-size: 24px;
+  }
+
 
 </style>

@@ -27,14 +27,14 @@
     </div>
     <div class="opinion-content-box">
       <div class="opinion-contents">
-        <opinion-item v-for="(msg, idx) in messages" :key="`message-${idx}`"
-        :message="msg"
+        <opinion-item v-for="(op, idx) in opinions" :key="`message-${idx}`"
+        :opinion="op"
         :hat-color="hatColor"
         @deleteMessage="deleteMessage(idx)"></opinion-item>
       </div>
       <div class="input-box">
-        <input type="text" class="input-box-content" v-model="message">
-        <i class='bx bxs-send' @click="sendMessage(message)"></i>
+        <input type="text" class="input-box-content" v-model="opinion">
+        <i class='bx bxs-send' @click="sendMessage(opinion)"></i>
       </div>
     </div>
   </div>
@@ -42,6 +42,7 @@
 
 <script>
 import OpinionItem from '@/views/conference/contents/opinions/OpinionItem.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'OpinionBox',
@@ -54,12 +55,21 @@ export default {
   data: () => {
 		return {
       subject: '',
-      messages: [],
-      message: '',
-      subUpdating: false
+      opinions: [],
+      opinion: '',
+      subUpdating: false,
 		}
 	},
 	computed: {
+    ...mapGetters(['baseTime']),
+    minute() {
+      const min = parseInt(this.time / 60)
+      return min > 9 ? String(min) : '0' + String(min)
+    },
+    second() {
+      const sec = String(this.time % 60)
+      return sec.length > 1 ? sec : '0' + sec
+    },
 	},
 	methods: {
     updateToggle() {
@@ -70,13 +80,14 @@ export default {
       this.subject = changedSub
       this.subUpdating = false
     },
-    sendMessage(message) {
-      this.messages.push(message)
-      this.message = ''
+    sendMessage(op) {
+      if (op) {
+        this.opinions.push(op)
+        this.opinion = ''
+      }
     },
     deleteMessage(index) {
-      console.log('delete');
-      this.messages.splice(index, 1)
+      this.opinions.splice(index, 1)
     }
 	},
 }
@@ -158,6 +169,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: auto;
 }
 
 .input-box {

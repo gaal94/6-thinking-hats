@@ -17,7 +17,7 @@
         <span v-else-if="hatColor === 'black-hat'">검은모자</span>
       </p>
     </div>
-    <span class="opinion-word">{{ message }}</span>
+    <span class="opinion-word">{{ opinion }}</span>
     <i class='bx bx-x delete-icon' v-if="hatColor === 'blue-hat'"
     @click="deleteMessage"></i>
   </div>
@@ -29,7 +29,7 @@ export default {
   components: {
 	},
   props: {
-    message: String,
+    opinion: String,
     hatColor: String,
   },
 	data: () => {

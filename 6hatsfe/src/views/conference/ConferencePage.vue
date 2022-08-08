@@ -58,8 +58,8 @@ import { OpenVidu } from 'openvidu-browser';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -117,13 +117,14 @@ export default {
 			// --- Specify the actions when events take place in the session ---
 
       this.screenSession.on('streamCreated', ({stream}) => {
-				const screen = this.screenSession.subscribe(stream);
-				this.screenSub = screen
+        if (stream.typeOfVideo === 'SCREEN') {
+          const screen = this.screenSession.subscribe(stream);
+          this.screenSub = screen
+        }
 			});
 
       this.screenSession.on('streamDestroyed', () => {
 				this.screenSub = undefined
-        this.screenSession.disconnect()
 			});
 
       this.getToken(this.mySessionId).then(token => {
@@ -138,9 +139,12 @@ export default {
 
 			// On every new Stream received...
 			this.session.on('streamCreated', ({ stream }) => {
-				const subscriber = this.session.subscribe(stream);
-				this.subscribers.push(subscriber);
-        this.allParticipants.push(subscriber)
+        if (stream.typeOfVideo === 'CAMERA') {
+          const subscriber = this.session.subscribe(stream);
+          this.subscribers.push(subscriber);
+          this.allParticipants.push(subscriber)
+        }
+
 			});
 
 			// On every Stream destroyed...
@@ -195,12 +199,14 @@ export default {
 		leaveSession () {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
 			if (this.session) this.session.disconnect();
+      if (this.screenSession) this.screenSession.disconnect()
 
 			this.session = undefined;
 			this.mainStreamManager = undefined;
 			this.publisher = undefined;
 			this.subscribers = [];
 			this.OV = undefined;
+      this.screenSession = undefined
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -288,7 +294,7 @@ export default {
 
 						// --- Get your own camera stream with the desired properties ---
 
-            let screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen'})
+            let screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
 
             screenPublisher.once('accessAllowed', () => {

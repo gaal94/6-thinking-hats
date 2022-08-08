@@ -7,9 +7,14 @@
     <button><i class='bx bxs-smile'></i></button>
     <button v-if="role"><i class='bx bx-dots-vertical-rounded'></i></button>
     <button><i class='bx bx-link-alt' ></i></button>
-    <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"><i class='bx bx-chevron-left'></i></button>
-    <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"><i class='bx bx-chevron-right' ></i></button>
-    <button class="pass-btn" v-if="isConferencing" :class="hatColor">차례 넘기기</button>
+    <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
+    @click="backToPreTurn"
+    :class="ideaMode[(currentTurn+5)%6]"><i class='bx bx-chevron-left'></i></button>
+    <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"
+    @click="passTurn"
+    :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
+    <button class="pass-btn" v-if="isConferencing" :class="hatColor"
+    @click="passTurn">차례 넘기기</button>
     <button class="end-btn" @click="changeConference()" 
     v-if="!isConferencing && role">
       <span>회의 시작</span>
@@ -23,6 +28,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'IconBar',
   components: {
@@ -38,10 +44,13 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['ideaMode', 'currentTurn']),
 	},
 	methods: {
+    ...mapActions(['passTurn', 'backToPreTurn', 'endConf']),
     changeConference() {
       this.$emit('changeConferenceStatus')
+      this.endConf()
     },
     outToMain() {
       alert('회의에서 나가시겠습니까?')
@@ -89,6 +98,9 @@ button {
   background-color: rgb(18, 18, 18);
   width: 40px;
   height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button:hover {
@@ -141,6 +153,10 @@ i {
 
 .white-hat {
   background-color: #FFFFFF;
+  color: black;
+}
+
+.white-hat i {
   color: black;
 }
 

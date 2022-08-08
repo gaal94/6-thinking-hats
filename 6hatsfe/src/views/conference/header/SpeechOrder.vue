@@ -1,15 +1,20 @@
 <template>
   <div class="speech-order-box">
-    <div class="white-hat order"></div>
-    <div class="red-hat order"></div>
-    <div class="yellow-hat order"></div>
-    <div class="black-hat order"></div>
-    <div class="green-hat cnt-order"></div>
-    <div class="blue-hat order"></div>
+    <div v-for="(hat, idx) in ideaMode" :key="`hat-order-${idx}`"
+    class="order" 
+    :class="{ 'cnt-order' : idx === currentTurn,
+    'red-hat' : hat === 'red-hat',
+    'yellow-hat' : hat === 'yellow-hat',
+    'green-hat' : hat === 'green-hat',
+    'blue-hat' : hat === 'blue-hat',
+    'white-hat' : hat === 'white-hat',
+    'black-hat' : hat === 'black-hat'}"></div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'SpeechOrder',
   components: {
@@ -19,6 +24,7 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['ideaMode', 'currentTurn',]),
 	},
 	methods: {
 	},
