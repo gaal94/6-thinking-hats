@@ -1,7 +1,7 @@
 <template>
   <div class="logo-container d-flex justify-content-center align-items-center">
     <div class="logo-body">
-      <img class="logo" src="@/assets/Logo.png" alt="logo">
+      <img class="logo" src="@/assets/logo.png" alt="logo">
     </div>
   </div>
 </template>

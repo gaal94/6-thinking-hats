@@ -39,6 +39,13 @@ const routes = [
     component: () => import('@/views/main/login/LoginPage.vue')
   },
   {
+    path: '/kakaologinpage',
+    name: 'KakaoLoginPage',
+    //login page router
+
+    component: () => import('@/views/main/login/KakaoLoginPage.vue')
+  },
+  {
     path: '/qnapage',
     name: 'QnaPage',
     //qna router

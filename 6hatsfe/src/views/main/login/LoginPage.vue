@@ -5,6 +5,10 @@
           <br>
           <input placeholder="password" v-model="user.password" type = "password">
           <button type="submit" v-on:click="getUserToken">Login</button>
+          <br>
+          <a href="https://kauth.kakao.com/oauth/authorize?client_id=519439ce954029ab868883d1f092d2dc&redirect_uri=http://localhost:8080/kakaologinpage&response_type=code">
+            KAKAO LOGIN
+          </a>
   </div>
   <div>{{id}}</div>
 </template>
