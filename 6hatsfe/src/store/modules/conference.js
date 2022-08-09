@@ -7,6 +7,10 @@ export default {
     timer: null,
     confSubject: '',
     session: undefined,
+    myHat: 'spectator',
+    users: [],
+    participants: [],
+
   },
   getters: {
     session: state => state.session,
@@ -24,6 +28,8 @@ export default {
     confSubject(state) {
       return state.confSubject
     },
+    users: state => state.users,
+    participants: state => state.participants,
   },
   mutations: {
     setSession(state, session) {
@@ -77,6 +83,16 @@ export default {
     },
     setConfSubject(state, changedSubject) {
       state.confSubject = changedSubject
+    },
+    addUser(state, user) {
+      state.users.push(user)
+    },
+    changeUserHatColor(state, { user, changedHat }) {
+      console.log('뮤테이션');
+      console.log(user);
+      console.log(state.users);
+      const idx = state.users.indexOf(user)
+      state.user[idx].hatColor = changedHat
     }
   },
   actions: {
@@ -113,6 +129,12 @@ export default {
     },
     setConfSubject({commit}, changedSubject) {
       commit('setConfSubject', changedSubject)
+    },
+    addUser({commit}, user) {
+      commit('addUser', user)
+    },
+    changeUserHatColor({commit}, data) {
+      commit('changeUserHatColor', data)
     }
   },
   modules: {

@@ -38,9 +38,6 @@ export default {
   components: {
     HatSelect,
   },
-  props: {
-    allParticipants: Array,
-  },
   data: () => {
 		return {
 		}

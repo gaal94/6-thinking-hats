@@ -19,7 +19,7 @@
       </div>
 
       <div class="join-screen" v-if="!isConferencing">
-        <info-box :all-participants="allParticipants"></info-box>
+        <info-box></info-box>
       </div>
 
       <div class="in-conference-screen" v-else-if="isConferencing">
@@ -62,7 +62,7 @@ import CamScreen from '@/views/conference/user/CamScreen.vue'
 import ScreenShare from '@/views/conference/ScreenShare.vue'
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 // import UserVideo from './components/UserVideo';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -95,7 +95,6 @@ export default {
 			subscribers: [],
       screenPublisher: undefined,
       screenSub: undefined,
-      allParticipants: [],
 
 			mySessionId: 'SessionA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
@@ -108,9 +107,11 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['users']),
 	},
 	methods: {
-    ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession',]),
+    ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
+                    ]),
     changeConf() {
       this.session.signal({
         to: [],
@@ -159,10 +160,13 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
         if (stream.typeOfVideo === 'CAMERA') {
           const subscriber = this.session.subscribe(stream);
+          subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
-          this.allParticipants.push(subscriber)
-        }
 
+          const userInfo = { hatColor: 'spectator', 
+                            connectionId: subscriber.stream.connection.connectionId }
+          this.addUser(userInfo)
+        }
 			});
 
 			// On every Stream destroyed...
@@ -180,11 +184,10 @@ export default {
 
       // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
       this.session.on('signal:changeConf', () => {
+        this.resetTurn()
         if (this.isConferencing) {
-          this.resetTurn()
           this.resetTimer()
         } else {
-          this.resetTurn()
           this.startTimer()
         }
         this.isConferencing = !this.isConferencing
@@ -213,8 +216,8 @@ export default {
 
 						this.mainStreamManager = publisher;
 						this.publisher = publisher;
-            this.allParticipants.push(publisher)
-
+            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId }
+            this.addUser(userInfo)
 						// --- Publish your stream ---
 
 						this.session.publish(this.publisher);

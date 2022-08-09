@@ -8,15 +8,17 @@
     <img v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
     <img v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
     <img v-else-if="hat === 'spectator'" src="@/assets/spectator.png" alt="" class="hat-img">
-    <div class="user-list"
-    :class="hat">
-      <user-list-item></user-list-item>
+    <div class="user-list" :class="hat">
+      <div v-for="(user, idx) in users" :key="`user-${idx}`">
+        <user-list-item v-if="user.hatColor === hat" :userInfo=user></user-list-item>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import UserListItem from '@/views/conference/contents/info/UserListItem.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'HatSelect',
@@ -31,6 +33,7 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['users',])
 	},
 	methods: {
 	},
@@ -59,8 +62,9 @@ export default {
   justify-content: center;
   align-items: center;
   width: 200px;
-  height: 40px;
+  min-height: 40px;
   border-radius: 14px;
+  padding: 12px;
 }
 
 .red-hat {

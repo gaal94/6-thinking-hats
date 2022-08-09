@@ -1,14 +1,14 @@
 <template>
   <div class="info-box">
     <mode-setting-view></mode-setting-view>
-    <user-setting-view
-    :all-participants="allParticipants"></user-setting-view>
+    <user-setting-view></user-setting-view>
   </div>
 </template>
 
 <script>
 import UserSettingView from '@/views/conference/contents/info/UserSettingView.vue'
 import ModeSettingView from '@/views/conference/contents/info/ModeSettingView.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'InfoBox',
@@ -16,17 +16,22 @@ export default {
     UserSettingView,
     ModeSettingView
   },
-  props: {
-    allParticipants: Array,
-  },
   data: () => {
 		return {
 		}
 	},
 	computed: {
+    ...mapGetters(['session', 'users',]),
 	},
 	methods: {
+    ...mapActions(['changeUserHatColor',]),
 	},
+  created() {
+    this.session.on('signal:change-hat-color', event => {
+      const data = JSON.parse(event.data)
+      this.changeUserHatColor(data)
+    })
+  }
 }
 </script>
 

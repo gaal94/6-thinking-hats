@@ -1,34 +1,58 @@
 <template>
-  <div class="name-box">
+  <div class="name-box"
+  :class="{ 'red-hat-back' : userInfo.hatColor === 'red-hat',
+            'yellow-hat-back' : userInfo.hatColor === 'yellow-hat',
+            'green-hat-back' : userInfo.hatColor === 'green-hat',
+            'blue-hat-back' : userInfo.hatColor === 'blue-hat',
+            'black-hat-back' : userInfo.hatColor === 'black-hat',
+            'white-hat-back' : userInfo.hatColor === 'white-hat',
+            'random-hat-back' : userInfo.hatColor === 'random-hat',
+            'spectator-back' : userInfo.hatColor === 'spectator', }">
     <span class="user-name">이름</span>
-    <div class="cnt-status">
-      <span class="cnt-hat"></span>
-      <ul class="select">
-        <li class="status red-hat"></li>
-        <li class="status yellow-hat"></li>
-        <li class="status green-hat"></li>
-        <li class="status blue-hat"></li>
-        <li class="status white-hat"></li>
-        <li class="status black-hat"></li>
-        <li class="status random-hat"><i></i></li>
-        <li class="status watch"><i></i></li>
+    <div class="cnt-status dropdown">
+      <div class="cnt-hat"
+            :class="userInfo.hatColor"
+            data-bs-toggle="dropdown" aria-expanded="false">
+      </div>
+      <ul class="select dropdown-menu" role="menu">
+        <li @click="changeHatColor('red-hat')" class="status red-hat"></li>
+        <li @click="changeHatColor('yellow-hat')" class="status yellow-hat"></li>
+        <li @click="changeHatColor('green-hat')" class="status green-hat"></li>
+        <li @click="changeHatColor('blue-hat')" class="status blue-hat"></li>
+        <li @click="changeHatColor('white-hat')" class="status white-hat"></li>
+        <li @click="changeHatColor('black-hat')" class="status black-hat"></li>
+        <li @click="changeHatColor('random-hat')" class="status random-hat"></li>
+        <li @click="changeHatColor('spectator')" class="status spectator"></li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'UserListItme',
   components: {
 	},
+  props: {
+    userInfo: Object,
+  },
 	data: () => {
 		return {
 		}
 	},
 	computed: {
+    ...mapGetters(['session',]),
 	},
 	methods: {
+    changeHatColor(targetHat) {
+      const sending = {user: this.userInfo, changedHat: targetHat}
+      const jsonData = JSON.stringify(sending)
+      this.session.signal({
+        data: jsonData,
+        type: 'change-hat-color'
+      })
+    }
 	},
 }
 </script>
@@ -42,23 +66,18 @@ export default {
   width: 184px;
   height: 24px;
   border-radius: 8px;
-  background-color: #FFC0BA;
 }
 
 .select {
-  position: absolute;
-  display: none;
-  margin: 0;
-  padding: 0;
-  background-color: #F6F6F6;
-  padding: 2px 0;
-  border-radius: 4px;
-  height: 50px;
+  --bs-dropdown-min-width: 30px !important;
+  padding: 4px;
 }
 
 ul li {
+  display: block;
   list-style: none;
   margin: 4px 0;
+  margin-right: 4px;
 }
 
 ul li:hover {
@@ -67,9 +86,9 @@ ul li:hover {
 
 .cnt-hat {
   border-radius: 50%;
+  margin: 0, 4px;
   width: 20px;
   height: 20px;
-  background-color: #EA4335;
   display: block;
 }
 
@@ -81,10 +100,6 @@ ul li:hover {
   position: relative;
   float: right;
   padding-left: 4px;
-}
-
-.cnt-status:hover > .select {
-  display: block;
 }
 
 .status {
@@ -132,7 +147,39 @@ ul li:hover {
  background-color: #585858;
 }
 
-.watch {
+.spectator {
   background-color: #585858;
+}
+
+.red-hat-back {
+  background-color: #FFC0BA;
+}
+
+.yellow-hat-back {
+  background-color: #FFE394;
+}
+
+.black-hat-back {
+  background-color: #515151;
+}
+
+.white-hat-back {
+  background-color: #ECECEC;
+}
+
+.green-hat-back {
+  background-color: #79ED9A;
+}
+
+.blue-hat-back {
+  background-color: #A4C5FF;
+}
+
+.random-hat-back {
+ background-color: #9C9C9C;
+}
+
+.spectator-back {
+  background-color: #BFBFBF;
 }
 </style>
