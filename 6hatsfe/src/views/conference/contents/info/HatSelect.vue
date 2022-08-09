@@ -1,13 +1,29 @@
 <template>
   <div class="hat-select-box">
-    <img v-if="hat === 'red-hat'" src="@/assets/redhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'yellow-hat'" src="@/assets/yellowhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'green-hat'" src="@/assets/greenhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'black-hat'" src="@/assets/blackhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'spectator'" src="@/assets/spectator.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('red-hat')" 
+    v-if="hat === 'red-hat'" src="@/assets/redhat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('yellow-hat')" 
+    v-else-if="hat === 'yellow-hat'" src="@/assets/yellowhat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('green-hat')" 
+    v-else-if="hat === 'green-hat'" src="@/assets/greenhat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('blue-hat')" 
+    v-else-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('black-hat')" 
+    v-else-if="hat === 'black-hat'" src="@/assets/blackhat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('white-hat')" 
+    v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('random-hat')" 
+    v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
+    <img 
+    @click="chooseHat('spectator')" 
+    v-else-if="hat === 'spectator'" src="@/assets/spectator.png" alt="" class="hat-img">
     <div class="user-list" :class="hat">
       <div v-for="(user, idx) in users" :key="`user-${idx}`">
         <user-list-item v-if="user.hatColor === hat" :userInfo=user></user-list-item>
@@ -33,9 +49,29 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['users',])
+    ...mapGetters(['users', 'publisher', 'myHat', 'session',])
 	},
 	methods: {
+    chooseHat(targetHat) {
+      let countHat = 0
+      this.users.forEach(el => {
+        if (el.hatColor === targetHat) {
+          countHat += 1
+        }
+      });
+
+      // 바꾸려는 모자에 3명까지만 넣음
+      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && countHat < 3) || 
+      (targetHat === 'random-hat' || targetHat === 'spectator')) {
+        const userInfo = { hatColor: this.myHat, connectionId: this.publisher.stream.session.connection.connectionId}
+        const sending = {user: userInfo, changedHat: targetHat}
+        const jsonData = JSON.stringify(sending)
+        this.session.signal({
+          data: jsonData,
+          type: 'change-hat-color'
+        })
+      }
+    },
 	},
 }
 </script>
@@ -54,6 +90,10 @@ export default {
 .hat-img {
   width: 52px;
   height: 52px;
+}
+
+.hat-img:hover {
+  cursor: pointer;
 }
 
 .user-list {

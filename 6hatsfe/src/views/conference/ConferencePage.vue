@@ -91,7 +91,6 @@ export default {
 			session: undefined,
       screenSession: undefined,
 			mainStreamManager: undefined,
-			publisher: undefined,
 			subscribers: [],
       screenPublisher: undefined,
       screenSub: undefined,
@@ -102,16 +101,15 @@ export default {
       video: false,
       isScreenShared: false,
       seeScreen: false,
-      myHat: 'blue-hat',
       host: true,
 		}
 	},
 	computed: {
-    ...mapGetters(['users']),
+    ...mapGetters(['publisher', 'users', 'myHat']),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
-                    ]),
+                    'changeUserHatColor', 'setMyHat', 'setPublisher',]),
     changeConf() {
       this.session.signal({
         to: [],
@@ -200,7 +198,7 @@ export default {
 						});
 
 						this.mainStreamManager = publisher;
-						this.publisher = publisher;
+						this.setPublisher(publisher)
             const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId }
             this.addUser(userInfo)
 						// --- Publish your stream ---
@@ -220,8 +218,9 @@ export default {
       if (this.screenSession) this.screenSession.disconnect()
 
 			this.session = undefined;
+      this.setSession(undefined)
 			this.mainStreamManager = undefined;
-			this.publisher = undefined;
+			this.setPublisher(undefined);
 			this.subscribers = [];
 			this.OV = undefined;
       this.screenSession = undefined
@@ -344,6 +343,14 @@ export default {
 	},
   created() {
     this.joinSession()
+
+    this.session.on('signal:change-hat-color', event => {
+      const data = JSON.parse(event.data)
+      this.changeUserHatColor(data)
+      if (this.publisher.stream.session.connection.connectionId === data.user.connectionId) {
+        this.setMyHat(data.changedHat)
+      }
+    })
   }
 }
 </script>

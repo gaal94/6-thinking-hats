@@ -8,7 +8,6 @@
 <script>
 import UserSettingView from '@/views/conference/contents/info/UserSettingView.vue'
 import ModeSettingView from '@/views/conference/contents/info/ModeSettingView.vue'
-import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'InfoBox',
@@ -21,17 +20,9 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session', 'users',]),
 	},
 	methods: {
-    ...mapActions(['changeUserHatColor',]),
 	},
-  created() {
-    this.session.on('signal:change-hat-color', event => {
-      const data = JSON.parse(event.data)
-      this.changeUserHatColor(data)
-    })
-  }
 }
 </script>
 

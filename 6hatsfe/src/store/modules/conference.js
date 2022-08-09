@@ -9,8 +9,7 @@ export default {
     session: undefined,
     myHat: 'spectator',
     users: [],
-    participants: [],
-
+    publisher: undefined,
   },
   getters: {
     session: state => state.session,
@@ -29,7 +28,8 @@ export default {
       return state.confSubject
     },
     users: state => state.users,
-    participants: state => state.participants,
+    myHat: state => state.myHat,
+    publisher: state => state.publisher,
   },
   mutations: {
     setSession(state, session) {
@@ -88,12 +88,18 @@ export default {
       state.users.push(user)
     },
     changeUserHatColor(state, { user, changedHat }) {
-      console.log('뮤테이션');
-      console.log(user);
-      console.log(state.users);
-      const idx = state.users.indexOf(user)
-      state.user[idx].hatColor = changedHat
-    }
+      const idx = state.users.findIndex(userInfo => userInfo.connectionId === user.connectionId)
+      state.users[idx].hatColor = changedHat
+    },
+    setMyHat(state, hatColor) {
+      state.myHat = hatColor
+    },
+    setUsers(state) {
+      state.users = []
+    },
+    setPublisher(state, value) {
+      state.publisher = value
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -135,7 +141,16 @@ export default {
     },
     changeUserHatColor({commit}, data) {
       commit('changeUserHatColor', data)
-    }
+    },
+    setMyHat({commit}, hatColor) {
+      commit('setMyHat', hatColor)
+    },
+    setUsers({commit}) {
+      commit('setUsers')
+    },
+    setPublisher({commit}, value) {
+      commit('setPublisher', value)
+    },
   },
   modules: {
   }

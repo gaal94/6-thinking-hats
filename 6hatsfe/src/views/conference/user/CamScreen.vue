@@ -12,22 +12,22 @@
 
 <script>
 import OvVideo from '@/views/conference/user/OvVideo.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CamScreen',
-
   components: {
     OvVideo,
   },
+  props: {
+    streamManager: Object,
+  },
   data () {
     return {
-      isParticipate: false
     }
   },
-  props: {
-		streamManager: Object,
-	},
   computed: {
+    ...mapGetters(['users',]),
 		clientData () {
 			const { clientData } = this.getConnectionData();
 			return clientData;

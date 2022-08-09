@@ -42,16 +42,27 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session',]),
+    ...mapGetters(['session', 'users',]),
 	},
 	methods: {
     changeHatColor(targetHat) {
-      const sending = {user: this.userInfo, changedHat: targetHat}
-      const jsonData = JSON.stringify(sending)
-      this.session.signal({
-        data: jsonData,
-        type: 'change-hat-color'
-      })
+      let countHat = 0
+      this.users.forEach(el => {
+        if (el.hatColor === targetHat) {
+          countHat += 1
+        }
+      });
+
+      // 바꾸려는 모자에 3명까지만 넣음
+      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && countHat < 3) || 
+      (targetHat === 'random-hat' || targetHat === 'spectator')) {
+        const sending = {user: this.userInfo, changedHat: targetHat}
+        const jsonData = JSON.stringify(sending)
+        this.session.signal({
+          data: jsonData,
+          type: 'change-hat-color'
+        })
+      }
     }
 	},
 }
@@ -116,6 +127,7 @@ ul li:hover {
 }
 
 .user-name {
+  color: black;
   margin: 0;
 }
 
@@ -129,6 +141,10 @@ ul li:hover {
 
 .black-hat {
   background-color: black;
+}
+
+.black-hat .user-name {
+  color: rgb(228, 228, 228);
 }
 
 .white-hat {
