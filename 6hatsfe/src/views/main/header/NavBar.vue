@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="logincheck">
+  <ul v-if="!loginstatus">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/"></router-link></li>
     <li><router-link to="/noticepage" class = "left">공지사항</router-link></li>
     <li><router-link to="/explainpage" class = "left">설명</router-link></li>
@@ -15,9 +15,10 @@
     <li><router-link to="/explainpage" class = "left">설명</router-link></li>
     <li><router-link to="/teampage" class = "left">팀소개</router-link></li>
     <li><router-link to="/qnapage" class = "left">Q&A</router-link></li>
+    <li><button @click = "logout" class="navbtn">로그아웃</button></li>
     <li><router-link to="/loginpage" class = "right">방 생성</router-link></li>
     <li><router-link to="/conferencepage" class = "right">방 참가</router-link></li>
-    <li><button @click = "logout">로그아웃</button></li>
+    <li>{{this.$store.state.name}}님 어서오세요</li>
   </ul>
 </template>
 
@@ -25,15 +26,8 @@
 import { mapGetters } from "vuex"
 export default {
   name : 'NavBar',
-  data(){
-    return{
-    }
-  },
-  state:{},
-  
   methods: {
     logincheck() {
-      return this.$store.loginstatus;
     },
     logout() {
       this.$store.commit('ChangeName',null);
@@ -45,10 +39,11 @@ export default {
       this.$store.commit('ChangeToken', null);
       this.$store.commit('ChangeId', null);
       localStorage.clear('access-token');
+      localStorage.clear('username');
     }
   },
   computed: {
-    ...mapGetters['loginstatus','token']
+    ...mapGetters(['loginstatus','name'])
   }
 }
 </script>
@@ -84,7 +79,15 @@ ul {
   width: 100%;
 
 }
+.navbtn{
+  float : right;
+  background-color: white;
+  color: black;
+  border: 0px;
+  text-align: center;
+  margin : 13px;
 
+}
 li a {
   display: block;
   color: black;
@@ -98,4 +101,5 @@ li a:hover {
   background-color: black;
   color: white;
 }
+
 </style>

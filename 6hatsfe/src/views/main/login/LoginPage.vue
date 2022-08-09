@@ -30,10 +30,18 @@ export default {
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
+          
           //console.log(this.$store);
           this.$store.commit('ChangeId',decoded.userId);//id저장
           console.log(this.$store.state.users.id);
-          //this.$router.push('') // 홈 화면 이동
+                  http
+                .get("/user/" + this.$store.state.users.id, null)
+                .then((res) => {
+
+                    const info = res.data.user;
+                  localStorage.setItem("username", info.name);
+                })
+          this.$router.push('/') // 홈 화면 이동
         }).catch((err) => {
           alert(err);
         })
