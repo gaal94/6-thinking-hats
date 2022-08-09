@@ -117,7 +117,7 @@ export default {
       this.opinions.splice(index, 1)
     }
 	},
-  mounted() {
+  created() {
   this.session.on('signal:update-subject', event => {
       this.setConfSubject(event.data)
     })

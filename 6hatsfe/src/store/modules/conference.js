@@ -71,8 +71,8 @@ export default {
       state.timer = null
     },
     resetTimer(state) {
-      state.totalTime = state.baseTime;
       clearInterval(state.timer);
+      state.totalTime = state.baseTime;
       state.timer = null;
     },
     setConfSubject(state, changedSubject) {

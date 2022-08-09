@@ -1,28 +1,40 @@
 <template>
   <div class="icon-box">
     <button @click="changeMic"><i class='bx bxs-microphone-off mic'></i></button>
+
     <button @click="changeVideo"><i class='bx bxs-video-off video'></i></button>
+
     <button @click="shareScreen"><i class='bx bx-window-open'></i></button>
+
     <button><i class='bx bx-radio-circle-marked'></i></button>
+
     <button><i class='bx bxs-smile'></i></button>
+
     <button v-if="role"><i class='bx bx-dots-vertical-rounded'></i></button>
+
     <button><i class='bx bx-link-alt' ></i></button>
+
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickBackToPreTurn"
     :class="ideaMode[(currentTurn+5)%6]"><i class='bx bx-chevron-left'></i></button>
+
     <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickPassTurn"
     :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
-    <button class="pass-btn" v-if="isConferencing" :class="hatColor"
+
+    <button class="pass-btn" v-if="isConferencing && ideaMode[currentTurn] === hatColor" :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
+
     <button class="end-btn" @click="startConference()" 
     v-if="!isConferencing && role">
       <span>회의 시작</span>
     </button>
+
     <button class="end-btn" @click="endConference()" 
     v-if="hatColor == 'blue-hat' && isConferencing">
       <span>회의 종료</span>
     </button>
+
     <button @click="outToMain()"><i class='bx bxs-x-circle'></i></button>
   </div>
 </template>
@@ -91,7 +103,7 @@ export default {
       })
     },
 	},
-  mounted() {
+  created() {
     this.session.on('signal:back-to-pre-turn', () => {
       this.backToPreTurn()
     })
