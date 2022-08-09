@@ -67,8 +67,8 @@ import { mapActions, mapGetters } from 'vuex'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -125,39 +125,19 @@ export default {
 			// --- Get an OpenVidu object ---
 			this.OV = new OpenVidu();
 
-      this.screenOV = new OpenVidu()
-
 			// --- Init a session ---
 			this.session = this.OV.initSession();
       
       this.setSession(this.session)
 
-      this.screenSession = this.screenOV.initSession()
 			// --- Specify the actions when events take place in the session ---
-
-      this.screenSession.on('streamCreated', ({stream}) => {
-        if (stream.typeOfVideo === 'SCREEN') {
-          const screen = this.screenSession.subscribe(stream);
-          this.screenSub = screen
-        }
-			});
-
-      this.screenSession.on('streamDestroyed', () => {
-				this.screenSub = undefined
-			});
-
-      this.getToken(this.mySessionId).then(token => {
-				this.screenSession.connect(token)
-					.then(() => {
-
-					})
-					.catch(error => {
-						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
-			});
 
 			// On every new Stream received...
 			this.session.on('streamCreated', ({ stream }) => {
+        if (stream.typeOfVideo === 'SCREEN') {
+          const screen = this.session.subscribe(stream)
+          this.screenSub = screen
+        }
         if (stream.typeOfVideo === 'CAMERA') {
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
@@ -171,10 +151,15 @@ export default {
 
 			// On every Stream destroyed...
 			this.session.on('streamDestroyed', ({ stream }) => {
-				const index = this.subscribers.indexOf(stream.streamManager, 0);
-				if (index >= 0) {
-					this.subscribers.splice(index, 1);
-				}
+        if (stream.typeOfVideo === 'SCREEN') {
+          this.screenSub = undefined
+        }
+				if (stream.typeOfVideo === 'CAMERA') {
+          const index = this.subscribers.indexOf(stream.streamManager, 0);
+          if (index >= 0) {
+            this.subscribers.splice(index, 1);
+          }
+        }
 			});
 
 			// On every asynchronous exception...
@@ -320,6 +305,8 @@ export default {
     },
     
     shareScreen() {
+      this.screenOV = new OpenVidu()
+      this.screenSession = this.screenOV.initSession()
 
       this.getToken(this.mySessionId).then(token => {
 				this.screenSession.connect(token)
@@ -327,29 +314,24 @@ export default {
 
 						// --- Get your own camera stream with the desired properties ---
 
-            let screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
+            this.screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
-
-            screenPublisher.once('accessAllowed', () => {
-              screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+            this.screenPublisher.once('accessAllowed', () => {
+              this.screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                this.screenSession.unpublish(this.screenPublisher)
                 this.screenSession.disconnect()
                 this.screenPublisher = undefined
                 this.screenSub = undefined
+                this.screenOV = undefined
               })
             })
-						this.screenPublisher = screenPublisher
             this.screenSession.publish(this.screenPublisher)
 
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
-			});
-      // const OV = new OpenVidu()
-      // const screenPublisher = OV.initPublisher(undefined, { videoSource: 'screen'})
-      // this.screenPublisher = screenPublisher
-      // this.session.publish(this.screenPublisher)
-    
+			});    
     },
 
     seeScreenShare() {
