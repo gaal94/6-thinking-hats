@@ -1,5 +1,6 @@
 <template>
-  <div class="name-box"
+  <!-- 6hats 모드 -->
+  <div v-if="hatMode === 'sixhats'" class="name-box"
   :class="{ 'red-hat-back' : userInfo.hatColor === 'red-hat',
             'yellow-hat-back' : userInfo.hatColor === 'yellow-hat',
             'green-hat-back' : userInfo.hatColor === 'green-hat',
@@ -13,6 +14,8 @@
       <div class="cnt-hat"
             :class="userInfo.hatColor"
             data-bs-toggle="dropdown" aria-expanded="false">
+        <i v-if="userInfo.hatColor === 'random-hat'" class='bx bx-question-mark'></i>
+        <i v-else-if="userInfo.hatColor === 'spectator'" class='bx bx-show'></i>
       </div>
       <ul class="select dropdown-menu" role="menu">
         <li @click="changeHatColor('red-hat')" class="status red-hat"></li>
@@ -21,8 +24,35 @@
         <li @click="changeHatColor('blue-hat')" class="status blue-hat"></li>
         <li @click="changeHatColor('white-hat')" class="status white-hat"></li>
         <li @click="changeHatColor('black-hat')" class="status black-hat"></li>
-        <li @click="changeHatColor('random-hat')" class="status random-hat"></li>
-        <li @click="changeHatColor('spectator')" class="status spectator"></li>
+        <li @click="changeHatColor('random-hat')" class="status random-hat">
+          <i class='bx bx-question-mark'></i>
+        </li>
+        <li @click="changeHatColor('spectator')" class="status spectator">
+          <i class='bx bx-show'></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 1hat 모드 -->
+  <div v-else-if="hatMode === 'onehat'" class="name-box"
+  :class="{ 'blue-hat-back' : userInfo.hatColor === 'blue-hat',
+            'random-hat-back' : userInfo.hatColor !== 'spectator' && userInfo.hatColor !== 'blue-hat',
+            'spectator-back' : userInfo.hatColor === 'spectator', }">
+    <span class="user-name">이름</span>
+    <div class="cnt-status dropdown">
+      <div class="cnt-hat"
+            :class="{'random-hat': userInfo.hatColor !== 'blue-hat', 'blue-hat': userInfo.hatColor === 'blue-hat'}"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        <i v-if="userInfo.hatColor === 'spectator'" class='bx bx-show'></i>
+      </div>
+      <ul class="select dropdown-menu" role="menu">
+        <li @click="changeHatColor('blue-hat')" class="status blue-hat"></li>
+        <li @click="changeHatColor('random-hat')" class="status random-hat">
+        </li>
+        <li @click="changeHatColor('spectator')" class="status spectator">
+          <i class='bx bx-show'></i>
+        </li>
       </ul>
     </div>
   </div>
@@ -42,7 +72,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session', 'users',]),
+    ...mapGetters(['session', 'users', 'hatMode',]),
 	},
 	methods: {
     changeHatColor(targetHat) {
@@ -54,8 +84,9 @@ export default {
       });
 
       // 바꾸려는 모자에 3명까지만 넣음
-      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && countHat < 3) || 
-      (targetHat === 'random-hat' || targetHat === 'spectator')) {
+      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && targetHat !== 'blue-hat' && countHat < 3) || 
+      (targetHat === 'random-hat' || targetHat === 'spectator') || 
+      (targetHat === 'blue-hat' && countHat === 0)) {
         const sending = {user: this.userInfo, changedHat: targetHat}
         const jsonData = JSON.stringify(sending)
         this.session.signal({
@@ -100,7 +131,14 @@ ul li:hover {
   margin: 0, 4px;
   width: 20px;
   height: 20px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cnt-hat .bx {
+  color: white;
+  font-size: 12px;
 }
 
 .cnt-hat:hover {
@@ -161,10 +199,21 @@ ul li:hover {
 
 .random-hat {
  background-color: #585858;
+ display: flex;
+ justify-content: center;
+ align-items: center;
 }
 
 .spectator {
   background-color: #585858;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.random-hat .bx, .spectator .bx {
+  font-size: 12px;
+  color: white;
 }
 
 .red-hat-back {

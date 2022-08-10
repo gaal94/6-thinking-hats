@@ -1,6 +1,6 @@
 <template>
   <div class="speech-order-box">
-    <div v-for="(hat, idx) in ideaMode" :key="`hat-order-${idx}`"
+    <div v-for="(hat, idx) in speechOrder" :key="`hat-order-${idx}`"
     class="order" 
     :class="{ 'cnt-order' : idx === currentTurn,
     'red-hat' : hat === 'red-hat',
@@ -24,7 +24,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['ideaMode', 'currentTurn',]),
+    ...mapGetters(['speechOrder', 'currentTurn',]),
 	},
 	methods: {
 	},

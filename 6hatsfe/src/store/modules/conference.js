@@ -1,6 +1,8 @@
 export default {
   state: {
-    ideaMode: ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat'],
+    ideaMode: 'ideaSuggest',
+    hatMode: 'sixhats',
+    speechOrder: ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat'],
     currentTurn: 0,
     baseTime: 60,
     totalTime: 60,
@@ -14,6 +16,8 @@ export default {
   getters: {
     session: state => state.session,
     ideaMode: state => state.ideaMode,
+    speechOrder: state => state.speechOrder,
+    hatMode: state => state.hatMode,
     currentTurn: state => state.currentTurn,
     baseTime: state => state.baseTime,
     minutes(state) {
@@ -35,12 +39,16 @@ export default {
     setSession(state, session) {
       state.session = session
     },
-    changeIdeaMode(state, whichMode) {
+    setIdeaMode(state, whichMode) {
+      state.ideaMode = whichMode
       if (whichMode === 'ideaSuggest') {
-        state.ideaMode = ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat']
+        state.speechOrder = ['white-hat', 'green-hat', 'yellow-hat', 'black-hat', 'red-hat', 'blue-hat']
       } else {
-        state.ideaMode = ['white-hat', 'red-hat', 'yellow-hat', 'black-hat', 'green-hat', 'blue-hat']
+        state.speechOrder = ['white-hat', 'red-hat', 'yellow-hat', 'black-hat', 'green-hat', 'blue-hat']
       }
+    },
+    setHatMode(state, whichMode) {
+      state.hatMode = whichMode
     },
     passTurn(state) {
       state.currentTurn = (state.currentTurn + 1) % 6
@@ -94,7 +102,7 @@ export default {
     setMyHat(state, hatColor) {
       state.myHat = hatColor
     },
-    setUsers(state) {
+    clearUsers(state) {
       state.users = []
     },
     setPublisher(state, value) {
@@ -106,7 +114,10 @@ export default {
       commit('setSession', session)
     },
     changeIdeaMode({commit}, whichMode) {
-      commit('changeIdeaMode', whichMode)
+      commit('setIdeaMode', whichMode)
+    },
+    changeHatMode({commit}, whichMode) {
+      commit('setHatMode', whichMode)
     },
     passTurn({commit}) {
       commit('passTurn')
@@ -145,8 +156,8 @@ export default {
     setMyHat({commit}, hatColor) {
       commit('setMyHat', hatColor)
     },
-    setUsers({commit}) {
-      commit('setUsers')
+    clearUsers({commit}) {
+      commit('clearUsers')
     },
     setPublisher({commit}, value) {
       commit('setPublisher', value)

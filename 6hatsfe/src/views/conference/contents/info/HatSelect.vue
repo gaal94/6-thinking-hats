@@ -24,9 +24,18 @@
     <img 
     @click="chooseHat('spectator')" 
     v-else-if="hat === 'spectator'" src="@/assets/spectator.png" alt="" class="hat-img">
-    <div class="user-list" :class="hat">
+    
+    <!-- 6hats 모드 -->
+    <div v-if="hatMode === 'sixhats'" class="user-list" :class="hat">
       <div v-for="(user, idx) in users" :key="`user-${idx}`">
         <user-list-item v-if="user.hatColor === hat" :userInfo=user></user-list-item>
+      </div>
+    </div>
+
+    <!-- 1hat 모드 -->
+    <div v-else-if="hatMode === 'onehat'" class="user-list" :class="hat">
+      <div v-for="(user, idx) in users" :key="`user-${idx}`">
+        <user-list-item v-if="user.hatColor === hat || (hat === 'random-hat' && user.hatColor !== 'spectator' && user.hatColor !== 'blue-hat')" :userInfo=user></user-list-item>
       </div>
     </div>
   </div>
@@ -49,7 +58,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['users', 'publisher', 'myHat', 'session',])
+    ...mapGetters(['users', 'publisher', 'myHat', 'session', 'hatMode',])
 	},
 	methods: {
     chooseHat(targetHat) {
@@ -61,8 +70,9 @@ export default {
       });
 
       // 바꾸려는 모자에 3명까지만 넣음
-      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && countHat < 3) || 
-      (targetHat === 'random-hat' || targetHat === 'spectator')) {
+      if ((targetHat !== 'random-hat' && targetHat !== 'spectator' && targetHat !== 'blue-hat' && countHat < 3) || 
+      (targetHat === 'random-hat' || targetHat === 'spectator') || 
+      (targetHat === 'blue-hat' && countHat === 0)) {
         const userInfo = { hatColor: this.myHat, connectionId: this.publisher.stream.session.connection.connectionId}
         const sending = {user: userInfo, changedHat: targetHat}
         const jsonData = JSON.stringify(sending)

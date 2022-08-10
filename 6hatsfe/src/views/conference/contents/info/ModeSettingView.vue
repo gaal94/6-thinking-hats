@@ -3,18 +3,20 @@
     <p class="mode-setting-word">회의 모드 설정</p>
     <div class="hat-type-setting">
       <p class="hat-type-setting-word">모자 종류</p>
-      <input type="radio" name="hat-type" id="sixhat"><label for="sixhat"></label>
-      <input type="radio" name="hat-type" id="onehat"><label for="onehat"></label>
+      <input type="radio" name="hat-type" id="sixhats" :checked="hatMode === 'sixhats'"
+      @click="clickChangeHatMode('sixhats')">
+      <label for="sixhats">6hats</label>
+      <input type="radio" name="hat-type" id="onehat" :checked="hatMode === 'onehat'"
+      @click="clickChangeHatMode('onehat')">
+      <label for="onehat">1hat</label>
     </div>
     <div class="idea-type-setting">
       <p class="idea-type-setting-word">회의 모드</p>
       <input type="radio" name="idea-type" id="proposal"
-      value="ideaSuggest"
-      @click="clickChangeIdeaMode('ideaSuggest')" checked>
+      @click="clickChangeIdeaMode('ideaSuggest')" :checked="ideaMode === 'ideaSuggest'">
       <label for="proposal">아이디어 제안</label>
       <input type="radio" name="idea-type" id="verification"
-      value="ideaJudge"
-      @click="clickChangeIdeaMode('ideaJudge')">
+      @click="clickChangeIdeaMode('ideaJudge')" :checked="ideaMode === 'ideaJudge'">
       <label for="verification">아이디어 검증</label>
     </div>
     <div class="timer-setting">
@@ -43,14 +45,20 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session']),
+    ...mapGetters(['session', 'ideaMode', 'hatMode',]),
 	},
 	methods: {
-    ...mapActions(['changeIdeaMode', 'setTime']),
+    ...mapActions(['changeIdeaMode', 'setTime', 'changeHatMode', 'changeSpeechOrder']),
     clickChangeIdeaMode(selected) {
       this.session.signal({
         data: selected,
         type: 'change-idea-mode'
+      })
+    },
+    clickChangeHatMode(selected) {
+      this.session.signal({
+        data: selected,
+        type: 'change-hat-mode'
       })
     },
     timeSettingChange(timeSet) {
@@ -63,9 +71,15 @@ export default {
   created() {
     this.session.on('signal:change-idea-mode', (event) => {
       this.changeIdeaMode(event.data)
+      // this.changeSpeechOrder(event.data)
     })
+
     this.session.on('signal:time-setting', (event) => {
       this.setTime(Number(event.data))
+    })
+
+    this.session.on('signal:change-hat-mode', (event) => {
+      this.changeHatMode(event.data)
     })
   }
 }

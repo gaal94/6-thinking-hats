@@ -109,7 +109,7 @@ export default {
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
-                    'changeUserHatColor', 'setMyHat', 'setPublisher',]),
+                    'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',]),
     changeConf() {
       this.session.signal({
         to: [],
@@ -176,6 +176,13 @@ export default {
         this.isConferencing = !this.isConferencing
       })
 
+      this.session.on('connectionDestroyed', ({connection}) => {
+        const idx = this.users.findIndex(userInfo => {
+          userInfo.connectionId === connection.connectionId
+        })
+        this.users.splice(idx, 1)
+      })
+
 			// --- Connect to the session with a valid user token ---
 
 			// 'getToken' method is simulating what your server-side should do.
@@ -224,6 +231,7 @@ export default {
 			this.subscribers = [];
 			this.OV = undefined;
       this.screenSession = undefined
+      this.clearUsers()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},

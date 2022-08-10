@@ -1,7 +1,7 @@
 <template>
   <div class="user-setting-box">
     <p class="user-setting-word">회의 참가자 설정</p>
-    <div class="hat-setting-box">
+    <div v-if="hatMode === 'sixhats'" class="sixhats-setting-box">
       <div class="hat-setting-row">
         <hat-select
         :hat="'red-hat'"></hat-select>
@@ -27,11 +27,22 @@
         :hat="'spectator'"></hat-select>
       </div>
     </div>
+    <div v-else-if="hatMode === 'onehat'" class="onehat-setting-box">
+      <hat-select
+      :hat="'blue-hat'"></hat-select>
+      <div class="hat-setting-row">
+        <hat-select
+        :hat="'random-hat'"></hat-select>
+        <hat-select
+        :hat="'spectator'"></hat-select>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import HatSelect from '@/views/conference/contents/info/HatSelect.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'UserSettingView',
@@ -43,6 +54,7 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['hatMode',]),
 	},
 	methods: {
 	},
@@ -54,7 +66,7 @@ export default {
   box-sizing: border-box;
 }
 
-.user-setting-box, .hat-setting-box {
+.user-setting-box, .sixhats-setting-box, .onehat-setting-box {
   display: flex;
   flex-direction: column;
   justify-content: center;
