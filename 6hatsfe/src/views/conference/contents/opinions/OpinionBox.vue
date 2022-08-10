@@ -37,13 +37,11 @@
     <div class="opinion-content-box">
       <div class="opinion-contents">
         <opinion-item v-for="(op, idx) in opinions" :key="`message-${idx}`"
-        :opinion="op"
-        :hat-color="hatColor"
-        @deleteMessage="deleteMessage(idx)"></opinion-item>
+        :opinion="op" :opinion-index="idx"></opinion-item>
       </div>
-      <div class="input-box">
+      <div class="input-box" v-if="hatColor === speechOrder[currentTurn] || hatColor === 'blue-hat'">
         <input type="text" class="input-box-content" v-model="opinion">
-        <i class='bx bxs-send' @click="sendMessage(opinion)"></i>
+        <i class='bx bxs-send' @click="sendOpinion(opinion)"></i>
       </div>
     </div>
   </div>
@@ -63,13 +61,13 @@ export default {
   },
   data: () => {
 		return {
-      opinions: [],
       opinion: '',
       subUpdating: false,
 		}
 	},
 	computed: {
-    ...mapGetters(['minutes', 'seconds', 'confSubject', 'session']),
+    ...mapGetters(['minutes', 'seconds', 'confSubject', 'session', 'opinions',
+                    'publisher', 'myName', 'speechOrder', 'currentTurn',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
@@ -107,15 +105,20 @@ export default {
         type: 'reset-timer'
       })
     },
-    sendMessage(op) {
+    sendOpinion(op) {
       if (op) {
-        this.opinions.push(op)
+        const opinionData = { userName: this.myName, content: this.opinion, 
+                              connectionId: this.publisher.stream.session.connection.connectionId,
+                              hatColor: this.hatColor}
+        const jsonOpinionData = JSON.stringify(opinionData)
+        this.session.signal({
+          data: jsonOpinionData,
+          type: 'send-opinion'
+        })
+
         this.opinion = ''
       }
     },
-    deleteMessage(index) {
-      this.opinions.splice(index, 1)
-    }
 	},
   created() {
   this.session.on('signal:update-subject', event => {

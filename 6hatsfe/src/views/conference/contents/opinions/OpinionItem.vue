@@ -1,53 +1,60 @@
 <template>
-  <div class="opinion-item-box" :class="hatColor">
-    <img v-if="hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="opinion-item-hatface">
-    <img v-else-if="hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="opinion-item-hatface">
-    <img v-else-if="hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="opinion-item-hatface">
-    <img v-else-if="hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="opinion-item-hatface">
-    <img v-else-if="hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="opinion-item-hatface">
-    <img v-else-if="hatColor === 'white-hat'" src="@/assets/whitehat_border_circle.png" alt="" class="opinion-item-hatface">
+  <div class="opinion-item-box" :class="opinion.hatColor">
+    <img v-if="opinion.hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="opinion.hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="opinion.hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="opinion.hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="opinion.hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="opinion-item-hatface">
+    <img v-else-if="opinion.hatColor === 'white-hat'" src="@/assets/whitehat_border_circle.png" alt="" class="opinion-item-hatface">
     <div class="user-info">
-      <p class="username">권수린</p>
+      <p class="username">{{ opinion.userName }}</p>
       <p class="hatname">
-        <span v-if="hatColor === 'red-hat'">빨간모자</span>
-        <span v-else-if="hatColor === 'yellow-hat'">노란모자</span>
-        <span v-else-if="hatColor === 'green-hat'">초록모자</span>
-        <span v-else-if="hatColor === 'blue-hat'">파란모자</span>
-        <span v-else-if="hatColor === 'white-hat'">하얀모자</span>
-        <span v-else-if="hatColor === 'black-hat'">검은모자</span>
+        <span v-if="opinion.hatColor === 'red-hat'">빨간모자</span>
+        <span v-else-if="opinion.hatColor === 'yellow-hat'">노란모자</span>
+        <span v-else-if="opinion.hatColor === 'green-hat'">초록모자</span>
+        <span v-else-if="opinion.hatColor === 'blue-hat'">파란모자</span>
+        <span v-else-if="opinion.hatColor === 'white-hat'">하얀모자</span>
+        <span v-else-if="opinion.hatColor === 'black-hat'">검은모자</span>
       </p>
     </div>
-    <span class="opinion-word">{{ opinion }}</span>
-    <i class='bx bx-x delete-icon' v-if="hatColor === 'blue-hat'"
-    @click="deleteMessage"></i>
+    <span class="opinion-word">{{ opinion.content }}</span>
+    <i class='bx bx-x delete-icon' v-if="myHat === 'blue-hat'"
+    @click="clickDeleteOpinion(opinionIndex)"></i>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'OpinionItem',
   components: {
 	},
   props: {
-    opinion: String,
-    hatColor: String,
+    opinion: Object,
+    opinionIndex: Number,
   },
 	data: () => {
 		return {
 		}
 	},
 	computed: {
+    ...mapGetters(['myHat', 'session',]),
 	},
 	methods: {
-    deleteMessage() {
-      this.$emit('deleteMessage')
-    }
-	},
+    clickDeleteOpinion(opIdx) {
+      if (opIdx > -1) {
+        this.session.signal({
+          data: String(opIdx),
+          type: 'delete-opinion',
+        })
+      }
+    },
+  }
 }
 </script>
 
 <style scoped>
-  * {
+* {
   box-sizing: border-box;
 }
 

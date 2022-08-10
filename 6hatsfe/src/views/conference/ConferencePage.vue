@@ -1,5 +1,6 @@
 <template>
   <div class="conference-page">
+    <!-- 화면공유 -->
     <button @click="seeScreenShare" class="screen-share-btn"
     v-if="!seeScreen && !screenPublisher">
       <i class="screen-share-btn-icon bx bxs-caret-down-circle"></i>
@@ -9,6 +10,7 @@
     :screen-sub="screenSub"></screen-share>
 
     <div class="conference-body">
+      <!-- 왼쪽 캠화면 + 모자 키워드 -->
       <div class="left-side">
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
@@ -18,10 +20,12 @@
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
 
+      <!-- 셋팅할 때 -->
       <div class="join-screen" v-if="!isConferencing">
         <info-box></info-box>
       </div>
 
+      <!-- 회의 시작 후 -->
       <div class="in-conference-screen" v-else-if="isConferencing">
         <role-explain :hat-color="myHat"></role-explain>
         <opinion-box :hat-color="myHat"
@@ -29,6 +33,7 @@
         :session="session"></opinion-box>
       </div>
 
+      <!-- 오른쪽 캠화면 + 발언 순서 -->
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
@@ -37,6 +42,7 @@
       </div>  
     </div>
 
+    <!-- 아이콘바 -->
     <icon-bar 
     :isConferencing="isConferencing"
     :hat-color="myHat"
@@ -114,7 +120,7 @@ export default {
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
-                    'setMyName', 'removeUser',]),
+                    'setMyName', 'removeUser', 'addOpinion', 'removeOpinion',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -167,8 +173,6 @@ export default {
           const userInfo = { hatColor: 'spectator', 
                             connectionId: subscriber.stream.connection.connectionId,
                             userName: name}
-          console.log('들어올 때');
-          console.log(`${name} / ${subscriber.stream.connection.connectionId}`);
           this.addUser(userInfo)
         }
 			});
@@ -208,7 +212,7 @@ export default {
             return true
           }
         })
-        
+
         this.removeUser(idx)
       })
 
@@ -239,8 +243,6 @@ export default {
             const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
                               userName: this.myUserName }
             this.addUser(userInfo)
-            console.log('내꺼');
-            console.log(`${this.myUserName} / ${userInfo.connectionId}`);
 						// --- Publish your stream ---
 
 						this.session.publish(this.publisher);
@@ -391,6 +393,15 @@ export default {
       if (this.publisher.stream.session.connection.connectionId === data.user.connectionId) {
         this.setMyHat(data.changedHat)
       }
+    })
+
+    this.session.on('signal:send-opinion', ({data}) => {
+      const opinionData = JSON.parse(data)
+      this.addOpinion(opinionData)
+    })
+
+    this.session.on('signal:delete-opinion', ({data}) => {
+      this.removeOpinion(Number(data))
     })
   }
 }

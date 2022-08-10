@@ -121,6 +121,9 @@ export default {
     addOpinion(state, opInfo) {
       state.opinions.push(opInfo)
     },
+    removeOpinion(state, opIdx) {
+      state.opinions.splice(opIdx, 1)
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -184,6 +187,9 @@ export default {
     addOpinion({commit}, opInfo) {
       commit('addOpinion', opInfo)
     },
+    removeOpinion({commit}, opIdx) {
+      commit('removeOpinion', opIdx)
+    }
   },
   modules: {
   }
