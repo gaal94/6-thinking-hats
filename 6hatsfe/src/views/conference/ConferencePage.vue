@@ -113,7 +113,8 @@ export default {
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
-                    'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',]),
+                    'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
+                    'setMyName', ]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -162,8 +163,10 @@ export default {
           subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
 
+          const name = JSON.parse(subscriber.stream.connection.data).clientData
           const userInfo = { hatColor: 'spectator', 
-                            connectionId: subscriber.stream.connection.connectionId }
+                            connectionId: subscriber.stream.connection.connectionId,
+                            userName: name}
           this.addUser(userInfo)
         }
 			});
@@ -211,7 +214,8 @@ export default {
 			this.getToken(this.mySessionId).then(token => {
 				this.session.connect(token, { clientData: this.myUserName })
 					.then(() => {
-
+            
+            this.setMyName(this.myUserName)
 						// --- Get your own camera stream with the desired properties ---
 
 						let publisher = this.OV.initPublisher(undefined, {
@@ -227,7 +231,8 @@ export default {
 
 						this.mainStreamManager = publisher;
 						this.setPublisher(publisher)
-            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId }
+            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
+                              userName: this.myUserName }
             this.addUser(userInfo)
 						// --- Publish your stream ---
 

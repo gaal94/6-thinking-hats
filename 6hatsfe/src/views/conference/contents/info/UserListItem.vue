@@ -9,7 +9,7 @@
             'white-hat-back' : userInfo.hatColor === 'white-hat',
             'random-hat-back' : userInfo.hatColor === 'random-hat',
             'spectator-back' : userInfo.hatColor === 'spectator', }">
-    <span class="user-name">이름</span>
+    <span class="user-name">{{ userInfo.userName }}</span>
     <div class="cnt-status dropdown">
       <div class="cnt-hat"
             :class="userInfo.hatColor"
@@ -72,7 +72,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session', 'users', 'hatMode',]),
+    ...mapGetters(['session', 'users', 'hatMode', 'myName',]),
 	},
 	methods: {
     changeHatColor(targetHat) {

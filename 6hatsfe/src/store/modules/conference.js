@@ -12,6 +12,7 @@ export default {
     myHat: 'spectator',
     users: [],
     publisher: undefined,
+    myName: '',
   },
   getters: {
     session: state => state.session,
@@ -34,6 +35,7 @@ export default {
     users: state => state.users,
     myHat: state => state.myHat,
     publisher: state => state.publisher,
+    myName: state => state.myName,
   },
   mutations: {
     setSession(state, session) {
@@ -108,6 +110,9 @@ export default {
     setPublisher(state, value) {
       state.publisher = value
     },
+    setMyName(state, name) {
+      state.myName = name
+    }
   },
   actions: {
     setSession({commit}, session) {
@@ -162,6 +167,9 @@ export default {
     setPublisher({commit}, value) {
       commit('setPublisher', value)
     },
+    setMyName({commit}, name) {
+      commit('setMyName', name)
+    }
   },
   modules: {
   }
