@@ -195,17 +195,6 @@ export default {
 				console.warn(exception);
 			});
 
-      // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
-      this.session.on('signal:changeConf', () => {
-        this.resetTurn()
-        if (this.isConferencing) {
-          this.resetTimer()
-        } else {
-          this.startTimer()
-        }
-        this.isConferencing = !this.isConferencing
-      })
-
       this.session.on('connectionDestroyed', ({connection}) => {
         let idx = this.users.findIndex(userInfo => {
           if (userInfo.connectionId === connection.connectionId) {
@@ -387,6 +376,18 @@ export default {
   created() {
     this.joinSession()
 
+    // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
+    this.session.on('signal:changeConf', () => {
+      this.resetTurn()
+      if (this.isConferencing) {
+        this.resetTimer()
+      } else {
+        this.startTimer()
+      }
+      this.isConferencing = !this.isConferencing
+    })
+
+    // 유저들의 모자 색을 바꿀 때 실행됨
     this.session.on('signal:change-hat-color', event => {
       const data = JSON.parse(event.data)
       this.changeUserHatColor(data)
@@ -395,11 +396,13 @@ export default {
       }
     })
 
+    // 의견창구에 의견을 보낼 때 실행됨
     this.session.on('signal:send-opinion', ({data}) => {
       const opinionData = JSON.parse(data)
       this.addOpinion(opinionData)
     })
 
+    // 의견창구에서 의견을 지울 때 실행됨
     this.session.on('signal:delete-opinion', ({data}) => {
       this.removeOpinion(Number(data))
     })

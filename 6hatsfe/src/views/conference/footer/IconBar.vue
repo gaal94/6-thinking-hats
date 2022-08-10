@@ -16,11 +16,11 @@
 
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickBackToPreTurn"
-    :class="ideaMode[(currentTurn+5)%6]"><i class='bx bx-chevron-left'></i></button>
+    :class="speechOrder[(currentTurn + 5) % 6]"><i class='bx bx-chevron-left'></i></button>
 
     <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickPassTurn"
-    :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
+    :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
     <button class="pass-btn" v-if="isConferencing && ideaMode[currentTurn] === hatColor" :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
@@ -56,7 +56,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['ideaMode', 'currentTurn', 'session']),
+    ...mapGetters(['ideaMode', 'currentTurn', 'session', 'speechOrder', 'currentTurn', ]),
 	},
 	methods: {
     ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',]),
@@ -104,9 +104,12 @@ export default {
     },
 	},
   created() {
+    // 파란모자가 차례를 이전으로 돌릴 때
     this.session.on('signal:back-to-pre-turn', () => {
       this.backToPreTurn()
     })
+
+    // 파란모자가 차례를 이후로 넘길 때
     this.session.on('signal:pass-turn', () => {
       this.passTurn()
     })

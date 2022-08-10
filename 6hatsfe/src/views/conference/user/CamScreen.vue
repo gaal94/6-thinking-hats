@@ -19,7 +19,7 @@
   <!-- 1hat 모드 -->
   <div v-else-if="hatMode === 'onehat'" class="cam-box">
     <img v-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
-    <img v-else-if="hat !== 'blue-hat' && hat !== 'spectator'" src="@/assets/randomhat.png" alt="" class="hat-img">
+    <img v-else-if="hat !== 'blue-hat' && hat !== 'spectator'" :src="require(`@/assets/${speechOrder[currentTurn].replace('-', '')}.png`)" alt="" class="hat-img">
     <div class="cam-screen-box">
 			<div v-if="streamManager">
       <ov-video class="cam-screen" :stream-manager="streamManager"/>
@@ -47,7 +47,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['users', 'publisher', 'myHat', 'session', 'hatMode',]),
+    ...mapGetters(['users', 'publisher', 'myHat', 'session', 'hatMode', 'speechOrder', 'currentTurn',]),
 		clientData () {
 			const { clientData } = this.getConnectionData();
 			return clientData;
