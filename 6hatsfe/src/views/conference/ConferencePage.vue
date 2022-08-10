@@ -48,6 +48,8 @@
     @changeVideo="changeVideo"
     @shareScreen="shareScreen"
     class="icon-bar"></icon-bar>
+
+    <chat-modal ref="chatRef" @sendChat="sendChat"></chat-modal>
   </div>
 </template>
 
@@ -64,6 +66,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { mapActions, mapGetters } from 'vuex'
 // import UserVideo from './components/UserVideo';
+import ChatModal from '@/views/conference/modal/ChatModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -82,6 +85,7 @@ export default {
     SpeechOrder,
     CamScreen,
     ScreenShare,
+    ChatModal,
   },
   data: () => {
 		return {
@@ -110,6 +114,19 @@ export default {
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',]),
+    sendChat (chat) {
+      this.session.signal({
+        data: chat,
+        type: 'chat'
+      })
+      .then(() => {
+        console.log('Message successfully sent')
+        this.$refs.chatRef.clearChat()
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    },
     changeConf() {
       this.session.signal({
         to: [],
@@ -129,6 +146,10 @@ export default {
       this.setSession(this.session)
 
 			// --- Specify the actions when events take place in the session ---
+
+      this.session.on('signal:chat', (event) => {
+        this.$refs.chatRef.receiveChat(event)
+      })
 
 			// On every new Stream received...
 			this.session.on('streamCreated', ({ stream }) => {
