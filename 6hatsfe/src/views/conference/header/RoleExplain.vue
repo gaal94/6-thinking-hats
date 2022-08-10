@@ -1,5 +1,6 @@
 <template>
-  <div class="explain-box">
+  <!-- sixhats 모드, 파란모자 -->
+  <div v-if="(hatMode === 'sixhats' && hatColor !== 'spectator') || hatColor === 'blue-hat'" class="explain-box">
     <div class="explain-line">
       <div class="explain-word explain-1"
       :class="hatColor">
@@ -25,9 +26,38 @@
       </div>
     </div>
   </div>
+
+  <!-- onehat 모드, 관전자 -->
+  <div v-else-if="(hatMode === 'onehat' && hatColor !== 'blue-hat') || hatColor === 'spectator'" class="explain-box">
+    <div class="explain-line">
+      <div class="explain-word explain-1"
+      :class="speechOrder[currentTurn]">
+        <span>제가 생각한 아이디어는 ~ 입니다</span>
+      </div>
+      <div class="explain-word explain-2"
+      :class="speechOrder[currentTurn]">
+        <span>이런 걸 해보면 어떨까요?</span>
+      </div>
+      <div class="explain-word explain-3"
+      :class="speechOrder[currentTurn]">
+        <span>이 아이디어를 개선할 방안은 ~ 입니다</span>
+      </div>
+    </div>
+    <div class="explain-line">
+      <div class="explain-word explain-5"
+      :class="speechOrder[currentTurn]">
+        <span>이 아이디어를 개선할 방안은 ~ 입니다</span>
+      </div>
+      <div class="explain-word explain-4"
+      :class="speechOrder[currentTurn]">
+        <span>기존의 사고에서 벗어나 새로운 시각과 창의적인 아이디어 제시</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'RoleExplain',
   components: {
@@ -40,6 +70,7 @@ export default {
 		}
 	},
 	computed: {
+    ...mapGetters(['hatMode', 'speechOrder', 'currentTurn',]),
 	},
 	methods: {
 	},

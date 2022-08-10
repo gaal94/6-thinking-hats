@@ -39,7 +39,7 @@
   :class="{ 'blue-hat-back' : userInfo.hatColor === 'blue-hat',
             'random-hat-back' : userInfo.hatColor !== 'spectator' && userInfo.hatColor !== 'blue-hat',
             'spectator-back' : userInfo.hatColor === 'spectator', }">
-    <span class="user-name">이름</span>
+    <span class="user-name">{{ userInfo.userName }}</span>
     <div class="cnt-status dropdown">
       <div class="cnt-hat"
             :class="{'random-hat': userInfo.hatColor !== 'blue-hat', 'blue-hat': userInfo.hatColor === 'blue-hat'}"
