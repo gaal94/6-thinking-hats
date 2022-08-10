@@ -13,6 +13,7 @@ export default {
     users: [],
     publisher: undefined,
     myName: '',
+    opinions: [],
   },
   getters: {
     session: state => state.session,
@@ -36,6 +37,7 @@ export default {
     myHat: state => state.myHat,
     publisher: state => state.publisher,
     myName: state => state.myName,
+    opinions: state => state.opinions,
   },
   mutations: {
     setSession(state, session) {
@@ -97,6 +99,9 @@ export default {
     addUser(state, user) {
       state.users.push(user)
     },
+    removeUser(state, userIdx) {
+      state.users.splice(userIdx, 1)
+    },
     changeUserHatColor(state, { user, changedHat }) {
       const idx = state.users.findIndex(userInfo => userInfo.connectionId === user.connectionId)
       state.users[idx].hatColor = changedHat
@@ -112,7 +117,10 @@ export default {
     },
     setMyName(state, name) {
       state.myName = name
-    }
+    },
+    addOpinion(state, opInfo) {
+      state.opinions.push(opInfo)
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -155,6 +163,9 @@ export default {
     addUser({commit}, user) {
       commit('addUser', user)
     },
+    removeUser({commit}, userIdx) {
+      commit('removeUser', userIdx)
+    },
     changeUserHatColor({commit}, data) {
       commit('changeUserHatColor', data)
     },
@@ -169,7 +180,10 @@ export default {
     },
     setMyName({commit}, name) {
       commit('setMyName', name)
-    }
+    },
+    addOpinion({commit}, opInfo) {
+      commit('addOpinion', opInfo)
+    },
   },
   modules: {
   }

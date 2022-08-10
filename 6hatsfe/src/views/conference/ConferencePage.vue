@@ -114,7 +114,7 @@ export default {
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
-                    'setMyName', ]),
+                    'setMyName', 'removeUser',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -167,6 +167,8 @@ export default {
           const userInfo = { hatColor: 'spectator', 
                             connectionId: subscriber.stream.connection.connectionId,
                             userName: name}
+          console.log('들어올 때');
+          console.log(`${name} / ${subscriber.stream.connection.connectionId}`);
           this.addUser(userInfo)
         }
 			});
@@ -201,10 +203,13 @@ export default {
       })
 
       this.session.on('connectionDestroyed', ({connection}) => {
-        const idx = this.users.findIndex(userInfo => {
-          userInfo.connectionId === connection.connectionId
+        let idx = this.users.findIndex(userInfo => {
+          if (userInfo.connectionId === connection.connectionId) {
+            return true
+          }
         })
-        this.users.splice(idx, 1)
+        
+        this.removeUser(idx)
       })
 
 			// --- Connect to the session with a valid user token ---
@@ -234,6 +239,8 @@ export default {
             const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
                               userName: this.myUserName }
             this.addUser(userInfo)
+            console.log('내꺼');
+            console.log(`${this.myUserName} / ${userInfo.connectionId}`);
 						// --- Publish your stream ---
 
 						this.session.publish(this.publisher);
