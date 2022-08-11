@@ -303,8 +303,6 @@ export default {
   created() {
 		console.log(this.$route.params.sessionCode);
 		this.mySessionId = this.$route.params.sessionCode;
-
-		alert(this.mySessionId);
     this.joinSession()
   }
 }
