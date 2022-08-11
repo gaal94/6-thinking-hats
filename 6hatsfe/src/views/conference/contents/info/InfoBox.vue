@@ -30,5 +30,8 @@ export default {
   .info-box {
     display: flex;
     align-items: center;
+    background-color: #F6F6F6;
+    padding: 12px;
+    border-radius: 10px;
   }
 </style>
