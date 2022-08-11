@@ -1,46 +1,51 @@
 <template>
-  <ul v-if="!loginstatus">
-    <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/"></router-link></li>
-    <li><router-link to="/noticepage" class = "left">공지사항</router-link></li>
-    <li><router-link to="/explainpage" class = "left">설명</router-link></li>
-    <li><router-link to="/teampage" class = "left">팀소개</router-link></li>
-    <li><router-link to="/qnapage" class = "left">Q&A</router-link></li>
-    <li><router-link to="/signuppage" class = 'right'>회원가입</router-link></li>
-    <li><router-link to="/loginpage" class = "right">로그인</router-link></li>
-    <li><router-link to="/profilepage" class = "right">내정보</router-link></li>
+  <ul v-if="!token" class="navbarul">
+    <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/" class="navbarleft"></router-link></li>
+    <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
+    <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
+    <li><router-link to="/teampage" class="navbarleft">팀소개</router-link></li>
+    <li><router-link to="/qnapage" class="navbarleft">Q&A</router-link></li>
+    <li><router-link to="/signuppage" class="navbarright">회원가입</router-link></li>
+    <li><router-link to="/loginpage" class="navbarright">로그인</router-link></li>
   </ul>
-  <ul v-else>
+  <ul v-else class="navbarul">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/"></router-link></li>
-    <li><router-link to="/noticepage" class = "left">공지사항</router-link></li>
-    <li><router-link to="/explainpage" class = "left">설명</router-link></li>
-    <li><router-link to="/teampage" class = "left">팀소개</router-link></li>
-    <li><router-link to="/qnapage" class = "left">Q&A</router-link></li>
-    <li><button @click = "logout" class="navbtn">로그아웃</button></li>
+    <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
+    <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
+    <li><router-link to="/teampage" class="navbarleft">팀소개</router-link></li>
+    <li><router-link to="/qnapage" class="navbarleft">Q&A</router-link></li>
+    <li>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        {{name}}님
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li><div id="navbarprofilebox"><img src="@/assets/melong.jpg" id="navbarprofileimg"></div></li>
+          <li><router-link to="/profilepage" class = "dropdown-item">내정보</router-link></li>
+          <li><router-link to="/historypage" class = "dropdown-item">회의이력</router-link></li>
+          <li><button class="dropdown-item" @click = "logout">로그아웃</button></li>
+        </ul>
+      </div>
+    </li>
     <li><button @click = "createRoom" class="navbtn">방 생성</button></li>
-    <li><router-link to="/conferencepage" class = "right">방 생성</router-link></li>
-    <li><router-link to="/conferencepage" class = "right">방 참가</router-link></li>
-    <li>{{this.$store.state.name}}님 어서오세요</li>
+    <li><router-link to="/loginpage" class = "navbarright">방 생성</router-link></li>
+    <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
 </template>
 
 <script>
 import { mapGetters } from "vuex"
+
+
+
 export default {
   name : 'NavBar',
   methods: {
-    logincheck() {
-    },
     logout() {
-      this.$store.commit('ChangeName',null);
-      this.$store.commit('ChangeJob',null);
-      this.$store.commit('ChangeBirth',null);
-      this.$store.commit('ChangeEmail',null);
-      this.$store.commit('ChangeGender', null);
-      this.$store.commit('ChangeLoginstatus', false);
-      this.$store.commit('ChangeToken', null);
-      this.$store.commit('ChangeId', null);
       localStorage.clear('access-token');
       localStorage.clear('username');
+      window.location.reload();
+      this.$router.push('/')
     },
     createRoom() {
       const sessionCode = Math.random().toString(22).substring(2,22);
@@ -54,8 +59,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['loginstatus','name'])
-  }
+    ...mapGetters(['loginstatus','name','token'])
+  },
+
+
 }
 </script>
 
@@ -63,54 +70,62 @@ export default {
 #logo:hover{
   background-color: white;
 }
-img{
+#logo{
   width : 60px;
   height: 60px;
   float : left;
   margin : 5px;
 }
-.left {
-  padding: 14px 16px;
-  padding : 10px;
-  float : left;
+#dropdown-menu{
+  float: right;
 }
-.right{
-  padding: 14px 16px;
-  float : right;
-}
-ul {
+.navbarul {
   border-bottom: 1px solid black;
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   background-color: white;
   position: sticky;
   top: 0;
-  width: 100%;
-
+  height: 72px
 }
-.navbtn{
+.navbarleft {
+    color: black;
+    text-decoration: none;
+  padding: 14px 16px;
+  margin : 10px;
+  float : left;
+}
+.navbarright{
+    color: black;
+    text-decoration: none;
+  padding: 14px 16px;
+    margin : 10px;
   float : right;
-  background-color: white;
-  color: black;
-  border: 0px;
-  text-align: center;
-  margin : 13px;
-
-}
-li a {
-  display: block;
-  color: black;
-  text-align: center;
-  text-decoration: none;
-}
-li {
-  display: inline;
 }
 li a:hover {
   background-color: black;
   color: white;
+}
+#dropdownMenuButton1{
+  float: right;
+  margin: 16px;
+  color:black;
+  background-color: white;
+  border: 0px;
+}
+#navbarprofilebox{
+    margin:auto;
+    width: 60px;
+    height: 60px; 
+    border-radius: 70%;
+    overflow: hidden;
+}
+#navbarprofileimg{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 </style>

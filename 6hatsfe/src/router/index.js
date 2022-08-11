@@ -62,7 +62,7 @@ const routes = [
   {
     path: '/teampage',
     name: 'TeamPage',
-    //team router
+    //팀소개 router
 
     component: () => import('@/views/main/team/TeamPage.vue')
   },

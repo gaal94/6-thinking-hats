@@ -1,5 +1,5 @@
 <template>
-  <nav-bar></nav-bar>
+  <nav-bar/>
   <router-view/>
   <background-wave></background-wave>
 </template>
