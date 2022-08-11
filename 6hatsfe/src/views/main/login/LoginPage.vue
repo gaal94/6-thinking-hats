@@ -33,13 +33,13 @@ export default {
           
           //console.log(this.$store);
           this.$store.commit('ChangeId',decoded.userId);//id저장
-          console.log(this.$store.state.users.id);
                   http
                 .get("/user/" + this.$store.state.users.id, null)
                 .then((res) => {
 
                     const info = res.data.user;
                   localStorage.setItem("username", info.name);
+                  this.$store.commit('ChangeName', info.name);
                 })
           this.$router.push('/') // 홈 화면 이동
         }).catch((err) => {
