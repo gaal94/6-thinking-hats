@@ -16,7 +16,8 @@
     <li><router-link to="/teampage" class = "left">팀소개</router-link></li>
     <li><router-link to="/qnapage" class = "left">Q&A</router-link></li>
     <li><button @click = "logout" class="navbtn">로그아웃</button></li>
-    <li><router-link to="/loginpage" class = "right">방 생성</router-link></li>
+    <li><button @click = "createRoom" class="navbtn">방 생성</button></li>
+    <li><router-link to="/conferencepage" class = "right">방 생성</router-link></li>
     <li><router-link to="/conferencepage" class = "right">방 참가</router-link></li>
     <li>{{this.$store.state.name}}님 어서오세요</li>
   </ul>
@@ -40,6 +41,16 @@ export default {
       this.$store.commit('ChangeId', null);
       localStorage.clear('access-token');
       localStorage.clear('username');
+    },
+    createRoom() {
+      const sessionCode = Math.random().toString(22).substring(2,22);
+      alert(sessionCode);
+      this.$router.push({
+        name: "RoomPage",
+        params: {
+          sessionCode: sessionCode
+        }
+      })
     }
   },
   computed: {

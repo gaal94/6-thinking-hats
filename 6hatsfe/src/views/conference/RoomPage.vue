@@ -81,7 +81,7 @@ export default {
       screenPublisher: undefined,
       screenSub: undefined,
 
-			mySessionId: 'SessionAAAAAA',
+			mySessionId: 'SessionABC',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
@@ -301,6 +301,10 @@ export default {
     },
 	},
   created() {
+		console.log(this.$route.params.sessionCode);
+		this.mySessionId = this.$route.params.sessionCode;
+
+		alert(this.mySessionId);
     this.joinSession()
   }
 }
