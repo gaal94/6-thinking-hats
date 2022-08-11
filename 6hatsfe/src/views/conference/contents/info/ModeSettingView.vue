@@ -69,18 +69,18 @@ export default {
     },
 	},
   created() {
-    this.session.on('signal:change-idea-mode', (event) => {
-      this.changeIdeaMode(event.data)
-      // this.changeSpeechOrder(event.data)
-    })
+    // this.session.on('signal:change-idea-mode', (event) => {
+    //   this.changeIdeaMode(event.data)
+    //   // this.changeSpeechOrder(event.data)
+    // })
 
-    this.session.on('signal:time-setting', (event) => {
-      this.setTime(Number(event.data))
-    })
+    // this.session.on('signal:time-setting', (event) => {
+    //   this.setTime(Number(event.data))
+    // })
 
-    this.session.on('signal:change-hat-mode', (event) => {
-      this.changeHatMode(event.data)
-    })
+    // this.session.on('signal:change-hat-mode', (event) => {
+    //   this.changeHatMode(event.data)
+    // })
   }
 }
 </script>

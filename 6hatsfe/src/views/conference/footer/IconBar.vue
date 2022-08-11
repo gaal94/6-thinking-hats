@@ -142,15 +142,15 @@ export default {
     }
 	},
   created() {
-    // 파란모자가 차례를 이전으로 돌릴 때
-    this.session.on('signal:back-to-pre-turn', () => {
-      this.backToPreTurn()
-    })
+    // // 파란모자가 차례를 이전으로 돌릴 때
+    // this.session.on('signal:back-to-pre-turn', () => {
+    //   this.backToPreTurn()
+    // })
 
-    // 파란모자가 차례를 이후로 넘길 때
-    this.session.on('signal:pass-turn', () => {
-      this.passTurn()
-    })
+    // // 파란모자가 차례를 이후로 넘길 때
+    // this.session.on('signal:pass-turn', () => {
+    //   this.passTurn()
+    // })
   }
 }
 </script>

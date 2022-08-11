@@ -60,14 +60,14 @@ export default {
 		},
   },
   created() {
-    this.session.on('signal:change-hat-color', () => {
-      if (this.streamManager === this.publisher) {
-        this.hat = this.myHat
-      } else {
-        const idx = this.users.findIndex(userInfo => userInfo.connectionId === this.streamManager.stream.connection.connectionId)
-        this.hat = this.users[idx].hatColor
-      }
-    })
+    // this.session.on('signal:change-hat-color', () => {
+    //   if (this.streamManager === this.publisher) {
+    //     this.hat = this.myHat
+    //   } else {
+    //     const idx = this.users.findIndex(userInfo => userInfo.connectionId === this.streamManager.stream.connection.connectionId)
+    //     this.hat = this.users[idx].hatColor
+    //   }
+    // })
   }
 }
 </script>
