@@ -1,29 +1,8 @@
 <template>
   <div class="hat-select-box">
     <img 
-    @click="chooseHat('red-hat')" 
-    v-if="hat === 'red-hat'" src="@/assets/redhat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('yellow-hat')" 
-    v-else-if="hat === 'yellow-hat'" src="@/assets/yellowhat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('green-hat')" 
-    v-else-if="hat === 'green-hat'" src="@/assets/greenhat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('blue-hat')" 
-    v-else-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('black-hat')" 
-    v-else-if="hat === 'black-hat'" src="@/assets/blackhat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('white-hat')" 
-    v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('random-hat')" 
-    v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
-    <img 
-    @click="chooseHat('spectator')" 
-    v-else-if="hat === 'spectator'" src="@/assets/spectator.png" alt="" class="hat-img">
+    @click="chooseHat(hat)" 
+    :src="require(`@/assets/${hat.replace('-', '')}.png`)" alt="" class="hat-img">
     
     <!-- 6hats 모드 -->
     <div v-if="hatMode === 'sixhats'" class="user-list" :class="hat">

@@ -13,6 +13,9 @@ export default {
     users: [],
     publisher: undefined,
     myName: '',
+    opinions: [],
+    role: 'participant',
+    hostConnectionId: undefined,
   },
   getters: {
     session: state => state.session,
@@ -21,6 +24,7 @@ export default {
     hatMode: state => state.hatMode,
     currentTurn: state => state.currentTurn,
     baseTime: state => state.baseTime,
+    totalTime: state => state.totalTime,
     minutes(state) {
       const min = parseInt(state.totalTime / 60)
       return min > 9 ? String(min) : '0' + String(min)
@@ -36,6 +40,9 @@ export default {
     myHat: state => state.myHat,
     publisher: state => state.publisher,
     myName: state => state.myName,
+    opinions: state => state.opinions,
+    isHost: state => state.role === 'host',
+    hostConnectionId: state => state.hostConnectionId,
   },
   mutations: {
     setSession(state, session) {
@@ -97,6 +104,9 @@ export default {
     addUser(state, user) {
       state.users.push(user)
     },
+    removeUser(state, userIdx) {
+      state.users.splice(userIdx, 1)
+    },
     changeUserHatColor(state, { user, changedHat }) {
       const idx = state.users.findIndex(userInfo => userInfo.connectionId === user.connectionId)
       state.users[idx].hatColor = changedHat
@@ -112,6 +122,31 @@ export default {
     },
     setMyName(state, name) {
       state.myName = name
+    },
+    addOpinion(state, opInfo) {
+      state.opinions.push(opInfo)
+    },
+    removeOpinion(state, opIdx) {
+      state.opinions.splice(opIdx, 1)
+    },
+    setRole(state, role) {
+      state.role = role
+    },
+    initialSetting(state, {users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
+                  totalTime, confSubject, opinions, hostConnectionId}) {
+      state.users = users
+      state.ideaMode = ideaMode
+      state.hatMode = hatMode
+      state.speechOrder = speechOrder
+      state.currentTurn = currentTurn
+      state.baseTime = baseTime
+      state.totalTime = totalTime
+      state.confSubject = confSubject
+      state.opinions = opinions
+      state.hostConnectionId = hostConnectionId
+    },
+    setHostConnectionId(state, conId) {
+      state.hostConnectionId = conId
     }
   },
   actions: {
@@ -155,6 +190,9 @@ export default {
     addUser({commit}, user) {
       commit('addUser', user)
     },
+    removeUser({commit}, userIdx) {
+      commit('removeUser', userIdx)
+    },
     changeUserHatColor({commit}, data) {
       commit('changeUserHatColor', data)
     },
@@ -169,8 +207,21 @@ export default {
     },
     setMyName({commit}, name) {
       commit('setMyName', name)
+    },
+    addOpinion({commit}, opInfo) {
+      commit('addOpinion', opInfo)
+    },
+    removeOpinion({commit}, opIdx) {
+      commit('removeOpinion', opIdx)
+    },
+    setRole({commit}, role) {
+      commit('setRole', role)
+    },
+    initialSetting({commit}, payload) {
+      commit('initialSetting', payload)
+    },
+    setHostConnectionId({commit}, conId) {
+      commit('setHostConnectionId', conId)
     }
   },
-  modules: {
-  }
 }

@@ -16,17 +16,17 @@
 
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickBackToPreTurn"
-    :class="ideaMode[(currentTurn+5)%6]"><i class='bx bx-chevron-left'></i></button>
+    :class="speechOrder[(currentTurn + 5) % 6]"><i class='bx bx-chevron-left'></i></button>
 
     <button class="next-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickPassTurn"
-    :class="ideaMode[(currentTurn+1)%6]"><i class='bx bx-chevron-right'></i></button>
+    :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
     <button class="pass-btn" v-if="isConferencing && ideaMode[currentTurn] === hatColor" :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
     <button class="end-btn" @click="startConference()" 
-    v-if="!isConferencing && role">
+    v-if="!isConferencing">
       <span>회의 시작</span>
     </button>
 
@@ -48,7 +48,6 @@ export default {
   props: {
     isConferencing: Boolean,
     hatColor: String,
-    role: Boolean,
   },
 	data: () => {
 		return {
@@ -56,12 +55,48 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['ideaMode', 'currentTurn', 'session']),
+    ...mapGetters(['ideaMode', 'currentTurn', 'session', 'speechOrder', 'currentTurn', 
+                    'users', 'hatMode',]),
 	},
 	methods: {
-    ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',]),
+    ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',
+                    'changeUserHatColor',]),
     startConference() {
-      this.$emit('changeConferenceStatus')
+      if (this.hatMode === 'sixhats') {
+        let hats = ['red-hat', 'yellow-hat', 'green-hat', 'blue-hat', 'black-hat', 
+                    'white-hat']
+        let hatCnts = [0, 0, 0, 0, 0, 0]
+        let randomHatCnt = 0
+        hats.sort(() => Math.random() - 0.5)
+  
+        this.users.forEach(el => {
+          if (el.hatColor === 'random-hat') {
+            randomHatCnt += 1
+          } else {
+            const hatIdx = hats.indexOf(el.hatColor)
+            hatCnts[hatIdx] += 1
+          }
+        });
+
+        if (hatCnts.reduce((sum, value) => sum + value, 0) + randomHatCnt >= 6) {
+          for (let randomCnt = randomHatCnt; randomCnt > 0; randomCnt -= 1) {
+            let targetColor = hats[hatCnts.indexOf(Math.min(...hatCnts.slice(0, 6)))]
+            let userIdx = this.users.findIndex(userInfo => userInfo.hatColor === 'random-hat')
+            hatCnts[hats.indexOf(targetColor)] += 1
+
+            const sending = {user: this.users[userIdx], changedHat: targetColor}
+            this.changeUserHatColor(sending)
+            const jsonData = JSON.stringify(sending)
+            this.session.signal({
+              data: jsonData,
+              type: 'change-hat-color'
+            })
+          }
+          this.$emit('changeConferenceStatus')
+        }
+      } else {
+        this.$emit('changeConferenceStatus')
+      }
     },
     endConference() {
       this.$emit('changeConferenceStatus')
@@ -107,9 +142,12 @@ export default {
     }
 	},
   created() {
+    // 파란모자가 차례를 이전으로 돌릴 때
     this.session.on('signal:back-to-pre-turn', () => {
       this.backToPreTurn()
     })
+
+    // 파란모자가 차례를 이후로 넘길 때
     this.session.on('signal:pass-turn', () => {
       this.passTurn()
     })

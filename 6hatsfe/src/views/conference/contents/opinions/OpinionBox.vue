@@ -1,6 +1,8 @@
 <template>
   <div class="opinion-box">
     <div class="subject-box">
+
+      <!-- 타이머 -->
       <div class="timer-box">
         <i class="timer-icon bx bx-stopwatch"></i>
         <div class="time">
@@ -14,12 +16,14 @@
         v-if="hatColor === 'blue-hat'"></i>
       </div>
 
+      <!-- 회의 주제 변경 인풋, 데이터 창 -->
       <div class="subject-content">
         <p v-if="!subUpdating">{{ confSubject }}</p>
         <input class="sub-input" 
         v-else-if="subUpdating" type="text">
       </div>
 
+      <!-- 회의 주제 변경 버튼 -->
       <div class="subject-btn" v-if="hatColor === 'blue-hat'">
         <button class="sub-update-btn" v-if="!subUpdating"
         @click="updateToggle">
@@ -34,16 +38,20 @@
       </div>
 
     </div>
+
+    <!-- 의견 창구 -->
     <div class="opinion-content-box">
       <div class="opinion-contents">
         <opinion-item v-for="(op, idx) in opinions" :key="`message-${idx}`"
-        :opinion="op"
-        :hat-color="hatColor"
-        @deleteMessage="deleteMessage(idx)"></opinion-item>
+        :opinion="op" :opinion-index="idx"></opinion-item>
       </div>
-      <div class="input-box">
-        <input type="text" class="input-box-content" v-model="opinion">
-        <i class='bx bxs-send' @click="sendMessage(opinion)"></i>
+
+      <!-- 의견 창구 입력 창 sixhats 모드 & onehat 모드 -->
+      <div class="input-box" 
+      v-if="(hatMode === 'sixhats' && (hatColor === speechOrder[currentTurn] || hatColor === 'blue-hat'))
+            || (hatMode === 'onehat' && hatColor !== 'spectator')">
+        <textarea class="input-box-content" v-model="opinion"></textarea>
+        <i class='bx bxs-send' @click="sendOpinion(opinion)"></i>
       </div>
     </div>
   </div>
@@ -63,13 +71,14 @@ export default {
   },
   data: () => {
 		return {
-      opinions: [],
       opinion: '',
       subUpdating: false,
 		}
 	},
 	computed: {
-    ...mapGetters(['minutes', 'seconds', 'confSubject', 'session']),
+    ...mapGetters(['minutes', 'seconds', 'confSubject', 'session', 'opinions',
+                    'publisher', 'myName', 'speechOrder', 'currentTurn',
+                    'hatMode',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
@@ -107,28 +116,45 @@ export default {
         type: 'reset-timer'
       })
     },
-    sendMessage(op) {
+    sendOpinion(op) {
       if (op) {
-        this.opinions.push(op)
+        let opinionData = {}
+        if (this.hatMode === 'sixhats' || this.hatColor === 'blue-hat' ) {
+          opinionData = { userName: this.myName, content: this.opinion, 
+                          connectionId: this.publisher.stream.session.connection.connectionId,
+                          hatColor: this.hatColor}
+        } else {
+          opinionData = { userName: this.myName, content: this.opinion, 
+                          connectionId: this.publisher.stream.session.connection.connectionId,
+                          hatColor: this.speechOrder[this.currentTurn]}
+        }
+        const jsonOpinionData = JSON.stringify(opinionData)
+        this.session.signal({
+          data: jsonOpinionData,
+          type: 'send-opinion'
+        })
+
         this.opinion = ''
       }
     },
-    deleteMessage(index) {
-      this.opinions.splice(index, 1)
-    }
 	},
   created() {
+  // 주제가 변화될 때
   this.session.on('signal:update-subject', event => {
       this.setConfSubject(event.data)
     })
   
+  // 타이머를 실행할 때
   this.session.on('signal:start-timer', () => {
     this.startTimer()
   })
   
+  // 타이머를 멈출 때
   this.session.on('signal:stop-timer', () => {
     this.stopTimer()
   })
+
+  // 타이머를 재설정할 때
   this.session.on('signal:reset-timer', () => {
     this.resetTimer()
   })
@@ -233,6 +259,7 @@ export default {
   margin-left: 10px;
   position: relative;
   bottom: 4px;
+  overflow: auto;
 }
 
 .input-box-content:focus {

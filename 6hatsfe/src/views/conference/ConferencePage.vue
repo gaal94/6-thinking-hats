@@ -1,5 +1,6 @@
 <template>
   <div class="conference-page">
+    <!-- 화면공유 -->
     <button @click="seeScreenShare" class="screen-share-btn"
     v-if="!seeScreen && !screenPublisher">
       <i class="screen-share-btn-icon bx bxs-caret-down-circle"></i>
@@ -9,6 +10,7 @@
     :screen-sub="screenSub"></screen-share>
 
     <div class="conference-body">
+      <!-- 왼쪽 캠화면 + 모자 키워드 -->
       <div class="left-side">
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
@@ -18,10 +20,12 @@
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
 
+      <!-- 셋팅할 때 -->
       <div class="join-screen" v-if="!isConferencing">
         <info-box></info-box>
       </div>
 
+      <!-- 회의 시작 후 -->
       <div class="in-conference-screen" v-else-if="isConferencing">
         <role-explain :hat-color="myHat"></role-explain>
         <opinion-box :hat-color="myHat"
@@ -29,6 +33,7 @@
         :session="session"></opinion-box>
       </div>
 
+      <!-- 오른쪽 캠화면 + 발언 순서 -->
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
@@ -37,6 +42,7 @@
       </div>  
     </div>
 
+    <!-- 아이콘바 -->
     <icon-bar 
     :isConferencing="isConferencing"
     :hat-color="myHat"
@@ -119,19 +125,21 @@ export default {
       video: false,
       isScreenShared: false,
       seeScreen: false,
-      host: true,
       seeMenu: false,
       seeChat: false,
       seeUserList: false,
 		}
 	},
 	computed: {
-    ...mapGetters(['publisher', 'users', 'myHat']),
+    ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
+                    'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
+                    'confSubject', 'opinions', 'hostConnectionId',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
-                    'setMyName', ]),
+                    'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
+                    'initialSetting', 'setHostConnectionId',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -193,12 +201,6 @@ export default {
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
-
-          const name = JSON.parse(subscriber.stream.connection.data).clientData
-          const userInfo = { hatColor: 'spectator', 
-                            connectionId: subscriber.stream.connection.connectionId,
-                            userName: name}
-          this.addUser(userInfo)
         }
 			});
 
@@ -219,23 +221,47 @@ export default {
 			this.session.on('exception', ({ exception }) => {
 				console.warn(exception);
 			});
+      
+      console.log(this.totalTime);
+      this.session.on('connectionCreated', ({connection}) => {
+        if (this.isHost) {
+          const name = JSON.parse(connection.data).clientData
+          const userInfo = { hatColor: 'spectator', 
+                            connectionId: connection.connectionId,
+                            userName: name}
+          this.addUser(userInfo)
 
-      // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
-      this.session.on('signal:changeConf', () => {
-        this.resetTurn()
-        if (this.isConferencing) {
-          this.resetTimer()
-        } else {
-          this.startTimer()
+          const settingData = { users: this.users,
+                                ideaMode: this.ideaMode,
+                                hatMode: this.hatMode,
+                                speechOrder: this.speechOrder,
+                                currentTurn: this.currentTurn,
+                                baseTime: this.baseTime,
+                                totalTime: this.totalTime,
+                                confSubject: this.confSubject,
+                                opinions: this.opinions,
+                                hostConnectionId: this.hostConnectionId}
+          const jsonSettingData = JSON.stringify(settingData)
+          this.session.signal({
+            data: jsonSettingData,
+            type: 'initial-setting'
+          })
         }
-        this.isConferencing = !this.isConferencing
       })
 
       this.session.on('connectionDestroyed', ({connection}) => {
-        const idx = this.users.findIndex(userInfo => {
-          userInfo.connectionId === connection.connectionId
+        if (this.hostConnectionId !== connection.connectionId) {
+          let idx = this.users.findIndex(userInfo => {
+          if (userInfo.connectionId === connection.connectionId) {
+            return true
+          }
         })
-        this.users.splice(idx, 1)
+
+        this.removeUser(idx)
+        } else {
+          this.leaveSession()
+          this.$router.push({name: 'LandingPage'})
+        }
       })
 
 			// --- Connect to the session with a valid user token ---
@@ -267,6 +293,12 @@ export default {
             this.addUser(userInfo)
 						// --- Publish your stream ---
 
+            // 호스트 판별
+            if (this.subscribers.length === 0) {
+              this.setRole('host')
+              this.setHostConnectionId(publisher.stream.session.connection.connectionId)
+            }
+
 						this.session.publish(this.publisher);
 					})
 					.catch(error => {
@@ -289,6 +321,8 @@ export default {
 			this.OV = undefined;
       this.screenSession = undefined
       this.clearUsers()
+      this.setRole('particitant')
+      this.setHostConnectionId(undefined)
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -409,11 +443,44 @@ export default {
   created() {
     this.joinSession()
 
+    // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
+    this.session.on('signal:changeConf', () => {
+      this.resetTurn()
+      if (this.isConferencing) {
+        this.resetTimer()
+      } else {
+        this.startTimer()
+      }
+      this.isConferencing = !this.isConferencing
+    })
+
+    // 유저들의 모자 색을 바꿀 때 실행됨
     this.session.on('signal:change-hat-color', event => {
       const data = JSON.parse(event.data)
       this.changeUserHatColor(data)
       if (this.publisher.stream.session.connection.connectionId === data.user.connectionId) {
         this.setMyHat(data.changedHat)
+      }
+    })
+
+    // 의견창구에 의견을 보낼 때 실행됨
+    this.session.on('signal:send-opinion', ({data}) => {
+      const opinionData = JSON.parse(data)
+      this.addOpinion(opinionData)
+    })
+
+    // 의견창구에서 의견을 지울 때 실행됨
+    this.session.on('signal:delete-opinion', ({data}) => {
+      this.removeOpinion(Number(data))
+    })
+
+    this.session.on('signal:initial-setting', ({data}) => {
+      // users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
+      // totalTime, timer, confSubject, opinions
+      
+      if (!this.isHost) {
+        const settingData = JSON.parse(data)
+        this.initialSetting(settingData)
       }
     })
   }
