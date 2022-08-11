@@ -39,6 +39,8 @@ export default {
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
+          
+          // Intercepotor 시작
           interceptor({
             url: '/user/' + decoded.userId,
             method: 'get'
@@ -48,6 +50,7 @@ export default {
           }).catch((err) => {
             alert(err);
           });
+          // Intereceptor 끝
           this.$router.push('/') // 홈 화면 이동
         }).catch((err) => {
           alert(err);
