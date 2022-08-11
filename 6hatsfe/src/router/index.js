@@ -39,6 +39,13 @@ const routes = [
     component: () => import('@/views/main/login/LoginPage.vue')
   },
   {
+    path: '/kakaologinpage',
+    name: 'KakaoLoginPage',
+    //login page router
+
+    component: () => import('@/views/main/login/KakaoLoginPage.vue')
+  },
+  {
     path: '/qnapage',
     name: 'QnaPage',
     //qna router
@@ -72,6 +79,13 @@ const routes = [
     //conference router
 
     component: () => import('@/views/conference/ConferencePage.vue')
+  },
+  {
+    path: '/roompage/:sessionCode',
+    name: 'RoomPage',
+    //conference router
+
+    component: () => import('@/views/conference/RoomPage.vue')
   },
   {
     path: '/profilepage',

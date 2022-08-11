@@ -1,5 +1,5 @@
 <template>
-<ul v-if="!token" class="navbarul">
+  <ul v-if="!token" class="navbarul">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/" class="navbarleft"></router-link></li>
     <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
     <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
@@ -27,6 +27,7 @@
         </ul>
       </div>
     </li>
+    <li><button @click = "createRoom" class="navbtn">방 생성</button></li>
     <li><router-link to="/loginpage" class = "navbarright">방 생성</router-link></li>
     <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
@@ -44,7 +45,17 @@ export default {
       localStorage.clear('access-token');
       localStorage.clear('username');
       window.location.reload();
-      this.$router.push('/') // 홈 화면 이동  
+      this.$router.push('/')
+    },
+    createRoom() {
+      const sessionCode = Math.random().toString(22).substring(2,22);
+      alert(sessionCode);
+      this.$router.push({
+        name: "RoomPage",
+        params: {
+          sessionCode: sessionCode
+        }
+      })
     }
   },
   computed: {

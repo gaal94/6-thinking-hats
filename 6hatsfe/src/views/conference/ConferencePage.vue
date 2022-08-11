@@ -88,8 +88,8 @@ import ChatModal from '@/views/conference/modal/ChatModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+//const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 
@@ -119,7 +119,7 @@ export default {
       screenPublisher: undefined,
       screenSub: undefined,
 
-			mySessionId: 'SessionA',
+			mySessionId: 'SessionAAAAAA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
