@@ -67,7 +67,6 @@ p {
   align-items: center;
   gap: 8px;
   border-radius: 50px;
-  height: 52px;
 }
 
 .opinion-item-hatface {

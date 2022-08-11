@@ -48,7 +48,6 @@ export default {
   props: {
     isConferencing: Boolean,
     hatColor: String,
-    role: Boolean,
   },
 	data: () => {
 		return {

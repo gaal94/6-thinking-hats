@@ -14,6 +14,8 @@ export default {
     publisher: undefined,
     myName: '',
     opinions: [],
+    role: 'participant',
+    hostConnectionId: undefined,
   },
   getters: {
     session: state => state.session,
@@ -38,6 +40,8 @@ export default {
     publisher: state => state.publisher,
     myName: state => state.myName,
     opinions: state => state.opinions,
+    isHost: state => state.role === 'host',
+    hostConnectionId: state => state.hostConnectionId,
   },
   mutations: {
     setSession(state, session) {
@@ -124,6 +128,25 @@ export default {
     removeOpinion(state, opIdx) {
       state.opinions.splice(opIdx, 1)
     },
+    setRole(state, role) {
+      state.role = role
+    },
+    initialSetting(state, {users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
+                  totalTime, confSubject, opinions, hostConnectionId}) {
+      state.users = users
+      state.ideaMode = ideaMode
+      state.hatMode = hatMode
+      state.speechOrder = speechOrder
+      state.currentTurn = currentTurn
+      state.baseTime = baseTime
+      state.totalTime = totalTime
+      state.confSubject = confSubject
+      state.opinions = opinions
+      state.hostConnectionId = hostConnectionId
+    },
+    setHostConnectionId(state, conId) {
+      state.hostConnectionId = conId
+    }
   },
   actions: {
     setSession({commit}, session) {
@@ -189,8 +212,15 @@ export default {
     },
     removeOpinion({commit}, opIdx) {
       commit('removeOpinion', opIdx)
+    },
+    setRole({commit}, role) {
+      commit('setRole', role)
+    },
+    initialSetting({commit}, payload) {
+      commit('initialSetting', payload)
+    },
+    setHostConnectionId({commit}, conId) {
+      commit('setHostConnectionId', conId)
     }
   },
-  modules: {
-  }
 }

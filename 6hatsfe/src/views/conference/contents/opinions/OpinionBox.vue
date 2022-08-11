@@ -50,7 +50,7 @@
       <div class="input-box" 
       v-if="(hatMode === 'sixhats' && (hatColor === speechOrder[currentTurn] || hatColor === 'blue-hat'))
             || (hatMode === 'onehat' && hatColor !== 'spectator')">
-        <input type="text" class="input-box-content" v-model="opinion">
+        <textarea class="input-box-content" v-model="opinion"></textarea>
         <i class='bx bxs-send' @click="sendOpinion(opinion)"></i>
       </div>
     </div>
@@ -259,6 +259,7 @@ export default {
   margin-left: 10px;
   position: relative;
   bottom: 4px;
+  overflow: auto;
 }
 
 .input-box-content:focus {

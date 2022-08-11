@@ -114,12 +114,15 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['publisher', 'users', 'myHat']),
+    ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
+                    'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
+                    'confSubject', 'opinions', 'hostConnectionId',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
-                    'setMyName', 'removeUser', 'addOpinion', 'removeOpinion',]),
+                    'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
+                    'initialSetting', 'setHostConnectionId',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -167,12 +170,6 @@ export default {
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
-
-          const name = JSON.parse(subscriber.stream.connection.data).clientData
-          const userInfo = { hatColor: 'spectator', 
-                            connectionId: subscriber.stream.connection.connectionId,
-                            userName: name}
-          this.addUser(userInfo)
         }
 			});
 
@@ -194,14 +191,45 @@ export default {
 				console.warn(exception);
 			});
 
+      this.session.on('connectionCreated', ({connection}) => {
+        if (this.isHost) {
+          const name = JSON.parse(connection.data).clientData
+          const userInfo = { hatColor: 'spectator', 
+                            connectionId: connection.connectionId,
+                            userName: name}
+          this.addUser(userInfo)
+
+          const settingData = { users: this.users,
+                                ideaMode: this.ideaMode,
+                                hatMode: this.hatMode,
+                                speechOrder: this.speechOrder,
+                                currentTurn: this.currentTurn,
+                                baseTime: this.baseTime,
+                                totalTime: this.totalTime,
+                                confSubject: this.confSubject,
+                                opinions: this.opinions,
+                                hostConnectionId: this.hostConnectionId}
+          const jsonSettingData = JSON.stringify(settingData)
+          this.session.signal({
+            data: jsonSettingData,
+            type: 'initial-setting'
+          })
+        }
+      })
+
       this.session.on('connectionDestroyed', ({connection}) => {
-        let idx = this.users.findIndex(userInfo => {
+        if (this.hostConnectionId !== connection.connectionId) {
+          let idx = this.users.findIndex(userInfo => {
           if (userInfo.connectionId === connection.connectionId) {
             return true
           }
         })
 
         this.removeUser(idx)
+        } else {
+          this.leaveSession()
+          this.$router.push({name: 'LandingPage'})
+        }
       })
 
 			// --- Connect to the session with a valid user token ---
@@ -233,6 +261,12 @@ export default {
             this.addUser(userInfo)
 						// --- Publish your stream ---
 
+            // 호스트 판별
+            if (this.subscribers.length === 0) {
+              this.setRole('host')
+              this.setHostConnectionId(publisher.stream.session.connection.connectionId)
+            }
+
 						this.session.publish(this.publisher);
 					})
 					.catch(error => {
@@ -255,6 +289,8 @@ export default {
 			this.OV = undefined;
       this.screenSession = undefined
       this.clearUsers()
+      this.setRole('particitant')
+      this.setHostConnectionId(undefined)
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -404,6 +440,16 @@ export default {
     // 의견창구에서 의견을 지울 때 실행됨
     this.session.on('signal:delete-opinion', ({data}) => {
       this.removeOpinion(Number(data))
+    })
+
+    this.session.on('signal:initial-setting', ({data}) => {
+      // users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
+      // totalTime, timer, confSubject, opinions
+      
+      if (!this.isHost) {
+        const settingData = JSON.parse(data)
+        this.initialSetting(settingData)
+      }
     })
   }
 }
