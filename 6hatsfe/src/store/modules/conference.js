@@ -24,6 +24,7 @@ export default {
     hatMode: state => state.hatMode,
     currentTurn: state => state.currentTurn,
     baseTime: state => state.baseTime,
+    totalTime: state => state.totalTime,
     minutes(state) {
       const min = parseInt(state.totalTime / 60)
       return min > 9 ? String(min) : '0' + String(min)
