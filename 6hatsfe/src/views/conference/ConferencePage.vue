@@ -111,7 +111,6 @@ export default {
       video: false,
       isScreenShared: false,
       seeScreen: false,
-      host: true,
 		}
 	},
 	computed: {
