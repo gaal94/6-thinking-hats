@@ -141,8 +141,8 @@ export default {
   created() {
   // 주제가 변화될 때
   this.session.on('signal:update-subject', event => {
-      this.setConfSubject(event.data)
-    })
+    this.setConfSubject(event.data)
+  })
   
   // 타이머를 실행할 때
   this.session.on('signal:start-timer', () => {

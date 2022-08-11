@@ -72,7 +72,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session', 'users', 'hatMode', 'myName',]),
+    ...mapGetters(['session', 'users', 'hatMode', ]),
 	},
 	methods: {
     changeHatColor(targetHat) {

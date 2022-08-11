@@ -147,7 +147,19 @@ export default {
     },
     setHostConnectionId(state, conId) {
       state.hostConnectionId = conId
-    }
+    },
+    turnOffAudio(state) {
+      state.publisher.publishAudio(false)
+    },
+    turnOnAudio(state) {
+      state.publisher.publishAudio(true)
+    },
+    turnOffVideo(state) {
+      state.publisher.publishVideo(false)
+    },
+    turnOnVideo(state) {
+      state.publisher.publishVideo(true)
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -222,6 +234,18 @@ export default {
     },
     setHostConnectionId({commit}, conId) {
       commit('setHostConnectionId', conId)
-    }
+    },
+    turnOffAudio({commit}) {
+      commit('turnOffAudio')
+    },
+    turnOnAudio({commit}) {
+      commit('turnOnAudio')
+    },
+    turnOffVideo({commit}) {
+      commit('turnOffVideo')
+    },
+    turnOnVideo({commit}) {
+      commit('turnOnVideo')
+    },
   },
 }

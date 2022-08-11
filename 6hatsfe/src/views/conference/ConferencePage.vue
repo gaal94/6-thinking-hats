@@ -139,7 +139,8 @@ export default {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
-                    'initialSetting', 'setHostConnectionId',]),
+                    'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
+                    'turnOffVideo', 'turnOnVideo',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -222,7 +223,6 @@ export default {
 				console.warn(exception);
 			});
       
-      console.log(this.totalTime);
       this.session.on('connectionCreated', ({connection}) => {
         if (this.isHost) {
           const name = JSON.parse(connection.data).clientData
@@ -323,6 +323,7 @@ export default {
       this.clearUsers()
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
+      this.resetTimer()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -394,12 +395,20 @@ export default {
 
     changeMicrophone() {
       this.audio = !this.audio
-      this.publisher.publishAudio(this.audio)
+      if (this.audio) {
+        this.turnOnAudio()
+      } else {
+        this.turnOffAudio()
+      }
     },
 
     changeVideo(){
       this.video = !this.video
-      this.publisher.publishVideo(this.video)
+      if (this.video) {
+        this.turnOnVideo()
+      } else {
+        this.turnOffVideo()
+      }
     },
     
     shareScreen() {
