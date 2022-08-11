@@ -17,6 +17,7 @@
 </template>
 <script>
 import http from "@/api/http";
+import interceptor from "@/api/interceptors";
 import jwt_decode from "jwt-decode";
 
 export default {
@@ -38,24 +39,19 @@ export default {
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
-          
-          //console.log(this.$store);
-          this.$store.commit('ChangeId',decoded.userId);//id저장
-          console.log(this.$store.state.users.id);
-                  http
-                .get("/user/" + this.$store.state.users.id, null)
-                .then((res) => {
-
-                    const info = res.data.user;
-                  localStorage.setItem("username", info.name);
-                })
+          interceptor({
+            url: '/user/' + decoded.userId,
+            method: 'get'
+          }).then((res) => {
+            console.log(res.data.user.name);
+            alert(res.data.user.name);
+          }).catch((err) => {
+            alert(err);
+          });
           this.$router.push('/') // 홈 화면 이동
         }).catch((err) => {
           alert(err);
         })
-        .catch((err) => {
-          alert(err);
-        });
 
     }
 
