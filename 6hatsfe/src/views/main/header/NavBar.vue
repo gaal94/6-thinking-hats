@@ -1,5 +1,5 @@
 <template>
-<ul v-if="!loginstatus" class="navbarul">
+<ul v-if="!token" class="navbarul">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/" class="navbarleft"></router-link></li>
     <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
     <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
@@ -35,28 +35,23 @@
 <script>
 import { mapGetters } from "vuex"
 
+
+
 export default {
   name : 'NavBar',
   methods: {
-    logincheck() {
-    },
     logout() {
-      this.$store.commit('ChangeName',null);
-      this.$store.commit('ChangeJob',null);
-      this.$store.commit('ChangeBirth',null);
-      this.$store.commit('ChangeEmail',null);
-      this.$store.commit('ChangeGender', null);
-      this.$store.commit('ChangeLoginstatus', false);
-      this.$store.commit('ChangeToken', null);
-      this.$store.commit('ChangeId', null);
       localStorage.clear('access-token');
       localStorage.clear('username');
+      window.location.reload();
       this.$router.push('/') // 홈 화면 이동  
     }
   },
   computed: {
-    ...mapGetters(['loginstatus','name'])
-  }
+    ...mapGetters(['loginstatus','name','token'])
+  },
+
+
 }
 </script>
 

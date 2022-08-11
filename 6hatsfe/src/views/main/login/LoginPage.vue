@@ -3,7 +3,7 @@
       <h2>로그인</h2>
           <input placeholder="ID" v-model="user.email" >
           <br>
-          <input placeholder="password" v-model="user.password" type = "password">
+          <input placeholder="password" v-model="user.password" type = "password"><br>
           <button type="submit" v-on:click="getUserToken">Login</button>
   </div>
 </template>
@@ -36,7 +36,6 @@ export default {
                   http
                 .get("/user/" + this.$store.state.users.id, null)
                 .then((res) => {
-
                     const info = res.data.user;
                   localStorage.setItem("username", info.name);
                   this.$store.commit('ChangeName', info.name);
