@@ -10,7 +10,7 @@
 
     <button><i class='bx bxs-smile'></i></button>
 
-    <button v-if="role"><i class='bx bx-dots-vertical-rounded'></i></button>
+    <button @click="menuModal"><i class='bx bx-dots-vertical-rounded'></i></button>
 
     <button><i class='bx bx-link-alt' ></i></button>
 
@@ -137,6 +137,9 @@ export default {
         type: 'pass-turn'
       })
     },
+    menuModal() {
+      this.$emit('menuModal')
+    }
 	},
   created() {
     // 파란모자가 차례를 이전으로 돌릴 때

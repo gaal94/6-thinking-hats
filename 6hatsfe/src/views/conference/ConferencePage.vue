@@ -53,9 +53,20 @@
     @changeMic="changeMicrophone"
     @changeVideo="changeVideo"
     @shareScreen="shareScreen"
+    @menuModal="menuModal"
     class="icon-bar"></icon-bar>
-
-    <chat-modal ref="chatRef" @sendChat="sendChat"></chat-modal>
+    
+    <menu-modal
+    class="menu-modal"
+    v-if="seeMenu"
+    @chatModal="chatModal"
+    @userListModal="userListModal"></menu-modal>
+    <chat-modal
+    class="chat-modal"
+    v-show="seeChat"
+    ref="chatRef"
+    @sendChat="sendChat"
+    @clostChatModal="clostChatModal"></chat-modal>
   </div>
 </template>
 
@@ -72,13 +83,15 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { mapActions, mapGetters } from 'vuex'
 // import UserVideo from './components/UserVideo';
+import MenuModal from '@/views/conference/modal/MenuModal.vue'
 import ChatModal from '@/views/conference/modal/ChatModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+
 
 export default {
   name: 'ConferencePage',
@@ -91,6 +104,7 @@ export default {
     SpeechOrder,
     CamScreen,
     ScreenShare,
+    MenuModal,
     ChatModal,
   },
   data: () => {
@@ -111,6 +125,9 @@ export default {
       video: false,
       isScreenShared: false,
       seeScreen: false,
+      seeMenu: false,
+      seeChat: false,
+      seeUserList: false,
 		}
 	},
 	computed: {
@@ -135,6 +152,20 @@ export default {
       .catch(error => {
         console.error(error)
       })
+    },
+    menuModal () {
+      this.seeMenu = !this.seeMenu
+    },
+    chatModal () {
+      this.seeMenu = false
+      this.seeChat = true
+    },
+    userListModal () {
+      this.seeMenu = false
+      this.seeUserList = true
+    },
+    clostChatModal () {
+      this.seeChat = !this.seeChat
     },
     changeConf() {
       this.session.signal({
@@ -516,5 +547,17 @@ export default {
 
   .icon-bar {
     align-self: bottom;
+  }
+
+  .menu-modal {
+    position: absolute;
+    bottom: 60px;
+    z-index: 1;
+  }
+
+  .chat-modal {
+    position: absolute;
+    bottom: 60px;
+    z-index: 2;
   }
 </style>
