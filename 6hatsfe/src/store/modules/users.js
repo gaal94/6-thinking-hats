@@ -8,7 +8,8 @@ export default {
     email:null,
     gender:null,
     job:null,
-    birth:null
+    birth: null,
+    loginstatus: false
   },
   getters: {
     token(state) {
@@ -31,6 +32,9 @@ export default {
     },
     birth(state){
       return state.birth
+    },
+    loginstatus(state) {
+      return state.loginstatus
     }
   },
   mutations: {
@@ -54,6 +58,9 @@ export default {
     },
     ChangeBirth(state,value){
       state.birth=value
+    },
+    ChangeLoginstatus(state, value) {
+      state.loginstatus=value
     }
   },
   actions: {
