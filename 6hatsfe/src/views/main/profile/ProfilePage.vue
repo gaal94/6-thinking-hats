@@ -16,7 +16,7 @@
         <div class="profilecontent">
             <ul>
                 <li class="rightli" v-if="emailupdatebtnon">{{email}}  <a><i class='bx bxs-pen' @click="Emailupbtn" ></i></a></li>
-                <li class="rightli" v-else><input type="text" ></li>
+                <li class="rightli" v-else><input v-model="temail"/><a><i class='bx bxs-pen' @click="Emailupbtn" ></i></a></li>
                 <li class="rightli">{{job}}  <i class='bx bxs-pen' ></i></li>
                 <li class="rightli">{{gender}}  <i class='bx bxs-pen' ></i></li>
                 <li class="rightli">{{birth}}  <i class='bx bxs-pen' ></i></li>
@@ -24,7 +24,7 @@
         </div>
         </div>
     </div>
-    <div id ="profilebtn"><button type="button" class="btn btn-primary">정보수정</button>  <button type="button" class="btn btn-danger">취소</button></div>
+    <div id ="profilebtn"><button type="button" class="btn btn-primary" @click="UserUpdate">정보수정</button>  <button type="button" class="btn btn-danger">취소</button></div>
 </template>
 
 <script>
@@ -34,7 +34,7 @@ export default {
     name: 'ProfilePage',
     data() {
         return {
-            emailupdatebtnon: true,email:this.$store.email
+            emailupdatebtnon: true,temail:this.$store.email
         }
     },
 
@@ -65,7 +65,7 @@ export default {
         UserUpdate() {
             http
                 .put("/user/" + this.$store.state.users.id, null, { //수정할 데이터를 json형태로 전달
-        email:this.$store.state.users.email,
+        email:this.temail,
         name:"",
         birth:"",
         gender:"MAN",
@@ -76,8 +76,14 @@ export default {
         });
         
         },
-      Emailupbtn() {
-          this.emailupdatebtnon = !this.emailupdatebtnon;
+        Emailupbtn() {
+            if (this.emailupdatebtnon) {
+                this.emailupdatebtnon = !this.emailupdatebtnon;
+            }
+            else {
+                this.$store.commit('ChangeEmail', this.temail);
+                this.emailupdatebtnon = !this.emailupdatebtnon;
+            }
         },
 
     }
