@@ -1,7 +1,11 @@
 <template>
   <div class="icon-box">
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
-    @click="changeMic"><i class='bx bxs-microphone-off mic'></i></button>
+    @click="changeMic" 
+    :disabled="isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]">
+    <i class='bx bxs-microphone-off mic' 
+    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]}"></i>
+    </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="changeVideo"><i class='bx bxs-video-off video'></i></button>
@@ -25,7 +29,7 @@
     @click="clickPassTurn"
     :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
-    <button class="pass-btn" v-if="isConferencing && ideaMode[currentTurn] === hatColor" :class="hatColor"
+    <button class="pass-btn" v-if="isConferencing && speechOrder[currentTurn] === hatColor" :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
     <button class="end-btn" @click="startConference()" 
@@ -251,4 +255,7 @@ i {
   background-color: #000000;
 }
 
+.disabled {
+  color: #a1a1a1;
+}
 </style>

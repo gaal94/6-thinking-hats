@@ -462,6 +462,8 @@ export default {
       } else {
         this.startTimer()
         this.startConference()
+        // 회의 시작시 무조건 오디오 끄기
+        this.turnOffAudio()
       }
     })
 

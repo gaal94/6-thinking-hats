@@ -64,9 +64,15 @@ export default {
     },
     passTurn(state) {
       state.currentTurn = (state.currentTurn + 1) % 6
+      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+        state.publisher.publishAudio(false)
+      }
     },
     backToPreTurn(state) {
       state.currentTurn = (state.currentTurn + 5) % 6
+      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+        state.publisher.publishAudio(false)
+      }
     },
     resetTurn(state) {
       state.currentTurn = 0
