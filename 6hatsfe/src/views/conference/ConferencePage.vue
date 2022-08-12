@@ -87,8 +87,8 @@ import ChatModal from '@/views/conference/modal/ChatModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-//const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 
@@ -132,7 +132,7 @@ export default {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
                     'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
-                    ]),
+                    'conferenceStatus',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
@@ -240,7 +240,8 @@ export default {
                                 totalTime: this.totalTime,
                                 confSubject: this.confSubject,
                                 opinions: this.opinions,
-                                hostConnectionId: this.hostConnectionId}
+                                hostConnectionId: this.hostConnectionId,
+                                conferenceStatus: this.conferenceStatus}
           const jsonSettingData = JSON.stringify(settingData)
           this.session.signal({
             data: jsonSettingData,
