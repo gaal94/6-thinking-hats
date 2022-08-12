@@ -459,11 +459,17 @@ export default {
       if (this.isConferencing) {
         this.resetTimer()
         this.endConference()
+        if (this.myHat === 'spectator') {
+          this.session.publish(this.publisher)
+        }
       } else {
         this.startTimer()
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
         this.turnOffAudio()
+        if (this.myHat === 'spectator') {
+          this.session.unpublish(this.publisher)
+        }
       }
     })
 
@@ -486,7 +492,6 @@ export default {
     this.session.on('signal:delete-opinion', ({data}) => {
       this.removeOpinion(Number(data))
     })
-
     this.session.on('signal:initial-setting', ({data}) => {
       // users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
       // totalTime, timer, confSubject, opinions
