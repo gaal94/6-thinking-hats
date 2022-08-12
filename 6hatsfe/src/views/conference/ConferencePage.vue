@@ -15,7 +15,7 @@
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen :stream-manager="publisher"></cam-screen>
+        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"></cam-screen>
         <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
@@ -459,6 +459,8 @@ export default {
       if (this.isConferencing) {
         this.resetTimer()
         this.endConference()
+
+        // 관전자일 때 회의가 끝나면 다시 카메라 복원
         if (this.myHat === 'spectator') {
           this.session.publish(this.publisher)
         }
@@ -467,7 +469,10 @@ export default {
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
         this.turnOffAudio()
+
+        // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
         if (this.myHat === 'spectator') {
+          this.turnOffVideo()
           this.session.unpublish(this.publisher)
         }
       }
