@@ -30,7 +30,7 @@
                     </li>
                 <li v-if="genderUpdatebtnon" class="rightli">{{gender}}<a><i class='bx bxs-pen' @click="Genderupbtn" ></i></a></li>
                 <li v-else class="rightli">
-                    <input type="radio" v-model="tgender" @change="Genderupbtn($event)" value="MAN" checked="checked">남
+                    <input type="radio" v-model="tgender" @change="Genderupbtn($event)" value="MAN">남
                     <input type="radio" v-model="tgender" @change="Genderupbtn($event)" value="WOMAN">여
                 </li>
                 <li class="rightli" v-if="birthUpdatebtnon">{{birth}}<a><i class='bx bxs-pen' @click="Birthupbtn" ></i></a></li>
@@ -41,7 +41,7 @@
         </div>
         </div>
     </div>
-    <div id ="profilebtn"><button type="button" class="btn btn-primary" @click="UserUpdate">정보수정</button>  <button type="button" class="btn btn-danger">취소</button></div>
+    <div id ="profilebtn"><button type="button" class="btn btn-primary" @click="UserUpdate">정보수정</button>  <button type="button" class="btn btn-danger" @click="ProfileupCanclebtn">취소</button></div>
 </template>
 
 <script>
@@ -60,7 +60,7 @@ export default {
             tbirth: this.$store.birth
         }
     },
-    mounted() {//프로필 출력시 개인정보 띄워줌
+    created() {//프로필 출력시 개인정보 띄워줌
           var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
           interceptor({
             url: '/user/' + decoded.userId,
@@ -97,31 +97,23 @@ export default {
         
         },
         Nameupbtn() {
-            if (this.nameUpdatebtnon) {
-                this.nameUpdatebtnon = !this.nameUpdatebtnon;
-            }
-            else {
+            if (!this.nameUpdatebtnon) {
                 this.$store.commit('ChangeName', this.tname);
-                this.nameUpdatebtnon = !this.nameUpdatebtnon;
             }
+                this.nameUpdatebtnon = !this.nameUpdatebtnon;
         },
         Jobupbtn(event) {
-            if (this.jobUpdatebtnon) {
-                this.jobUpdatebtnon = !this.jobUpdatebtnon;
-            }
-            else {
+            if (!this.jobUpdatebtnon) {
                 this.$store.commit('ChangeJob', event.target.value);
-                this.jobUpdatebtnon = !this.jobUpdatebtnon;
             }
+                this.jobUpdatebtnon = !this.jobUpdatebtnon;
         },
         Genderupbtn(event) {
             var selected = event.target.value;
-            if (this.genderUpdatebtnon) {
-                this.genderUpdatebtnon = !this.genderUpdatebtnon;
-            }
-            else {
+            if (!this.genderUpdatebtnon) {
                 this.$store.commit('ChangeGender', selected);
-            }
+                }
+                this.genderUpdatebtnon = !this.genderUpdatebtnon;
         },
         Birthupbtn(event) {
             var selected = event.target.value;
@@ -133,6 +125,10 @@ export default {
                 this.$store.commit('ChangeBirth', selected);
             }
         },
+        ProfileupCanclebtn() {
+            alert('회원정보 수정을 취소하였습니다.');
+            window.location.reload();
+        }
 
     }
 }
