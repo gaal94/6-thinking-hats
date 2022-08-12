@@ -7,33 +7,33 @@
   <thead class="Rechead">
     <tr class="headrow">
       <th scope="col">#</th>
-      <th scope="col">회의시작시간</th>
-      <th scope="col">회의종료시간</th>
+      <th colspan="2">회의생성일자</th>
+      <th scope="col">진행시간</th>
       <th scope="col">회의록</th>
       <th scope="col">녹화파일</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>@mdo</td>
+      <td scope="row">1</td>
+      <td colspan="2">YY : MM : DD : HH : MM</td>
+      <td>1h 30m</td>
+      <td>다운로드</td>
+      <td>녹화파일보기</td>
     </tr>
     <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-      <td>@mdo</td>
+      <td scope="row">2</td>
+      <td colspan="2">YY : MM : DD : HH : MM</td>
+      <td>1h 30m</td>
+      <td>다운로드</td>
+      <td>녹화파일보기</td>
     </tr>
     <tr>
       <th scope="row">3</th>
-      <td>Larry</td>
-       <td>the Bird</td>
-      <td>@twitter</td>
-      <td>@mdo</td>
+      <td colspan="2">YY : MM : DD : HH : MM</td>
+      <td>1h 30m</td>
+      <td>다운로드</td>
+      <td>녹화파일보기</td>
     </tr>
   </tbody>
 </table>
@@ -51,6 +51,7 @@ export default {
 #recgo{
   width:60%;
   margin:auto;
+  background-color: white;
 }
 .pagename {
   position: relative;
