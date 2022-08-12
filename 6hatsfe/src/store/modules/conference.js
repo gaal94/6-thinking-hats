@@ -16,6 +16,7 @@ export default {
     opinions: [],
     role: 'participant',
     hostConnectionId: undefined,
+    conferenceStatus: false,
   },
   getters: {
     session: state => state.session,
@@ -43,6 +44,7 @@ export default {
     opinions: state => state.opinions,
     isHost: state => state.role === 'host',
     hostConnectionId: state => state.hostConnectionId,
+    isConferencing: state => state.conferenceStatus,
   },
   mutations: {
     setSession(state, session) {
@@ -160,6 +162,12 @@ export default {
     turnOnVideo(state) {
       state.publisher.publishVideo(true)
     },
+    startConference(state) {
+      state.conferenceStatus = true
+    },
+    endConference(state) {
+      state.conferenceStatus = false
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -246,6 +254,12 @@ export default {
     },
     turnOnVideo({commit}) {
       commit('turnOnVideo')
+    },
+    startConference({commit}) {
+      commit('startConference')
+    },
+    endConference({commit}) {
+      commit('endConference')
     },
   },
 }

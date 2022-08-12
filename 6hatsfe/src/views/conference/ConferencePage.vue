@@ -44,7 +44,6 @@
 
     <!-- 아이콘바 -->
     <icon-bar 
-    :isConferencing="isConferencing"
     :hat-color="myHat"
     :role="host"
     :session="session"
@@ -109,7 +108,6 @@ export default {
   },
   data: () => {
 		return {
-      isConferencing: false,
       OV: undefined,
       screenOV: undefined,
 			session: undefined,
@@ -133,14 +131,16 @@ export default {
 	computed: {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
-                    'confSubject', 'opinions', 'hostConnectionId',]),
+                    'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
+                    ]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
-                    'turnOffVideo', 'turnOnVideo',]),
+                    'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
+                    ]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -457,10 +457,11 @@ export default {
       this.resetTurn()
       if (this.isConferencing) {
         this.resetTimer()
+        this.endConference()
       } else {
         this.startTimer()
+        this.startConference()
       }
-      this.isConferencing = !this.isConferencing
     })
 
     // 유저들의 모자 색을 바꿀 때 실행됨
