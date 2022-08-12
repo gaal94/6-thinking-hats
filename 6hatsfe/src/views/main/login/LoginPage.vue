@@ -38,8 +38,8 @@ export default {
           this.$store.commit('ChangeToken')
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
-          this.$store.commit('ChangeId',decoded.userId);
           var decoded = jwt_decode(token);//token 디코드
+          this.$store.commit('ChangeId',decoded.userId);
 
           // Intercepotor 시작
           interceptor({

@@ -3,8 +3,8 @@
         <div id="myprofilebox">
             <img src="@/assets/melong.jpg" id="myprofileimg"/>
         </div><i class='bx bxs-camera-plus' ></i>
-        <h1 v-if="nameUpdatebtnon"><br>닉네임 : {{name}}<a><i class='bx bxs-pen' @click="Nameupbtn" ></i></a></h1>
-        <h1 v-else><input v-model="tname"/><a><i class='bx bxs-pen' @click="Nameupbtn" ></i></a></h1>
+        <h1 v-if="nameUpdatebtnon"><br>{{name}}<a><i class='bx bxs-pen' @click="Nameupbtn" ></i></a></h1>
+        <h1 v-else><input @keyup.enter="Nameupbtn" v-model="tname"/><a><i class='bx bxs-pen' @click="Nameupbtn"></i></a></h1>
         <div id="profilebody">
         <div class="profilecontent" id="profilecontentleft">
             <ul class="leftul">
@@ -17,9 +17,26 @@
         <div class="profilecontent">
             <ul>
                 <li class="rightli">{{email}}</li>
-                <li class="rightli">{{job}}  <i class='bx bxs-pen' ></i></li>
-                <li class="rightli">{{gender}}  <i class='bx bxs-pen' ></i></li>
-                <li class="rightli">{{birth}}  <i class='bx bxs-pen' ></i></li>
+                <li v-if="jobUpdatebtnon" class="rightli">{{job}}<a><i class='bx bxs-pen' @click="Jobupbtn" ></i></a></li>
+                <li v-else class="rightli">
+                    <select @change="Jobupbtn($event)">
+                        <option>선택</option>
+                        <option value="STUDENT">학생</option>
+                        <option value="OFFICE">직장인</option>
+                        <option value="JOBLESS">무직</option>
+                        <option value="OTHER">기타</option>
+                    </select>
+                    <a><i class='bx bxs-pen' @click="Jobupbtn" ></i></a>
+                    </li>
+                <li v-if="genderUpdatebtnon" class="rightli">{{gender}}<a><i class='bx bxs-pen' @click="Genderupbtn" ></i></a></li>
+                <li v-else class="rightli">
+                    <input type="radio" v-model="tgender" @change="Genderupbtn($event)" value="MAN" checked="checked">남
+                    <input type="radio" v-model="tgender" @change="Genderupbtn($event)" value="WOMAN">여
+                </li>
+                <li class="rightli" v-if="birthUpdatebtnon">{{birth}}<a><i class='bx bxs-pen' @click="Birthupbtn" ></i></a></li>
+                <li class="rightli" v-else>
+                    <input type="date" @change="Birthupbtn($event)"/><i class='bx bxs-pen' ></i>
+                </li>
             </ul>
         </div>
         </div>
@@ -36,7 +53,11 @@ export default {
     name: 'ProfilePage',
     data() {
         return {
-            nameUpdatebtnon: true,tname:this.$store.name
+            nameUpdatebtnon: true, genderUpdatebtnon: true, jobUpdatebtnon: true, birthUpdatebtnon: true,
+            tname: this.$store.name,
+            tgender: this.$store.gender,
+            tjob: this.$store.job,
+            tbirth: this.$store.birth
         }
     },
     mounted() {//프로필 출력시 개인정보 띄워줌
@@ -64,9 +85,9 @@ export default {
             http
                 .put("/user/" + decoded.userId ,{ //수정할 데이터를 json형태로 전달
             name:this.name,
-            birth:"2022-08-02",
-            gender:"MAN",
-            job: "STUDENT",
+            birth:this.birth,
+            gender:this.gender,
+            job: this.job,
             email:this.email
             
         })
@@ -82,6 +103,34 @@ export default {
             else {
                 this.$store.commit('ChangeName', this.tname);
                 this.nameUpdatebtnon = !this.nameUpdatebtnon;
+            }
+        },
+        Jobupbtn(event) {
+            if (this.jobUpdatebtnon) {
+                this.jobUpdatebtnon = !this.jobUpdatebtnon;
+            }
+            else {
+                this.$store.commit('ChangeJob', event.target.value);
+                this.jobUpdatebtnon = !this.jobUpdatebtnon;
+            }
+        },
+        Genderupbtn(event) {
+            var selected = event.target.value;
+            if (this.genderUpdatebtnon) {
+                this.genderUpdatebtnon = !this.genderUpdatebtnon;
+            }
+            else {
+                this.$store.commit('ChangeGender', selected);
+            }
+        },
+        Birthupbtn(event) {
+            var selected = event.target.value;
+            if (this.birthUpdatebtnon) {
+                this.birthUpdatebtnon = !this.birthUpdatebtnon;
+            }
+            else {
+                this.birthUpdatebtnon = !this.birthUpdatebtnon;
+                this.$store.commit('ChangeBirth', selected);
             }
         },
 
