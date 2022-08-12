@@ -61,6 +61,9 @@ export default {
   computed: {
     ...mapGetters(['loginstatus','name','token'])
   },
+  created() {
+    this.$store.commit("ChangeName", localStorage.getItem('username'));
+  }
 
 
 }

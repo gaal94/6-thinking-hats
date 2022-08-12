@@ -38,16 +38,14 @@ export default {
           this.$store.commit('ChangeToken')
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
-          var decoded = jwt_decode(token);//token 디코드
           this.$store.commit('ChangeId',decoded.userId);
+          var decoded = jwt_decode(token);//token 디코드
 
           // Intercepotor 시작
           interceptor({
             url: '/user/' + decoded.userId,
             method: 'get'
           }).then((res) => {
-            console.log(res.data.user.name);
-            alert(res.data.user.name);
             localStorage.setItem("username", res.data.user.name);
             this.$store.commit('ChangeName', res.data.user.name);
           }).catch((err) => {
