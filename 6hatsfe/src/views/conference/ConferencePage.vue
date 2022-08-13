@@ -52,7 +52,8 @@
     @shareScreen="shareScreen"
     @menuModal="menuModal"
     class="icon-bar"
-    @record="recording"></icon-bar>
+    @record="recording"
+    :isRecording="isRecording"></icon-bar>
 
     <button @click="testDown">test</button>
     
@@ -494,25 +495,12 @@ export default {
     recording() {
       if (this.isRecording) {
         // 녹화 중이었을 때 녹화 끄기
-        axios.post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
-        {},
-        {
-          auth: {
-            username: 'OPENVIDUAPP',
-            password: OPENVIDU_SERVER_SECRET
-          }
-        })
-        .then(res => {
-          console.log(res);
-          this.recordingURL = res.data.url
-          console.log(this.recordingURL);
-          this.recordingSession.unpublish(this.recordPublisher)
-          this.recordingSession.disconnect()
-          this.recordingOV = undefined
-          this.recordingSession = undefined
-          this.recordPublisher = undefined
-        })
-        
+        this.localRecorder.stop()
+        this.isRecording = false
+        this.recordingSession.unpublish(this.recordPublisher)
+        this.recordingSession.disconnect()
+        this.recordPublisher = undefined
+        this.recordingOV = undefined
 
       } else {
         // 녹화 중이 아니었을 때 녹화 시작하기
@@ -531,14 +519,15 @@ export default {
               this.localRecorder = localRecorder
 
               this.localRecorder.record()
+              this.isRecording = true
               
               this.recordPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                console.log('중지');
                 this.localRecorder.stop()
                 this.recordingSession.unpublish(this.recordPublisher)
                 this.recordingSession.disconnect()
                 this.recordPublisher = undefined
                 this.recordingOV = undefined
+                this.isRecording = false
               })
             })
             this.recordingSession.publish(this.recordPublisher)

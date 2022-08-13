@@ -13,7 +13,8 @@
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="shareScreen"><i class='bx bx-window-open'></i></button>
 
-    <button v-if="isHost" @click="record"><i class='bx bx-radio-circle-marked'></i></button>
+    <button v-if="isHost" @click="record"
+    ><i class='bx bx-radio-circle-marked' :class="{'record-activated': isRecording}"></i></button>
 
     <button><i class='bx bxs-smile'></i></button>
 
@@ -54,6 +55,7 @@ export default {
 	},
   props: {
     hatColor: String,
+    isRecording: Boolean,
   },
 	data: () => {
 		return {
@@ -260,5 +262,9 @@ i {
 
 .disabled {
   color: #a1a1a1;
+}
+
+.record-activated {
+  color: rgb(223, 58, 58);
 }
 </style>
