@@ -1,34 +1,26 @@
 <template>
-  회의이력
-<table class="table">
-  <thead>
-    <tr>
+  <div id="recgo">
+    <header class="pagename">
+    <h1>녹화 파일</h1>
+    </header>
+  <table class="table">
+  <thead class="Rechead">
+    <tr class="headrow">
       <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th colspan="2">비디오 파일 다운로드</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
+    <tr v-for ="(no,idx) in roomVideos" :key="idx">
+      <td scope="row">{{idx+1}}</td>
+      <td colspan="2" v-if="no.videoValid">
+        <router-link to="/recpage">{{no.videoFileUrl}}</router-link>
+      </td>
+      <td v-else>{{no.videoFileUrl}}</td>
     </tr>
   </tbody>
 </table>
+</div>
 </template>
 
 <script>
@@ -37,6 +29,15 @@ import jwt_decode from "jwt-decode";
 
 export default {
   name: 'RecPage',
+  data() {
+    return {
+      roomVideos:{
+        videoFileUrl: '',
+        videoValid:''
+      }
+    }
+  }
+  ,
      created() {
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
@@ -47,7 +48,8 @@ export default {
             url: '/room/' + 1 +'/videos',
             method: 'get'
           }).then((res) => {
-            console.log(res);
+            this.roomVideos = res.data.roomVideos;
+            console.log(this.roomVideos);
           }).catch((err) => {
             alert(err);
           });
