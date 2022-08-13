@@ -2,7 +2,7 @@
   <div class="conference-page">
     <!-- 화면공유 -->
     <button @click="seeScreenShare" class="screen-share-btn"
-    v-if="!seeScreen && !screenPublisher">
+    v-if="!seeScreen && !isMyScreenShared">
       <i class="screen-share-btn-icon bx bxs-caret-down-circle"></i>
     </button>
     <screen-share class="screen-share" v-if="seeScreen"
@@ -136,7 +136,7 @@ export default {
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
-      isScreenShared: false,
+      isMyScreenShared: false,
       seeScreen: false,
       seeMenu: false,
       seeChat: false,
@@ -348,6 +348,7 @@ export default {
 			this.OV = undefined;
       this.screenSession = undefined
       this.recordingSession = undefined
+      this.isMyScreenShared = false
       this.clearUsers()
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
@@ -468,12 +469,14 @@ export default {
             this.screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
             this.screenPublisher.once('accessAllowed', () => {
+              this.isMyScreenShared = true
               this.screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
                 this.screenSession.unpublish(this.screenPublisher)
                 this.screenSession.disconnect()
                 this.screenPublisher = undefined
                 this.screenSub = undefined
                 this.screenOV = undefined
+                this.isMyScreenShared = false
               })
             })
             this.screenSession.publish(this.screenPublisher)
@@ -634,6 +637,10 @@ export default {
     flex-direction: column;
     align-items: center;
     background-color: #121212;
+  }
+
+  .screen-share {
+    position: absolute;
   }
 
   .screen-share-btn-icon {

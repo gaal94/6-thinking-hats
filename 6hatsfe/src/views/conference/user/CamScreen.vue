@@ -1,13 +1,15 @@
 <template>
   <!-- 6hats 모드 -->
   <div v-if="hatMode === 'sixhats'" class="cam-box">
-    <img v-if="hat === 'red-hat'" src="@/assets/redhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'yellow-hat'" src="@/assets/yellowhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'green-hat'" src="@/assets/greenhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'black-hat'" src="@/assets/blackhat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
-    <img v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
+    <div class="hat-img-box">
+      <img v-if="hat === 'red-hat'" src="@/assets/redhat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'yellow-hat'" src="@/assets/yellowhat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'green-hat'" src="@/assets/greenhat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'black-hat'" src="@/assets/blackhat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'white-hat'" src="@/assets/whitehat.png" alt="" class="hat-img">
+      <img v-else-if="hat === 'random-hat'" src="@/assets/randomhat.png" alt="" class="hat-img">
+    </div>
     <div class="cam-screen-box">
 			<div v-if="streamManager">
       <ov-video class="cam-screen" :stream-manager="streamManager"/>
@@ -76,6 +78,11 @@ export default {
     width: 200px;
     height: 120px;
     border-radius: 14px;
+  }
+
+  .hat-img-box {
+    min-width: 40px;
+    min-height: 40px;
   }
 
   .hat-img {
