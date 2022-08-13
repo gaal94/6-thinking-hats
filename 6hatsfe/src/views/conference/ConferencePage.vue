@@ -45,7 +45,6 @@
     <!-- 아이콘바 -->
     <icon-bar 
     :hat-color="myHat"
-    :role="host"
     :session="session"
     @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
@@ -53,7 +52,10 @@
     @changeVideo="changeVideo"
     @shareScreen="shareScreen"
     @menuModal="menuModal"
-    class="icon-bar"></icon-bar>
+    class="icon-bar"
+    @record="recording"></icon-bar>
+
+    <button @click="testDown">test</button>
     
     <menu-modal
     class="menu-modal"
@@ -116,6 +118,13 @@ export default {
 			subscribers: [],
       screenPublisher: undefined,
       screenSub: undefined,
+      recordingOV: undefined,
+      recordingSession: undefined,
+      isRecording: false,
+      recordPublisher: undefined,
+      recordingId: undefined,
+      recordingURL: undefined,
+      localRecorder: undefined,
 
 			mySessionId: 'SessionAAAAAA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
@@ -196,6 +205,8 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
         if (stream.typeOfVideo === 'SCREEN') {
           const screen = this.session.subscribe(stream)
+          console.log('여기여기여ㅣ');
+          console.log(stream);
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
@@ -257,8 +268,9 @@ export default {
             return true
           }
         })
-
-        this.removeUser(idx)
+         if (idx > -1) {
+           this.removeUser(idx)
+         }
         } else {
           this.leaveSession()
           this.$router.push({name: 'LandingPage'})
@@ -313,6 +325,7 @@ export default {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
 			if (this.session) this.session.disconnect();
       if (this.screenSession) this.screenSession.disconnect()
+      if (this.recordingSession) this.recordingSession.disconnect()
 
 			this.session = undefined;
       this.setSession(undefined)
@@ -321,6 +334,7 @@ export default {
 			this.subscribers = [];
 			this.OV = undefined;
       this.screenSession = undefined
+      this.recordingSession = undefined
       this.clearUsers()
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
@@ -449,6 +463,68 @@ export default {
     closeScreenShare() {
       this.seeScreen = false
     },
+    recording() {
+      if (this.isRecording) {
+        // 녹화 중이었을 때 녹화 끄기
+        axios.post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
+        {},
+        {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.recordingURL = res.data.url
+          console.log(this.recordingURL);
+          this.recordingSession.unpublish(this.recordPublisher)
+          this.recordingSession.disconnect()
+          this.recordingOV = undefined
+          this.recordingSession = undefined
+          this.recordPublisher = undefined
+        })
+        
+
+      } else {
+        // 녹화 중이 아니었을 때 녹화 시작하기
+      
+        this.recordingOV = new OpenVidu()
+        this.recordingSession = this.recordingOV.initSession()
+
+        this.getToken(this.mySessionId).then(token => {
+				this.recordingSession.connect(token)
+					.then(() => {
+
+            this.recordPublisher = this.recordingOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
+
+            this.recordPublisher.once('accessAllowed', () => {
+              var localRecorder = this.recordingOV.initLocalRecorder(this.recordPublisher.stream)
+              this.localRecorder = localRecorder
+
+              this.localRecorder.record()
+              
+              this.recordPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                console.log('중지');
+                this.localRecorder.stop()
+                this.recordingSession.unpublish(this.recordPublisher)
+                this.recordingSession.disconnect()
+                this.recordPublisher = undefined
+                this.recordingOV = undefined
+              })
+            })
+            this.recordingSession.publish(this.recordPublisher)
+
+            })
+					.catch(error => {
+						console.log('There was an error connecting to the session:', error.code, error.message);
+					});
+			});    
+      }
+    },
+    testDown() {
+      this.localRecorder.download()
+    }
 	},
   created() {
     this.joinSession()

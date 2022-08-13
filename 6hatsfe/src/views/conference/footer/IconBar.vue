@@ -13,7 +13,7 @@
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="shareScreen"><i class='bx bx-window-open'></i></button>
 
-    <button v-if="isHost"><i class='bx bx-radio-circle-marked'></i></button>
+    <button v-if="isHost" @click="record"><i class='bx bx-radio-circle-marked'></i></button>
 
     <button><i class='bx bxs-smile'></i></button>
 
@@ -157,7 +157,10 @@ export default {
     },
     menuModal() {
       this.$emit('menuModal')
-    }
+    },
+    record() {
+      this.$emit('record')
+    },
 	},
   created() {
     // 파란모자가 차례를 이전으로 돌릴 때
