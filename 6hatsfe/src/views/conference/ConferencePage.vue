@@ -95,8 +95,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -155,7 +155,7 @@ export default {
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
-                    ]),
+                    'joinConferenceRoom', 'exitConferenceRoom',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -353,6 +353,7 @@ export default {
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
       this.resetTimer()
+      this.exitConferenceRoom()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -539,12 +540,13 @@ export default {
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
-			});    
+        });    
       }
     },
     testDown() {
       this.localRecorder.download()
-    }
+    },
+
 	},
   created() {
     this.joinSession()
@@ -627,6 +629,8 @@ export default {
         })
       }
     })
+
+    this.joinConferenceRoom()
   }
 }
 </script>
