@@ -45,7 +45,6 @@
     <!-- 아이콘바 -->
     <icon-bar 
     :hat-color="myHat"
-    :session="session"
     @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
@@ -67,7 +66,12 @@
     v-show="seeChat"
     ref="chatRef"
     @sendChat="sendChat"
-    @clostChatModal="clostChatModal"></chat-modal>
+    @closeChatModal="closeChatModal"></chat-modal>
+    <user-list-modal
+    class="user-list-modal"
+    v-show="seeUserList"
+    ref="userListRef"
+    @closeUserListModal="closeUserListModal"></user-list-modal>
   </div>
 </template>
 
@@ -86,13 +90,13 @@ import { mapActions, mapGetters } from 'vuex'
 // import UserVideo from './components/UserVideo';
 import MenuModal from '@/views/conference/modal/MenuModal.vue'
 import ChatModal from '@/views/conference/modal/ChatModal.vue'
+import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 // const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
 const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
-
 
 export default {
   name: 'ConferencePage',
@@ -107,6 +111,7 @@ export default {
     ScreenShare,
     MenuModal,
     ChatModal,
+    UserListModal,
   },
   data: () => {
 		return {
@@ -174,8 +179,11 @@ export default {
       this.seeMenu = false
       this.seeUserList = true
     },
-    clostChatModal () {
+    closeChatModal () {
       this.seeChat = !this.seeChat
+    },
+    closeUserListModal () {
+      this.seeUserList = false
     },
     changeConf() {
       this.session.signal({
@@ -239,7 +247,10 @@ export default {
           const name = JSON.parse(connection.data).clientData
           const userInfo = { hatColor: 'spectator', 
                             connectionId: connection.connectionId,
-                            userName: name}
+                            userName: name,
+                            isHost: false,
+                            camOn: false,
+                            micOn: false }
           this.addUser(userInfo)
 
           const settingData = { users: this.users,
@@ -301,9 +312,7 @@ export default {
 
 						this.mainStreamManager = publisher;
 						this.setPublisher(publisher)
-            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
-                              userName: this.myUserName }
-            this.addUser(userInfo)
+            
 						// --- Publish your stream ---
 
             // 호스트 판별
@@ -312,6 +321,9 @@ export default {
               this.setHostConnectionId(publisher.stream.session.connection.connectionId)
             }
 
+            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
+                              userName: this.myUserName, isHost: this.isHost, camOn: false, micOn: false }
+            this.addUser(userInfo)
 						this.session.publish(this.publisher);
 					})
 					.catch(error => {
@@ -411,18 +423,34 @@ export default {
     changeMicrophone() {
       this.audio = !this.audio
       if (this.audio) {
-        this.turnOnAudio()
+        this.turnOnAudio(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-on-audio'
+        })
       } else {
-        this.turnOffAudio()
+        this.turnOffAudio(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-off-audio'
+        }) 
       }
     },
 
     changeVideo(){
       this.video = !this.video
       if (this.video) {
-        this.turnOnVideo()
+        this.turnOnVideo(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-on-video'
+        })
       } else {
-        this.turnOffVideo()
+        this.turnOffVideo(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-off-video'
+        })
       }
     },
     
@@ -576,10 +604,35 @@ export default {
     this.session.on('signal:initial-setting', ({data}) => {
       // users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
       // totalTime, timer, confSubject, opinions
-      
       if (!this.isHost) {
         const settingData = JSON.parse(data)
         this.initialSetting(settingData)
+      }
+    })
+
+    this.session.on('signal:turn-on-audio', ({data}) => {
+      this.turnOnAudio(data)
+    })
+
+    this.session.on('signal:turn-off-audio', ({data}) => {
+      this.turnOffAudio(data)
+    })
+
+    this.session.on('signal:turn-on-video', ({data}) => {
+      this.turnOnVideo(data)
+    })
+
+    this.session.on('signal:turn-off-video', ({data}) => {
+      this.turnOffVideo(data)
+    })
+
+    this.session.on('signal:kick-user', ({data}) => {
+      if (this.users[data]['connectionId'] == this.publisher.stream.session.connection.connectionId) {
+        this.leaveSession()
+        this.$router.push({name: 'LandingPage'})
+        .then(() => {
+          alert('당신은 강퇴당했습니다.')
+        })
       }
     })
   }
@@ -658,5 +711,11 @@ export default {
     position: absolute;
     bottom: 60px;
     z-index: 2;
+  }
+
+  .user-list-modal {
+    position: absolute;
+    bottom: 60px;
+    z-index: 3;
   }
 </style>

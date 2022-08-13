@@ -158,17 +158,41 @@ export default {
     setHostConnectionId(state, conId) {
       state.hostConnectionId = conId
     },
-    turnOffAudio(state) {
+    turnOffAudio(state, conId) {
       state.publisher.publishAudio(false)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = false
+          break
+        }
+      }
     },
-    turnOnAudio(state) {
+    turnOnAudio(state, conId) {
       state.publisher.publishAudio(true)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = true
+          break
+        }
+      }
     },
-    turnOffVideo(state) {
+    turnOffVideo(state, conId) {
       state.publisher.publishVideo(false)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOn'] = false
+          break
+        }
+      }
     },
-    turnOnVideo(state) {
+    turnOnVideo(state, conId) {
       state.publisher.publishVideo(true)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOn'] = true
+          break
+        }
+      }
     },
     startConference(state) {
       state.conferenceStatus = true
@@ -254,17 +278,17 @@ export default {
     setHostConnectionId({commit}, conId) {
       commit('setHostConnectionId', conId)
     },
-    turnOffAudio({commit}) {
-      commit('turnOffAudio')
+    turnOffAudio({commit}, conId) {
+      commit('turnOffAudio', conId)
     },
-    turnOnAudio({commit}) {
-      commit('turnOnAudio')
+    turnOnAudio({commit}, conId) {
+      commit('turnOnAudio', conId)
     },
-    turnOffVideo({commit}) {
-      commit('turnOffVideo')
+    turnOffVideo({commit}, conId) {
+      commit('turnOffVideo', conId)
     },
-    turnOnVideo({commit}) {
-      commit('turnOnVideo')
+    turnOnVideo({commit}, conId) {
+      commit('turnOnVideo', conId)
     },
     startConference({commit}) {
       commit('startConference')

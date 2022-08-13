@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .menu-modal-box {
     background: #F6F6F6;
     width: 136px;
@@ -67,9 +67,9 @@ export default {
     font-size: 14px;
     margin-left: 12px;
     margin-bottom: 0;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 </style>
