@@ -50,7 +50,7 @@
       <div class="input-box" 
       v-if="(hatMode === 'sixhats' && (hatColor === speechOrder[currentTurn] || hatColor === 'blue-hat'))
             || (hatMode === 'onehat' && hatColor !== 'spectator')">
-        <textarea class="input-box-content" v-model="opinion"></textarea>
+        <input class="input-box-content" v-model="opinion" @keyup.enter="sendOpinion(opinion)">
         <i class='bx bxs-send' @click="sendOpinion(opinion)"></i>
       </div>
     </div>
