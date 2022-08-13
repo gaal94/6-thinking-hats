@@ -17,6 +17,7 @@ export default {
     role: 'participant',
     hostConnectionId: undefined,
     conferenceStatus: false,
+    isInConferenceRoom: false,
   },
   getters: {
     session: state => state.session,
@@ -46,6 +47,7 @@ export default {
     hostConnectionId: state => state.hostConnectionId,
     isConferencing: state => state.conferenceStatus,
     conferenceStatus: state => state.conferenceStatus,
+    isInConferenceRoom: state => state.isInConferenceRoom,
   },
   mutations: {
     setSession(state, session) {
@@ -200,6 +202,12 @@ export default {
     endConference(state) {
       state.conferenceStatus = false
     },
+    joinConferenceRoom(state) {
+      state.isInConferenceRoom = true
+    },
+    exitConferenceRoom(state) {
+      state.isInConferenceRoom = false
+    },
   },
   actions: {
     setSession({commit}, session) {
@@ -295,6 +303,12 @@ export default {
     },
     endConference({commit}) {
       commit('endConference')
+    },
+    joinConferenceRoom({commit}) {
+      commit('joinConferenceRoom')
+    },
+    exitConferenceRoom({commit}) {
+      commit('exitConferenceRoom')
     },
   },
 }
