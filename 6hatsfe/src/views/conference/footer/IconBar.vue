@@ -1,12 +1,20 @@
 <template>
   <div class="icon-box">
-    <button @click="changeMic"><i class='bx bxs-microphone-off mic'></i></button>
+    <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
+    @click="changeMic" 
+    :disabled="isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]">
+    <i class='bx bxs-microphone-off mic' 
+    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]}"></i>
+    </button>
 
-    <button @click="changeVideo"><i class='bx bxs-video-off video'></i></button>
+    <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
+    @click="changeVideo"><i class='bx bxs-video-off video'></i></button>
 
-    <button @click="shareScreen"><i class='bx bx-window-open'></i></button>
+    <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
+    @click="shareScreen"><i class='bx bx-window-open'></i></button>
 
-    <button><i class='bx bx-radio-circle-marked'></i></button>
+    <button v-if="isHost" @click="record"
+    ><i class='bx bx-radio-circle-marked' :class="{'record-activated': isRecording}"></i></button>
 
     <button><i class='bx bxs-smile'></i></button>
 
@@ -22,11 +30,11 @@
     @click="clickPassTurn"
     :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
-    <button class="pass-btn" v-if="isConferencing && ideaMode[currentTurn] === hatColor" :class="hatColor"
+    <button class="pass-btn" v-if="isConferencing && speechOrder[currentTurn] === hatColor" :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
     <button class="end-btn" @click="startConference()" 
-    v-if="!isConferencing">
+    v-if="!isConferencing && isHost">
       <span>회의 시작</span>
     </button>
 
@@ -46,8 +54,8 @@ export default {
   components: {
 	},
   props: {
-    isConferencing: Boolean,
     hatColor: String,
+    isRecording: Boolean,
   },
 	data: () => {
 		return {
@@ -56,12 +64,13 @@ export default {
 	},
 	computed: {
     ...mapGetters(['ideaMode', 'currentTurn', 'session', 'speechOrder', 
-                    'users', 'hatMode',]),
+                    'users', 'hatMode', 'isHost', 'isConferencing',]),
 	},
 	methods: {
     ...mapActions(['passTurn', 'backToPreTurn', 'resetTurn', 'startTimer', 'resetTimer',
                     'changeUserHatColor',]),
     startConference() {
+      // sixhats 모드, 6모자가 각 한 명 이상 있어야 시작 가능 
       if (this.hatMode === 'sixhats') {
         let hats = ['red-hat', 'yellow-hat', 'green-hat', 'blue-hat', 'black-hat', 
                     'white-hat']
@@ -95,7 +104,18 @@ export default {
           this.$emit('changeConferenceStatus')
         }
       } else {
-        this.$emit('changeConferenceStatus')
+        // onehat 모드, 파란 모자가 한 명 있어야 시작 가능
+        let bluehatCnt = 0
+
+        this.users.forEach(el => {
+          if (el.hatColor === 'blue-hat') {
+            bluehatCnt += 1
+          }
+        });
+
+        if (bluehatCnt === 1) {
+          this.$emit('changeConferenceStatus')
+        }
       }
     },
     endConference() {
@@ -139,7 +159,10 @@ export default {
     },
     menuModal() {
       this.$emit('menuModal')
-    }
+    },
+    record() {
+      this.$emit('record')
+    },
 	},
   created() {
     // 파란모자가 차례를 이전으로 돌릴 때
@@ -237,4 +260,11 @@ i {
   background-color: #000000;
 }
 
+.disabled {
+  color: #a1a1a1;
+}
+
+.record-activated {
+  color: rgb(223, 58, 58);
+}
 </style>

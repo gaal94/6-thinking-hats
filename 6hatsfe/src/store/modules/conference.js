@@ -16,6 +16,7 @@ export default {
     opinions: [],
     role: 'participant',
     hostConnectionId: undefined,
+    conferenceStatus: false,
   },
   getters: {
     session: state => state.session,
@@ -43,6 +44,8 @@ export default {
     opinions: state => state.opinions,
     isHost: state => state.role === 'host',
     hostConnectionId: state => state.hostConnectionId,
+    isConferencing: state => state.conferenceStatus,
+    conferenceStatus: state => state.conferenceStatus,
   },
   mutations: {
     setSession(state, session) {
@@ -61,9 +64,15 @@ export default {
     },
     passTurn(state) {
       state.currentTurn = (state.currentTurn + 1) % 6
+      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+        state.publisher.publishAudio(false)
+      }
     },
     backToPreTurn(state) {
       state.currentTurn = (state.currentTurn + 5) % 6
+      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+        state.publisher.publishAudio(false)
+      }
     },
     resetTurn(state) {
       state.currentTurn = 0
@@ -133,7 +142,7 @@ export default {
       state.role = role
     },
     initialSetting(state, {users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
-                  totalTime, confSubject, opinions, hostConnectionId}) {
+                  totalTime, confSubject, opinions, hostConnectionId, conferenceStatus}) {
       state.users = users
       state.ideaMode = ideaMode
       state.hatMode = hatMode
@@ -144,21 +153,52 @@ export default {
       state.confSubject = confSubject
       state.opinions = opinions
       state.hostConnectionId = hostConnectionId
+      state.conferenceStatus = conferenceStatus
     },
     setHostConnectionId(state, conId) {
       state.hostConnectionId = conId
     },
-    turnOffAudio(state) {
+    turnOffAudio(state, conId) {
       state.publisher.publishAudio(false)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = false
+          break
+        }
+      }
     },
-    turnOnAudio(state) {
+    turnOnAudio(state, conId) {
       state.publisher.publishAudio(true)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = true
+          break
+        }
+      }
     },
-    turnOffVideo(state) {
+    turnOffVideo(state, conId) {
       state.publisher.publishVideo(false)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOn'] = false
+          break
+        }
+      }
     },
-    turnOnVideo(state) {
+    turnOnVideo(state, conId) {
       state.publisher.publishVideo(true)
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOn'] = true
+          break
+        }
+      }
+    },
+    startConference(state) {
+      state.conferenceStatus = true
+    },
+    endConference(state) {
+      state.conferenceStatus = false
     },
   },
   actions: {
@@ -231,21 +271,30 @@ export default {
     },
     initialSetting({commit}, payload) {
       commit('initialSetting', payload)
+      if (payload.conferenceStatus === true) {
+        commit('startTimer')
+      }
     },
     setHostConnectionId({commit}, conId) {
       commit('setHostConnectionId', conId)
     },
-    turnOffAudio({commit}) {
-      commit('turnOffAudio')
+    turnOffAudio({commit}, conId) {
+      commit('turnOffAudio', conId)
     },
-    turnOnAudio({commit}) {
-      commit('turnOnAudio')
+    turnOnAudio({commit}, conId) {
+      commit('turnOnAudio', conId)
     },
-    turnOffVideo({commit}) {
-      commit('turnOffVideo')
+    turnOffVideo({commit}, conId) {
+      commit('turnOffVideo', conId)
     },
-    turnOnVideo({commit}) {
-      commit('turnOnVideo')
+    turnOnVideo({commit}, conId) {
+      commit('turnOnVideo', conId)
+    },
+    startConference({commit}) {
+      commit('startConference')
+    },
+    endConference({commit}) {
+      commit('endConference')
     },
   },
 }

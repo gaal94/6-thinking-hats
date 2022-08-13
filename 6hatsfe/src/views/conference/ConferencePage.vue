@@ -2,7 +2,7 @@
   <div class="conference-page">
     <!-- 화면공유 -->
     <button @click="seeScreenShare" class="screen-share-btn"
-    v-if="!seeScreen && !screenPublisher">
+    v-if="!seeScreen && !isMyScreenShared">
       <i class="screen-share-btn-icon bx bxs-caret-down-circle"></i>
     </button>
     <screen-share class="screen-share" v-if="seeScreen"
@@ -15,7 +15,7 @@
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen :stream-manager="publisher"></cam-screen>
+        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"></cam-screen>
         <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
@@ -44,17 +44,18 @@
 
     <!-- 아이콘바 -->
     <icon-bar 
-    :isConferencing="isConferencing"
     :hat-color="myHat"
-    :role="host"
-    :session="session"
     @changeConferenceStatus="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
     @changeVideo="changeVideo"
     @shareScreen="shareScreen"
     @menuModal="menuModal"
-    class="icon-bar"></icon-bar>
+    class="icon-bar"
+    @record="recording"
+    :isRecording="isRecording"></icon-bar>
+
+    <button @click="testDown">test</button>
     
     <menu-modal
     class="menu-modal"
@@ -66,7 +67,12 @@
     v-show="seeChat"
     ref="chatRef"
     @sendChat="sendChat"
-    @clostChatModal="clostChatModal"></chat-modal>
+    @closeChatModal="closeChatModal"></chat-modal>
+    <user-list-modal
+    class="user-list-modal"
+    v-show="seeUserList"
+    ref="userListRef"
+    @closeUserListModal="closeUserListModal"></user-list-modal>
   </div>
 </template>
 
@@ -85,13 +91,13 @@ import { mapActions, mapGetters } from 'vuex'
 // import UserVideo from './components/UserVideo';
 import MenuModal from '@/views/conference/modal/MenuModal.vue'
 import ChatModal from '@/views/conference/modal/ChatModal.vue'
+import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-//const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
-
 
 export default {
   name: 'ConferencePage',
@@ -106,10 +112,10 @@ export default {
     ScreenShare,
     MenuModal,
     ChatModal,
+    UserListModal,
   },
   data: () => {
 		return {
-      isConferencing: false,
       OV: undefined,
       screenOV: undefined,
 			session: undefined,
@@ -118,12 +124,19 @@ export default {
 			subscribers: [],
       screenPublisher: undefined,
       screenSub: undefined,
+      recordingOV: undefined,
+      recordingSession: undefined,
+      isRecording: false,
+      recordPublisher: undefined,
+      recordingId: undefined,
+      recordingURL: undefined,
+      localRecorder: undefined,
 
 			mySessionId: 'SessionAAAAAA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
-      isScreenShared: false,
+      isMyScreenShared: false,
       seeScreen: false,
       seeMenu: false,
       seeChat: false,
@@ -133,14 +146,16 @@ export default {
 	computed: {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
-                    'confSubject', 'opinions', 'hostConnectionId',]),
+                    'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
+                    'conferenceStatus',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
                     'changeUserHatColor', 'setMyHat', 'setPublisher', 'clearUsers',
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
-                    'turnOffVideo', 'turnOnVideo',]),
+                    'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
+                    ]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -165,8 +180,11 @@ export default {
       this.seeMenu = false
       this.seeUserList = true
     },
-    clostChatModal () {
+    closeChatModal () {
       this.seeChat = !this.seeChat
+    },
+    closeUserListModal () {
+      this.seeUserList = false
     },
     changeConf() {
       this.session.signal({
@@ -196,6 +214,8 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
         if (stream.typeOfVideo === 'SCREEN') {
           const screen = this.session.subscribe(stream)
+          console.log('여기여기여ㅣ');
+          console.log(stream);
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
@@ -228,7 +248,10 @@ export default {
           const name = JSON.parse(connection.data).clientData
           const userInfo = { hatColor: 'spectator', 
                             connectionId: connection.connectionId,
-                            userName: name}
+                            userName: name,
+                            isHost: false,
+                            camOn: false,
+                            micOn: false }
           this.addUser(userInfo)
 
           const settingData = { users: this.users,
@@ -240,7 +263,8 @@ export default {
                                 totalTime: this.totalTime,
                                 confSubject: this.confSubject,
                                 opinions: this.opinions,
-                                hostConnectionId: this.hostConnectionId}
+                                hostConnectionId: this.hostConnectionId,
+                                conferenceStatus: this.conferenceStatus}
           const jsonSettingData = JSON.stringify(settingData)
           this.session.signal({
             data: jsonSettingData,
@@ -256,8 +280,9 @@ export default {
             return true
           }
         })
-
-        this.removeUser(idx)
+         if (idx > -1) {
+           this.removeUser(idx)
+         }
         } else {
           this.leaveSession()
           this.$router.push({name: 'LandingPage'})
@@ -288,9 +313,7 @@ export default {
 
 						this.mainStreamManager = publisher;
 						this.setPublisher(publisher)
-            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
-                              userName: this.myUserName }
-            this.addUser(userInfo)
+            
 						// --- Publish your stream ---
 
             // 호스트 판별
@@ -299,6 +322,9 @@ export default {
               this.setHostConnectionId(publisher.stream.session.connection.connectionId)
             }
 
+            const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
+                              userName: this.myUserName, isHost: this.isHost, camOn: false, micOn: false }
+            this.addUser(userInfo)
 						this.session.publish(this.publisher);
 					})
 					.catch(error => {
@@ -312,6 +338,7 @@ export default {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
 			if (this.session) this.session.disconnect();
       if (this.screenSession) this.screenSession.disconnect()
+      if (this.recordingSession) this.recordingSession.disconnect()
 
 			this.session = undefined;
       this.setSession(undefined)
@@ -320,6 +347,8 @@ export default {
 			this.subscribers = [];
 			this.OV = undefined;
       this.screenSession = undefined
+      this.recordingSession = undefined
+      this.isMyScreenShared = false
       this.clearUsers()
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
@@ -396,18 +425,34 @@ export default {
     changeMicrophone() {
       this.audio = !this.audio
       if (this.audio) {
-        this.turnOnAudio()
+        this.turnOnAudio(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-on-audio'
+        })
       } else {
-        this.turnOffAudio()
+        this.turnOffAudio(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-off-audio'
+        }) 
       }
     },
 
     changeVideo(){
       this.video = !this.video
       if (this.video) {
-        this.turnOnVideo()
+        this.turnOnVideo(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-on-video'
+        })
       } else {
-        this.turnOffVideo()
+        this.turnOffVideo(this.publisher.stream.session.connection.connectionId)
+        this.session.signal({
+          data: this.publisher.stream.session.connection.connectionId,
+          type: 'turn-off-video'
+        })
       }
     },
     
@@ -424,12 +469,14 @@ export default {
             this.screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
             this.screenPublisher.once('accessAllowed', () => {
+              this.isMyScreenShared = true
               this.screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
                 this.screenSession.unpublish(this.screenPublisher)
                 this.screenSession.disconnect()
                 this.screenPublisher = undefined
                 this.screenSub = undefined
                 this.screenOV = undefined
+                this.isMyScreenShared = false
               })
             })
             this.screenSession.publish(this.screenPublisher)
@@ -448,6 +495,56 @@ export default {
     closeScreenShare() {
       this.seeScreen = false
     },
+    recording() {
+      if (this.isRecording) {
+        // 녹화 중이었을 때 녹화 끄기
+        this.localRecorder.stop()
+        this.isRecording = false
+        this.recordingSession.unpublish(this.recordPublisher)
+        this.recordingSession.disconnect()
+        this.recordPublisher = undefined
+        this.recordingOV = undefined
+
+      } else {
+        // 녹화 중이 아니었을 때 녹화 시작하기
+      
+        this.recordingOV = new OpenVidu()
+        this.recordingSession = this.recordingOV.initSession()
+
+        this.getToken(this.mySessionId).then(token => {
+				this.recordingSession.connect(token)
+					.then(() => {
+
+            this.recordPublisher = this.recordingOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
+
+            this.recordPublisher.once('accessAllowed', () => {
+              var localRecorder = this.recordingOV.initLocalRecorder(this.recordPublisher.stream)
+              this.localRecorder = localRecorder
+
+              this.localRecorder.record()
+              this.isRecording = true
+              
+              this.recordPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                this.localRecorder.stop()
+                this.recordingSession.unpublish(this.recordPublisher)
+                this.recordingSession.disconnect()
+                this.recordPublisher = undefined
+                this.recordingOV = undefined
+                this.isRecording = false
+              })
+            })
+            this.recordingSession.publish(this.recordPublisher)
+
+            })
+					.catch(error => {
+						console.log('There was an error connecting to the session:', error.code, error.message);
+					});
+			});    
+      }
+    },
+    testDown() {
+      this.localRecorder.download()
+    }
 	},
   created() {
     this.joinSession()
@@ -457,10 +554,24 @@ export default {
       this.resetTurn()
       if (this.isConferencing) {
         this.resetTimer()
+        this.endConference()
+
+        // 관전자일 때 회의가 끝나면 다시 카메라 복원
+        if (this.myHat === 'spectator') {
+          this.session.publish(this.publisher)
+        }
       } else {
         this.startTimer()
+        this.startConference()
+        // 회의 시작시 무조건 오디오 끄기
+        this.turnOffAudio()
+
+        // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
+        if (this.myHat === 'spectator') {
+          this.turnOffVideo()
+          this.session.unpublish(this.publisher)
+        }
       }
-      this.isConferencing = !this.isConferencing
     })
 
     // 유저들의 모자 색을 바꿀 때 실행됨
@@ -482,14 +593,38 @@ export default {
     this.session.on('signal:delete-opinion', ({data}) => {
       this.removeOpinion(Number(data))
     })
-
     this.session.on('signal:initial-setting', ({data}) => {
       // users, ideaMode, hatMode, speechOrder, currentTurn, baseTime, 
       // totalTime, timer, confSubject, opinions
-      
       if (!this.isHost) {
         const settingData = JSON.parse(data)
         this.initialSetting(settingData)
+      }
+    })
+
+    this.session.on('signal:turn-on-audio', ({data}) => {
+      this.turnOnAudio(data)
+    })
+
+    this.session.on('signal:turn-off-audio', ({data}) => {
+      this.turnOffAudio(data)
+    })
+
+    this.session.on('signal:turn-on-video', ({data}) => {
+      this.turnOnVideo(data)
+    })
+
+    this.session.on('signal:turn-off-video', ({data}) => {
+      this.turnOffVideo(data)
+    })
+
+    this.session.on('signal:kick-user', ({data}) => {
+      if (this.users[data]['connectionId'] == this.publisher.stream.session.connection.connectionId) {
+        this.leaveSession()
+        this.$router.push({name: 'LandingPage'})
+        .then(() => {
+          alert('당신은 강퇴당했습니다.')
+        })
       }
     })
   }
@@ -502,6 +637,10 @@ export default {
     flex-direction: column;
     align-items: center;
     background-color: #121212;
+  }
+
+  .screen-share {
+    position: absolute;
   }
 
   .screen-share-btn-icon {
@@ -568,5 +707,11 @@ export default {
     position: absolute;
     bottom: 60px;
     z-index: 2;
+  }
+
+  .user-list-modal {
+    position: absolute;
+    bottom: 60px;
+    z-index: 3;
   }
 </style>

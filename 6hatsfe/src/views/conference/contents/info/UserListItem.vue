@@ -10,7 +10,9 @@
             'random-hat-back' : userInfo.hatColor === 'random-hat',
             'spectator-back' : userInfo.hatColor === 'spectator', }">
     <span class="user-name">{{ userInfo.userName }}</span>
-    <div class="cnt-status dropdown">
+
+    <!-- 호스트일 때 드롭다운 메뉴 -->
+    <div v-if="isHost" class="cnt-status dropdown">
       <div class="cnt-hat"
             :class="userInfo.hatColor"
             data-bs-toggle="dropdown" aria-expanded="false">
@@ -72,7 +74,7 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['session', 'users', 'hatMode', ]),
+    ...mapGetters(['session', 'users', 'hatMode', 'isHost', ]),
 	},
 	methods: {
     changeHatColor(targetHat) {
