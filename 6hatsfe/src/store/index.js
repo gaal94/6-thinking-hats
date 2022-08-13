@@ -1,10 +1,10 @@
 import { createStore } from 'vuex'
-import usersa from '@/store/modules/usersa'
+import users from '@/store/modules/users'
 import conference from '@/store/modules/conference'
 
 export default createStore({
   // strict: true,
   modules: {
-    usersa, conference
+    users, conference
   }
 })
