@@ -14,35 +14,78 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td scope="row">1</td>
-      <td colspan="2">YY : MM : DD : HH : MM</td>
-      <td>1h 30m</td>
+    <tr v-for ="(no,idx) in rooms" :key="idx">
+      <td scope="row">{{idx+1}}</td>
+      <td colspan="2">{{conversionTime(no.roomStartTime)}}</td>
+      <td>{{timeGapcal(no.roomStartTime,no.roomEndTime)}}</td>
       <td>다운로드</td>
-      <td>녹화파일보기</td>
-    </tr>
-    <tr>
-      <td scope="row">2</td>
-      <td colspan="2">YY : MM : DD : HH : MM</td>
-      <td>1h 30m</td>
-      <td>다운로드</td>
-      <td>녹화파일보기</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">YY : MM : DD : HH : MM</td>
-      <td>1h 30m</td>
-      <td>다운로드</td>
-      <td>녹화파일보기</td>
+      <td><router-link to="/recpage">녹화파일</router-link></td>
     </tr>
   </tbody>
 </table>
+<a @click="conversionTime">함수테스트</a>
 </div>
 </template>
 
 <script>
+import interceptor from "@/api/interceptors";
+import jwt_decode from "jwt-decode";
 export default {
-    name : 'HistoryPage'
+  name: 'HistoryPage'
+  ,
+  data() {
+    return {
+      rooms: {
+        creator: true,
+        opinionFileUrl: "",
+        opinionFileValid: '',
+        roomEndTime: '',
+        roomId: '',
+        roomStartTime: '',
+        userId: ''
+      }
+    }
+  }
+  , 
+    methods: {
+      timeRange() {
+        this.rooms.roomEndTime
+      },
+      conversionTime(value) {
+        if (typeof value === "string") { 
+        let constartTime = value.slice(0, 16);
+        constartTime = constartTime.replace(/\D/g, ':');
+        return constartTime;
+        }
+      },
+      timeGapcal(start,end) {
+        var fromTime = new Date(start);
+        var toTime = new Date(end);
+
+        var differenceTravel = toTime.getTime() - fromTime.getTime();
+        var hours = Math.floor((differenceTravel) / (1000 * 60 * 60));
+        var minute = Math.floor((differenceTravel) / (1000 * 60));
+
+        let value= hours%60+"시"+minute+"분"
+        return value;
+      }
+      
+  },
+  created() {
+          var token=localStorage.getItem('access-token');
+          var decoded = jwt_decode(token);//token 디코드
+          this.$store.commit('ChangeId',decoded.userId);
+
+          // Intercepotor 시작
+          interceptor({
+            url: '/user/' + decoded.userId +'/rooms',
+            method: 'get'
+          }).then((res) => {
+            this.rooms = res.data.rooms;
+          }).catch((err) => {
+            alert(err);
+          });
+  }
 
 }
 </script>
@@ -76,7 +119,7 @@ h1, p {
   color:#FFFFFF;
 }
 .table{
-  font-size: 20px;
+  font-size: 14px;
 }
 
 </style>
