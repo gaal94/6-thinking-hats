@@ -46,8 +46,6 @@ export default {
             url: '/user/' + decoded.userId,
             method: 'get'
           }).then((res) => {
-            console.log(res.data.user.name);
-            alert(res.data.user.name);
             localStorage.setItem("username", res.data.user.name);
             this.$store.commit('ChangeName', res.data.user.name);
           }).catch((err) => {

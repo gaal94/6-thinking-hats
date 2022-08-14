@@ -1,25 +1,22 @@
 <template>
   <div id="recgo">
     <header class="pagename">
-    <h1>공지사항</h1>
+    <h1>녹화 파일</h1>
     </header>
   <table class="table">
   <thead class="Rechead">
     <tr class="headrow">
-      <th scope="col">글번호</th>
-      <th scope ="col" colspan="4">제목</th>
-      <th scope="col">작성자</th>
-      <th scope="col">작성일</th>
-      <th scope="col">조회수</th>
+      <th scope="col">#</th>
+      <th colspan="2">비디오 파일 다운로드</th>
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(no,idx) in boards" :key ="idx">
+    <tr v-for ="(no,idx) in roomVideos" :key="idx">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4">{{no.title}}</td>
-      <td>{{no.name}}</td>
-      <td>{{no.boardCreatedAt}}</td>
-      <td>{{no.views}}</td>
+      <td colspan="2" v-if="no.videoValid">
+        <router-link to="/recpage">{{no.videoFileUrl}}</router-link>
+      </td>
+      <td v-else>{{no.videoFileUrl}}</td>
     </tr>
   </tbody>
 </table>
@@ -28,30 +25,36 @@
 
 <script>
 import interceptor from "@/api/interceptors";
+import jwt_decode from "jwt-decode";
+
 export default {
-  name: 'NoticePage'
-  ,
+  name: 'RecPage',
   data() {
     return {
-      boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
-      length: '',
-    };
-  }, 
-    methods: {
-      
-  },
-    mounted() {
+      roomVideos:{
+        videoFileUrl: '',
+        videoValid:''
+      }
+    }
+  }
+  ,
+     created() {
+          var token=localStorage.getItem('access-token');
+          var decoded = jwt_decode(token);//token 디코드
+          this.$store.commit('ChangeId',decoded.userId);
+
           // Intercepotor 시작
-    interceptor({
-            url: '/board/notice',
+          interceptor({
+            url: '/room/' + 1 +'/videos',
             method: 'get'
           }).then((res) => {
-            this.boards = res.data;
-            this.length = res.data.length;
+            this.roomVideos = res.data.roomVideos;
+            console.log(this.roomVideos);
           }).catch((err) => {
             alert(err);
           });
-      }
+  }
+
 }
 </script>
 
@@ -86,5 +89,4 @@ h1, p {
 .table{
   font-size: 14px;
 }
-
 </style>

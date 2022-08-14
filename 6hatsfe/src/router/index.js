@@ -93,7 +93,15 @@ const routes = [
     //profile router
 
     component: () => import('@/views/main/profile/ProfilePage')
+  },
+  {
+    path: '/recpage',
+    name: 'RecPage',
+    //profile router
+
+    component: () => import('@/views/main/history/rec/RecPage')
   }
+
 ]
 
 const router = createRouter({

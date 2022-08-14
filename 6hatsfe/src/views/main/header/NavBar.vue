@@ -27,8 +27,7 @@
         </ul>
       </div>
     </li>
-    <li><button @click = "createRoom" class="navbtn">방 생성</button></li>
-    <li><router-link to="/loginpage" class = "navbarright">방 생성</router-link></li>
+    <li><router-link to="/conferencepage" class = "navbarright">방 생성</router-link></li>
     <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
 </template>
@@ -61,6 +60,9 @@ export default {
   computed: {
     ...mapGetters(['loginstatus','name','token'])
   },
+  created() {
+    this.$store.commit("ChangeName", localStorage.getItem('username'));
+  }
 
 
 }
