@@ -95,11 +95,18 @@ const routes = [
     component: () => import('@/views/main/profile/ProfilePage')
   },
   {
-    path: '/recpage',
+    path: '/recpage/:roomId',
     name: 'RecPage',
-    //profile router
+    //record router
 
     component: () => import('@/views/main/history/rec/RecPage')
+  },
+  {
+    path: '/noticecontentspage/:boardId',
+    name: 'NoticecontentsPage',
+    //notice contests router
+
+    component: () => import('@/views/main/notice/NoticecontentsPage')
   }
 
 ]

@@ -43,7 +43,7 @@ export default {
     logout() {
       localStorage.clear('access-token');
       localStorage.clear('username');
-      window.location.reload();
+      this.$store.commit('ChangeToken', '');
       this.$router.push('/')
     },
     createRoom() {
@@ -69,14 +69,15 @@ export default {
 </script>
 
 <style>
-#logo:hover{
+/* #logo:hover{
   background-color: white;
-}
+} */
 #logo{
   width : 60px;
   height: 60px;
   float : left;
   margin : 5px;
+  padding:0px;
 }
 #dropdown-menu{
   float: right;

@@ -14,7 +14,7 @@
     <tr v-for ="(no,idx) in roomVideos" :key="idx">
       <td scope="row">{{idx+1}}</td>
       <td colspan="2" v-if="no.videoValid">
-        <router-link to="/recpage">{{no.videoFileUrl}}</router-link>
+        <router-link to="">{{no.videoFileUrl}}</router-link>
       </td>
       <td v-else>{{no.videoFileUrl}}</td>
     </tr>
@@ -26,14 +26,14 @@
 <script>
 import interceptor from "@/api/interceptors";
 import jwt_decode from "jwt-decode";
-
 export default {
   name: 'RecPage',
   data() {
     return {
       roomVideos:{
         videoFileUrl: '',
-        videoValid:''
+        videoValid: '',
+        roomId:'',
       }
     }
   }
@@ -42,19 +42,20 @@ export default {
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
           this.$store.commit('ChangeId',decoded.userId);
-
+          this.roomId = this.$route.params.roomId;
           // Intercepotor 시작
           interceptor({
-            url: '/room/' + 1 +'/videos',
+            url: '/room/' + this.roomId +'/videos',
             method: 'get'
           }).then((res) => {
             this.roomVideos = res.data.roomVideos;
             console.log(this.roomVideos);
+            console.log(this.roomId);
           }).catch((err) => {
             alert(err);
           });
   }
-
+  ,
 }
 </script>
 
