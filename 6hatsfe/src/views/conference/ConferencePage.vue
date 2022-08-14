@@ -157,7 +157,7 @@ export default {
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
-                    ]),
+                    'joinConferenceRoom', 'exitConferenceRoom',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -177,10 +177,18 @@ export default {
     chatModal () {
       this.seeMenu = false
       this.seeChat = true
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '3'
+      userListModal.style.zIndex = '2'
     },
     userListModal () {
       this.seeMenu = false
       this.seeUserList = true
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '2'
+      userListModal.style.zIndex = '3'
     },
     closeChatModal () {
       this.seeChat = !this.seeChat
@@ -358,6 +366,7 @@ export default {
       this.setHostConnectionId(undefined)
       this.resetTimer()
       this.endConference()
+      this.exitConferenceRoom()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -544,12 +553,13 @@ export default {
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
-			});    
+        });    
       }
     },
     testDown() {
       this.localRecorder.download()
-    }
+    },
+
 	},
   created() {
     this.joinSession()
@@ -649,6 +659,8 @@ export default {
         })
       }
     })
+
+    this.joinConferenceRoom()
   }
 }
 </script>
@@ -737,13 +749,11 @@ export default {
   .chat-modal {
     position: absolute;
     bottom: 60px;
-    z-index: 2;
   }
 
   .user-list-modal {
     position: absolute;
     bottom: 60px;
-    z-index: 3;
   }
 
   .cam {

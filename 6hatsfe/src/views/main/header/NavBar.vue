@@ -27,8 +27,7 @@
         </ul>
       </div>
     </li>
-    <li><button @click = "createRoom" class="navbtn">방 생성</button></li>
-    <li><router-link to="/loginpage" class = "navbarright">방 생성</router-link></li>
+    <li><router-link to="/conferencepage" class = "navbarright">방 생성</router-link></li>
     <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
 </template>
@@ -44,7 +43,7 @@ export default {
     logout() {
       localStorage.clear('access-token');
       localStorage.clear('username');
-      window.location.reload();
+      this.$store.commit('ChangeToken', '');
       this.$router.push('/')
     },
     createRoom() {
@@ -61,20 +60,24 @@ export default {
   computed: {
     ...mapGetters(['loginstatus','name','token'])
   },
+  created() {
+    this.$store.commit("ChangeName", localStorage.getItem('username'));
+  }
 
 
 }
 </script>
 
 <style>
-#logo:hover{
+/* #logo:hover{
   background-color: white;
-}
+} */
 #logo{
   width : 60px;
   height: 60px;
   float : left;
   margin : 5px;
+  padding:0px;
 }
 #dropdown-menu{
   float: right;

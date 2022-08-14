@@ -17,6 +17,9 @@ export default {
     role: 'participant',
     hostConnectionId: undefined,
     conferenceStatus: false,
+    isInConferenceRoom: false,
+    countdownAudio: new Audio(require('@/assets/media/countdown.mp3')),
+    timeoutAudio: new Audio(require('@/assets/media/timeout.mp3')),
   },
   getters: {
     session: state => state.session,
@@ -47,6 +50,7 @@ export default {
     isConferencing: state => state.conferenceStatus,
     conferenceStatus: state => state.conferenceStatus,
     timer: state => state.timer,
+    isInConferenceRoom: state => state.isInConferenceRoom,
   },
   mutations: {
     setSession(state, session) {
@@ -63,16 +67,22 @@ export default {
     setHatMode(state, whichMode) {
       state.hatMode = whichMode
     },
-    passTurn(state) {
+    passTurn(state, myturnAudio) {
       state.currentTurn = (state.currentTurn + 1) % 6
       if (state.myHat !== state.speechOrder[state.currentTurn]) {
         state.publisher.publishAudio(false)
       }
+      if (state.myHat == state.speechOrder[state.currentTurn]) {
+        myturnAudio.play()
+      }
     },
-    backToPreTurn(state) {
+    backToPreTurn(state, myturnAudio) {
       state.currentTurn = (state.currentTurn + 5) % 6
       if (state.myHat !== state.speechOrder[state.currentTurn]) {
         state.publisher.publishAudio(false)
+      }
+      if (state.myHat == state.speechOrder[state.currentTurn]) {
+        myturnAudio.play()
       }
     },
     resetTurn(state) {
@@ -94,6 +104,12 @@ export default {
           state.timer = null;
         
           state.timer = setInterval(() => countdown(), 1000);
+        }
+        if (state.totalTime >= 1 && state.totalTime <= 5) {
+          state.countdownAudio.play()
+        }
+        else if (state.totalTime == 0) {
+          state.timeoutAudio.play()
         }
       }
 
@@ -197,9 +213,18 @@ export default {
     },
     startConference(state) {
       state.conferenceStatus = true
+      if (state.myHat == state.speechOrder[state.currentTurn]) {
+        state.myturnAudio.play()
+      }
     },
     endConference(state) {
       state.conferenceStatus = false
+    },
+    joinConferenceRoom(state) {
+      state.isInConferenceRoom = true
+    },
+    exitConferenceRoom(state) {
+      state.isInConferenceRoom = false
     },
   },
   actions: {
@@ -213,12 +238,14 @@ export default {
       commit('setHatMode', whichMode)
     },
     passTurn({commit}) {
-      commit('passTurn')
+      let myturnAudio = new Audio(require('@/assets/media/myturn.mp3'))
+      commit('passTurn', myturnAudio)
       commit('resetTimer')
       commit('startTimer')
     },
     backToPreTurn({commit}) {
-      commit('backToPreTurn')
+      let myturnAudio = new Audio(require('@/assets/media/myturn.mp3'))
+      commit('backToPreTurn', myturnAudio)
       commit('resetTimer')
       commit('startTimer')
     },
@@ -296,6 +323,12 @@ export default {
     },
     endConference({commit}) {
       commit('endConference')
+    },
+    joinConferenceRoom({commit}) {
+      commit('joinConferenceRoom')
+    },
+    exitConferenceRoom({commit}) {
+      commit('exitConferenceRoom')
     },
   },
 }
