@@ -12,6 +12,7 @@ import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
 import { mapGetters } from 'vuex'
 
 export default{
+  name: 'App',
   components : {
     NavBar,
     BackgroundWave,

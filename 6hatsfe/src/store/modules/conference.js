@@ -49,6 +49,7 @@ export default {
     hostConnectionId: state => state.hostConnectionId,
     isConferencing: state => state.conferenceStatus,
     conferenceStatus: state => state.conferenceStatus,
+    timer: state => state.timer,
     isInConferenceRoom: state => state.isInConferenceRoom,
   },
   mutations: {

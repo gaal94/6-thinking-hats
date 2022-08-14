@@ -15,8 +15,10 @@
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"></cam-screen>
-        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"
+        class="cam"></cam-screen>
+        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"
+        class="cam"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
 
@@ -222,8 +224,6 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
         if (stream.typeOfVideo === 'SCREEN') {
           const screen = this.session.subscribe(stream)
-          console.log('여기여기여ㅣ');
-          console.log(stream);
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
@@ -253,14 +253,17 @@ export default {
       
       this.session.on('connectionCreated', ({connection}) => {
         if (this.isHost) {
-          const name = JSON.parse(connection.data).clientData
-          const userInfo = { hatColor: 'spectator', 
-                            connectionId: connection.connectionId,
-                            userName: name,
-                            isHost: false,
-                            camOn: false,
-                            micOn: false }
-          this.addUser(userInfo)
+
+          if (this.users.length < 12) {
+            const name = JSON.parse(connection.data).clientData
+            const userInfo = { hatColor: 'spectator', 
+                              connectionId: connection.connectionId,
+                              userName: name,
+                              isHost: false,
+                              camOn: false,
+                              micOn: false }
+            this.addUser(userInfo)
+          }
 
           const settingData = { users: this.users,
                                 ideaMode: this.ideaMode,
@@ -274,6 +277,7 @@ export default {
                                 hostConnectionId: this.hostConnectionId,
                                 conferenceStatus: this.conferenceStatus}
           const jsonSettingData = JSON.stringify(settingData)
+          
           this.session.signal({
             data: jsonSettingData,
             type: 'initial-setting'
@@ -361,6 +365,7 @@ export default {
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
       this.resetTimer()
+      this.endConference()
       this.exitConferenceRoom()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
@@ -608,7 +613,24 @@ export default {
       // totalTime, timer, confSubject, opinions
       if (!this.isHost) {
         const settingData = JSON.parse(data)
-        this.initialSetting(settingData)
+        if (settingData.users.length === 12) {
+          console.log('12명');
+          let idx = settingData.users.findIndex(userInfo => {
+            if (userInfo.connectionId === this.publisher.stream.session.connection.connectionId) {
+              return true
+            }
+          })
+          
+          if (idx === -1) {
+            alert('12명 까지만 입장할 수 있습니다.')
+            this.leaveSession()
+            this.$router.push({name: 'LandingPage'})
+          } else {
+            this.initialSetting(settingData)
+          }
+        } else {
+          this.initialSetting(settingData)
+        }
       }
     })
 
@@ -648,7 +670,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     background-color: #121212;
+    width: 100%;
+    height: 100%;
   }
 
   .screen-share {
@@ -663,6 +688,7 @@ export default {
   .screen-share-btn {
     border: none;
     background-color: #121212;
+    margin-top: 12px;
   }
 
   .screen-share-btn:hover {
@@ -673,13 +699,15 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .conference-body {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
   }
 
   .left-side {
@@ -690,10 +718,13 @@ export default {
   .right-side {
     display: flex;
     flex-direction: column;
+    
   }
 
   .left-side, .right-side {
     align-self: flex-start;
+    align-items: center;
+    width: 15.3646vw;
   }
 
   .cam-arrow-icon {
@@ -723,5 +754,9 @@ export default {
   .user-list-modal {
     position: absolute;
     bottom: 60px;
+  }
+
+  .cam {
+    flex-shrink: 1;
   }
 </style>

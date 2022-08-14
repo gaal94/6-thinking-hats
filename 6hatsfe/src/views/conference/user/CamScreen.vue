@@ -12,9 +12,8 @@
     </div>
     <div class="cam-screen-box">
 			<div v-if="streamManager">
-      <ov-video class="cam-screen" :stream-manager="streamManager"/>
-      <div><p>{{ clientData }}</p></div>
-    </div>
+        <ov-video class="cam-screen" :stream-manager="streamManager"/>
+      </div>
     </div>
   </div>
 
@@ -24,9 +23,8 @@
     <img v-else-if="hat !== 'blue-hat' && hat !== 'spectator'" :src="require(`@/assets/${speechOrder[currentTurn].replace('-', '')}.png`)" alt="" class="hat-img">
     <div class="cam-screen-box">
 			<div v-if="streamManager">
-      <ov-video class="cam-screen" :stream-manager="streamManager"/>
-      <div><p>{{ clientData }}</p></div>
-    </div>
+        <ov-video class="cam-screen" :stream-manager="streamManager"/>
+      </div>
     </div>
   </div>
 </template>
@@ -72,21 +70,22 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 12px;
   }
 
   .cam-screen {
-    width: 200px;
-    height: 120px;
-    border-radius: 14px;
+    width: 13.0208vw;
+    height: 7.5521vw;
+    border-radius: 1.9531vw;
   }
 
   .hat-img-box {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 2.0833vw;
+    min-height: 2.0833vw;
   }
 
   .hat-img {
-    width: 40px;
-    height: 40px;
+    width: 2.0833vw;
+    height: 2.0833vw;
   }
 </style>
