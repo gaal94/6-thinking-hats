@@ -53,11 +53,25 @@ const routes = [
     component: () => import('@/views/main/qna/QnaPage.vue')
   },
   {
+    path: '/qnawritepage',
+    name: 'QnaWritePage',
+    //notice router
+
+    component: () => import('@/views/main/qna/QnaWritePage.vue'),
+  },
+  {
     path: '/noticepage',
     name: 'NoticePage',
     //notice router
 
-    component: () => import('@/views/main/notice/NoticePage.vue')
+    component: () => import('@/views/main/notice/NoticePage.vue'),
+  },
+  {
+    path: '/noticewritepage',
+    name: 'NoticeWritePage',
+    //notice router
+
+    component: () => import('@/views/main/notice/NoticeWritePage.vue'),
   },
   {
     path: '/teampage',
@@ -68,7 +82,7 @@ const routes = [
   },
   {
     path: '/signuppage',
-    name: 'SigunupPage',
+    name: 'SignupPage',
     //signup router
 
     component: () => import('@/views/main/signup/SignupPage.vue')
