@@ -14,16 +14,19 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for ="(no,idx) in rooms" :key="idx">
+    <tr v-for ="(no,idx) in rooms" :key="idx" class="boardbody">
       <td scope="row">{{idx+1}}</td>
       <td colspan="2">{{conversionTime(no.roomStartTime)}}</td>
       <td>{{timeGapcal(no.roomStartTime,no.roomEndTime)}}</td>
-      <td>다운로드</td>
-      <td><router-link to="/recpage">녹화파일</router-link></td>
+      <td v-if="!no.opinionFileValid"><a>다운로드</a></td>
+      <td v-else><a>다운로드</a></td>
+      <td><router-link :to="{
+              path: '/recpage/' + no.roomId,
+            }"
+            >녹화파일</router-link></td>
     </tr>
   </tbody>
 </table>
-<a @click="conversionTime">함수테스트</a>
 </div>
 </template>
 
@@ -66,8 +69,14 @@ export default {
         var hours = Math.floor((differenceTravel) / (1000 * 60 * 60));
         var minute = Math.floor((differenceTravel) / (1000 * 60));
 
-        let value= hours%60+"시"+minute+"분"
+        let value= hours%60+" 시간 "+minute+" 분"
         return value;
+      },
+      clickRecdownload(value) {
+        this.$router.push({
+          path: "RecPage",
+          query:{roomId:value},
+        });
       }
       
   },
@@ -120,6 +129,9 @@ h1, p {
 }
 .table{
   font-size: 14px;
+}
+.boardbody:hover{
+  background-color: #C7C6C6;
 }
 
 </style>

@@ -35,7 +35,7 @@ export default {
         .post("/user/login", this.user )
         .then((data) => {
           localStorage.setItem("access-token", data.data["access-token"]);//access-token 로컬 스토리지에 저장
-          this.$store.commit('ChangeToken')
+          this.$store.commit('ChangeToken', data.data["access-token"]);
           this.$store.commit('ChangeLoginstatus', true);
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드

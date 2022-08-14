@@ -14,15 +14,19 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(no,idx) in boards" :key ="idx">
+    <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4">{{no.title}}</td>
+      <td colspan="4"><router-link :to ="{
+              path: '/noticecontentspage/' + no.boardId
+            }">
+      {{no.title}}</router-link></td>
       <td>{{no.name}}</td>
       <td>{{no.boardCreatedAt}}</td>
       <td>{{no.views}}</td>
     </tr>
   </tbody>
 </table>
+ <div class ="boardbtn"><button type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>  <button type="button" class="btn btn-danger" id="boarddeletebtn" >삭제</button></div>
 </div>
 </template>
 
@@ -86,5 +90,10 @@ h1, p {
 .table{
   font-size: 14px;
 }
-
+.boardbody:hover{
+  background-color: #C7C6C6;
+}
+.boardbtn{
+  display:inline;
+}
 </style>
