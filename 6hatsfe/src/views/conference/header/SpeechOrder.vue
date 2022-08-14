@@ -40,17 +40,18 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 80px;
 }
 
 .order {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
 }
 
 .cnt-order {
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
 }
 

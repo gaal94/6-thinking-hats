@@ -173,22 +173,23 @@ export default {
   justify-content: space-between;
   background-color: #F6F6F6;
   align-items: center;
-  border-radius: 14px;
-  height: 52px;
-  width: 1080px;
-  margin-bottom: 12px;
+  border-radius: 10px;
+  height: 36px;
+  width: 1020px;
+  margin-bottom: 8px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .timer-box {
   display: flex;
+  align-items: center;
   gap: 4px;
   margin-left: 8px;
 }
 
 .timer-icon {
-  font-size: 36px;
+  font-size: 32px;
 }
 
 .subject-btn {
@@ -200,8 +201,10 @@ export default {
   border: none;
   color: white;
   border-radius: 36px;
-  width: 64px;
-  height: 36px;
+  width: 44px;
+  height: 24px;
+  margin-right: 4px;
+  font-size: 12px;
 }
 
 .sub-update-btn:hover, .sub-update-confirm-btn:hover, .sub-update-cancel-btn:hover {
@@ -222,8 +225,8 @@ export default {
 
 .opinion-content-box {
   background-color: #F6F6F6;
-  width: 1080px;
-  height: 565px;
+  width: 1020px;
+  height: 480px;
   border-radius: 14px;
   margin-left: auto;
   margin-right: auto;
@@ -244,18 +247,18 @@ export default {
 
 .input-box {
   display: flex;
-  width: 1020px;
-  height: 48px;
+  width: 1000px;
+  height: 36px;
   border: black solid 1px;
-  border-radius: 14px;
+  border-radius: 12px;
   align-items: center;
   background-color: white;
 }
 
 .input-box-content {
   border: none;
-  width: 980px;
-  height: 36px;
+  width: 960px;
+  height: 24px;
   margin-left: 10px;
   position: relative;
   bottom: 4px;

@@ -110,6 +110,8 @@ export default {
   width: 184px;
   height: 24px;
   border-radius: 8px;
+  margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 .select {
@@ -131,8 +133,8 @@ ul li:hover {
 .cnt-hat {
   border-radius: 50%;
   margin: 0, 4px;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,7 +165,6 @@ ul li:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px 0;
 }
 
 .user-name {

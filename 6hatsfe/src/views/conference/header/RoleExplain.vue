@@ -90,21 +90,22 @@ export default {
 
 .explain-line {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  margin: 0 auto;
 }
 
 .explain-line .explain-word {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
+  height: 32px;
   padding: 2px 20px;
   margin: 0;
   border-radius: 8px;
 }
 
 .explain-1 {
-  width: 362px;
+  width: 358px;
 }
 
 .explain-2 {
@@ -112,15 +113,15 @@ export default {
 }
 
 .explain-3 {
-  width: 424px;
+  width: 404px;
 }
 
 .explain-4 {
-  width: 612px;
+  width: 616px;
 }
 
 .explain-5 {
-  width: 426px;
+  width: 400px;
 }
 
 .white-hat {

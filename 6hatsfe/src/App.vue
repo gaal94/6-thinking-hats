@@ -1,17 +1,27 @@
 <template>
-  <nav-bar/>
+  <nav-bar v-if="!publisher"/>
   <router-view/>
-  <background-wave></background-wave>
+  <background-wave v-if="!publisher"></background-wave>
 </template>
 
 <script>
 import NavBar from "@/views/main/header/NavBar.vue"
 import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
+import { mapGetters } from 'vuex'
 
 export default{
+  name: 'App',
   components : {
     NavBar,
     BackgroundWave
+  },
+  data() {
+    return {
+
+    }
+  },
+  computed: {
+    ...mapGetters(['publisher', ])
   }
 }
 </script>

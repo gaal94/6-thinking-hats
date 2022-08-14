@@ -5,15 +5,15 @@
     :src="require(`@/assets/${hat.replace('-', '')}.png`)" alt="" class="hat-img">
     
     <!-- 6hats 모드 -->
-    <div v-if="hatMode === 'sixhats'" class="user-list" :class="hat">
-      <div v-for="(user, idx) in users" :key="`user-${idx}`">
+    <div v-if="hatMode === 'sixhats'" class="user-list-box" :class="hat">
+      <div v-for="(user, idx) in users" :key="`user-${idx}`" class="user-list">
         <user-list-item v-if="user.hatColor === hat" :userInfo=user></user-list-item>
       </div>
     </div>
 
     <!-- 1hat 모드 -->
-    <div v-else-if="hatMode === 'onehat'" class="user-list" :class="hat">
-      <div v-for="(user, idx) in users" :key="`user-${idx}`">
+    <div v-else-if="hatMode === 'onehat'" class="user-list-box" :class="hat">
+      <div v-for="(user, idx) in users" :key="`user-${idx}`" class="user-list">
         <user-list-item v-if="user.hatColor === hat || (hat === 'random-hat' && user.hatColor !== 'spectator' && user.hatColor !== 'blue-hat')" :userInfo=user></user-list-item>
       </div>
     </div>
@@ -79,10 +79,18 @@ export default {
 .hat-img {
   width: 52px;
   height: 52px;
+  align-self: flex-start;
 }
 
 .hat-img:hover {
   cursor: pointer;
+}
+
+.user-list-box {
+  width: 200px;
+  min-height: 40px;
+  border-radius: 14px;
+  padding: 8px;
 }
 
 .user-list {
@@ -90,10 +98,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 200px;
-  min-height: 40px;
-  border-radius: 14px;
-  padding: 12px;
 }
 
 .red-hat {

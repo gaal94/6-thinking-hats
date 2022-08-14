@@ -15,8 +15,10 @@
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"></cam-screen>
-        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"
+        class="cam"></cam-screen>
+        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"
+        class="cam"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
 
@@ -55,7 +57,7 @@
     @record="recording"
     :isRecording="isRecording"></icon-bar>
 
-    <button @click="testDown">test</button>
+    <!-- <button @click="testDown">test</button> -->
     
     <menu-modal
     class="menu-modal"
@@ -353,6 +355,7 @@ export default {
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
       this.resetTimer()
+      this.endConference()
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -636,7 +639,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     background-color: #121212;
+    width: 100%;
+    height: 100%;
   }
 
   .screen-share {
@@ -651,6 +657,7 @@ export default {
   .screen-share-btn {
     border: none;
     background-color: #121212;
+    margin-top: 12px;
   }
 
   .screen-share-btn:hover {
@@ -661,13 +668,15 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .conference-body {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
   }
 
   .left-side {
@@ -678,10 +687,13 @@ export default {
   .right-side {
     display: flex;
     flex-direction: column;
+    
   }
 
   .left-side, .right-side {
     align-self: flex-start;
+    align-items: center;
+    width: 236px;
   }
 
   .cam-arrow-icon {
@@ -713,5 +725,9 @@ export default {
     position: absolute;
     bottom: 60px;
     z-index: 3;
+  }
+
+  .cam {
+    flex-shrink: 1;
   }
 </style>

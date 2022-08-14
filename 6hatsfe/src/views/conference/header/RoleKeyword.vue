@@ -1,12 +1,12 @@
 <template>
   <!-- sixhats 모드 -->
   <div v-if="(hatMode === 'sixhats' && hatColor !== 'spectator') || hatColor === 'blue-hat'" class="role-keyword-box">
-    <img v-if="hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="hat-img">
-    <img v-else-if="hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="hatColor === 'white-hat'" src="@/assets/whitehat_circle.png" alt="" class="hat-img">
+    <img v-if="hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="hatColor === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="hatColor === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="hatColor === 'white-hat'" src="@/assets/whitehat_circle.png" alt="" class="role-keyword-face">
     <div class="role-keyword-list">
       <p class="role-keyword">창의적</p>
       <p class="role-keyword">혁신적</p>
@@ -16,12 +16,12 @@
 
   <!-- onehat 모드 -->
   <div v-else-if="(hatMode === 'onehat' && hatColor !== 'blue-hat') || hatColor === 'spectator'" class="role-keyword-box">
-    <img v-if="speechOrder[currentTurn] === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="speechOrder[currentTurn] === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="speechOrder[currentTurn] === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="speechOrder[currentTurn] === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="hat-img">
-    <img v-else-if="speechOrder[currentTurn] === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="hat-img">
-    <img v-else-if="speechOrder[currentTurn] === 'white-hat'" src="@/assets/whitehat_circle.png" alt="" class="hat-img">
+    <img v-if="speechOrder[currentTurn] === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="speechOrder[currentTurn] === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="speechOrder[currentTurn] === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="speechOrder[currentTurn] === 'blue-hat'" src="@/assets/bluehat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="speechOrder[currentTurn] === 'black-hat'" src="@/assets/blackhat_circle.png" alt="" class="role-keyword-face">
+    <img v-else-if="speechOrder[currentTurn] === 'white-hat'" src="@/assets/whitehat_circle.png" alt="" class="role-keyword-face">
     <div class="role-keyword-list">
       <p class="role-keyword">창의적</p>
       <p class="role-keyword">혁신적</p>
@@ -58,14 +58,15 @@ export default {
 
 .role-keyword-box {
   width: 132px;
+  min-height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .role-keyword-face {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
 }
 
 .role-keyword {

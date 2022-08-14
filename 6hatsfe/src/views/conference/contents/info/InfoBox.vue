@@ -29,9 +29,12 @@ export default {
 <style scoped>
   .info-box {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-evenly;
     background-color: #F6F6F6;
-    padding: 12px;
+    padding: 12px 0 4px 0;
     border-radius: 10px;
+    width: 1020px;
+    height: 560px;
   }
 </style>
