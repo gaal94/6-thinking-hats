@@ -98,30 +98,31 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  height: 2.0833vw;
   padding: 2px 20px;
   margin: 0;
-  border-radius: 8px;
+  border-radius: 0.5208vw;
+  font-size: 1.0417vw;
 }
 
 .explain-1 {
-  width: 358px;
+  width: 23.3073vw;
 }
 
 .explain-2 {
-  width: 248px;
+  width: 16.1458vw;
 }
 
 .explain-3 {
-  width: 404px;
+  width: 26.3021vw;
 }
 
 .explain-4 {
-  width: 616px;
+  width: 40.1042vw;
 }
 
 .explain-5 {
-  width: 400px;
+  width: 26.0417vw;
 }
 
 .white-hat {

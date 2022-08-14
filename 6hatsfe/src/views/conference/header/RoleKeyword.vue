@@ -57,20 +57,20 @@ export default {
 }
 
 .role-keyword-box {
-  width: 132px;
-  min-height: 80px;
+  width: 8.5938vw;
+  min-height: 5.2083vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .role-keyword-face {
-  width: 68px;
-  height: 68px;
+  width: 4.4271vw;
+  height: 4.4271vw;
 }
 
 .role-keyword {
-  font-size: 14px;
+  font-size: 0.9115vw;
   margin: 0;
   padding: 2px;
   color: white;

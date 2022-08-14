@@ -77,8 +77,8 @@ export default {
 }
 
 .hat-img {
-  width: 52px;
-  height: 52px;
+  width: 3.3854vw;
+  height: 3.3854vw;
   align-self: flex-start;
 }
 
@@ -87,9 +87,9 @@ export default {
 }
 
 .user-list-box {
-  width: 200px;
-  min-height: 40px;
-  border-radius: 14px;
+  width: 13.0208vw;
+  min-height: 2.6042vw;
+  border-radius: 0.9115vw;
   padding: 8px;
 }
 

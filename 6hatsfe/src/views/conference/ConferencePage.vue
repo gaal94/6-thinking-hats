@@ -57,7 +57,7 @@
     @record="recording"
     :isRecording="isRecording"></icon-bar>
 
-    <!-- <button @click="testDown">test</button> -->
+    <button @click="testDown">test</button>
     
     <menu-modal
     class="menu-modal"
@@ -216,8 +216,6 @@ export default {
 			this.session.on('streamCreated', ({ stream }) => {
         if (stream.typeOfVideo === 'SCREEN') {
           const screen = this.session.subscribe(stream)
-          console.log('여기여기여ㅣ');
-          console.log(stream);
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
@@ -247,14 +245,17 @@ export default {
       
       this.session.on('connectionCreated', ({connection}) => {
         if (this.isHost) {
-          const name = JSON.parse(connection.data).clientData
-          const userInfo = { hatColor: 'spectator', 
-                            connectionId: connection.connectionId,
-                            userName: name,
-                            isHost: false,
-                            camOn: false,
-                            micOn: false }
-          this.addUser(userInfo)
+
+          if (this.users.length < 12) {
+            const name = JSON.parse(connection.data).clientData
+            const userInfo = { hatColor: 'spectator', 
+                              connectionId: connection.connectionId,
+                              userName: name,
+                              isHost: false,
+                              camOn: false,
+                              micOn: false }
+            this.addUser(userInfo)
+          }
 
           const settingData = { users: this.users,
                                 ideaMode: this.ideaMode,
@@ -268,6 +269,7 @@ export default {
                                 hostConnectionId: this.hostConnectionId,
                                 conferenceStatus: this.conferenceStatus}
           const jsonSettingData = JSON.stringify(settingData)
+          
           this.session.signal({
             data: jsonSettingData,
             type: 'initial-setting'
@@ -601,7 +603,24 @@ export default {
       // totalTime, timer, confSubject, opinions
       if (!this.isHost) {
         const settingData = JSON.parse(data)
-        this.initialSetting(settingData)
+        if (settingData.users.length === 12) {
+          console.log('12명');
+          let idx = settingData.users.findIndex(userInfo => {
+            if (userInfo.connectionId === this.publisher.stream.session.connection.connectionId) {
+              return true
+            }
+          })
+          
+          if (idx === -1) {
+            alert('12명 까지만 입장할 수 있습니다.')
+            this.leaveSession()
+            this.$router.push({name: 'LandingPage'})
+          } else {
+            this.initialSetting(settingData)
+          }
+        } else {
+          this.initialSetting(settingData)
+        }
       }
     })
 
@@ -693,7 +712,7 @@ export default {
   .left-side, .right-side {
     align-self: flex-start;
     align-items: center;
-    width: 236px;
+    width: 15.3646vw;
   }
 
   .cam-arrow-icon {

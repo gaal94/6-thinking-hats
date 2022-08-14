@@ -33,8 +33,8 @@ export default {
     justify-content: space-evenly;
     background-color: #F6F6F6;
     padding: 12px 0 4px 0;
-    border-radius: 10px;
-    width: 1020px;
-    height: 560px;
+    border-radius: 0.6510vw;
+    width: 66.4063vw;
+    height: 36.4583vw;
   }
 </style>

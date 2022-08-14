@@ -74,18 +74,18 @@ export default {
   }
 
   .cam-screen {
-    width: 200px;
-    height: 116px;
-    border-radius: 30px;
+    width: 13.0208vw;
+    height: 7.5521vw;
+    border-radius: 1.9531vw;
   }
 
   .hat-img-box {
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 2.0833vw;
+    min-height: 2.0833vw;
   }
 
   .hat-img {
-    width: 32px;
-    height: 32px;
+    width: 2.0833vw;
+    height: 2.0833vw;
   }
 </style>
