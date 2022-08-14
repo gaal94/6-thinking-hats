@@ -1,18 +1,25 @@
 <template>
-  <nav-bar/>
+  <nav-bar v-if="!isInConferenceRoom"/>
   <router-view/>
-  <background-wave></background-wave>
+  <main-footer v-if="!isInConferenceRoom"/>
+  <background-wave v-if="!isInConferenceRoom"/>
 </template>
 
 <script>
 import NavBar from "@/views/main/header/NavBar.vue"
 import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
+import MainFooter from '@/views/main/footer/MainFooter.vue'
+import { mapGetters } from 'vuex'
 
 export default{
   components : {
     NavBar,
-    BackgroundWave
-  }
+    BackgroundWave,
+    MainFooter
+  },
+	computed: {
+    ...mapGetters(['isInConferenceRoom',]),
+	},
 }
 </script>
 
@@ -23,6 +30,7 @@ export default{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  position: absolute;
 }
 
 nav {

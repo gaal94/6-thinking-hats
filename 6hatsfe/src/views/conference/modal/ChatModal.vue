@@ -1,11 +1,11 @@
 <template>
-  <div class="chat-modal-box">
+  <div class="chat-modal-box" @mousedown="mouseDown">
     <div class="chat-modal-header">
       <div class="header-content">
-        <i class="bx bxs-message-rounded-dots header-content-icon" ></i>
+        <i class="header-content-icon bx bxs-message-rounded-dots" ></i>
         <p class="header-content-text">채팅</p>
       </div>
-      <i class="bx bx-x close-icon" @click="clostChatModal"></i>
+      <i class="close-icon bx bx-x" @click="closeChatModal"></i>
     </div>
     <div class="chat-modal-body">
       <div class="body-content">
@@ -13,7 +13,7 @@
     </div>
     <div class="chat-modal-input-box">
       <input class="chat-input" type="text" v-model="chatInput" @keyup.enter="sendChat">
-      <i class="bx bxs-send send-btn" @click="sendChat"></i>
+      <i class="send-btn bx bxs-send" @click="sendChat"></i>
     </div>
   </div>
 </template>
@@ -29,6 +29,8 @@ export default {
 	data: () => {
 		return {
       chatInput: undefined,
+      oldX: undefined,
+      oldY: undefined
 		}
 	},
 	computed: {
@@ -86,8 +88,30 @@ export default {
         }
       }
     },
-    clostChatModal () {
-      this.$emit('clostChatModal')
+    closeChatModal () {
+      this.$emit('closeChatModal')
+    },
+    mouseDown (event) {
+      this.oldX = event.clientX
+      this.oldY = event.clientY
+      let chatModalBox = document.querySelector('div.chat-modal-box')
+      chatModalBox.addEventListener('mousemove', this.mouseMove)
+      chatModalBox.addEventListener('mouseup', () => {
+        chatModalBox.removeEventListener('mousemove', this.mouseMove)
+      })
+    },
+    mouseMove (event) {
+      let newX = event.clientX
+      let newY = event.clientY
+      let difX = newX - this.oldX
+      let difY = newY - this.oldY
+      let chatModalBox = document.querySelector('div.chat-modal-box')
+      let modalX = chatModalBox.getBoundingClientRect().left
+      let modalY = chatModalBox.getBoundingClientRect().top
+      chatModalBox.style.left = `${modalX + difX}px`
+      chatModalBox.style.top = `${modalY + difY}px`
+      this.oldX = newX
+      this.oldY = newY
     }
   }
 }
@@ -98,6 +122,7 @@ export default {
     background: #F6F6F6;
     width: 604px;
     height: 328px;
+    border: solid black 1px;
     border-radius: 10px;
   }
 
@@ -130,10 +155,10 @@ export default {
     font-size: 14px;
     margin-left: 12px;
     margin-bottom: 0;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .chat-modal-body {

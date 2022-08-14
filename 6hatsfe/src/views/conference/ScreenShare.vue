@@ -7,7 +7,7 @@
         화면 공유 안 하고 있음
       </p>
       <ov-video 
-      class="cam-screen" :stream-manager="screenSub"
+      class="shared-screen" :stream-manager="screenSub"
       v-if="screenSub"/>
     </div>
     <button class="screen-share-modal-close-btn"
@@ -57,5 +57,9 @@ export default {
     font-size: 24px;
   }
 
+  .shared-screen {
+    width: 600px;
+    height: 400px;
+  }
 
 </style>
