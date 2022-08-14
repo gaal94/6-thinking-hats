@@ -6,6 +6,6 @@ import boards from "@/store/modules/boards"
 export default createStore({
   // strict: true,
   modules: {
-    usersa, conference, boards,
+    users, conference, boards,
   }
 })
