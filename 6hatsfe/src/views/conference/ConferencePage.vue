@@ -95,8 +95,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -175,10 +175,18 @@ export default {
     chatModal () {
       this.seeMenu = false
       this.seeChat = true
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '3'
+      userListModal.style.zIndex = '2'
     },
     userListModal () {
       this.seeMenu = false
       this.seeUserList = true
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '2'
+      userListModal.style.zIndex = '3'
     },
     closeChatModal () {
       this.seeChat = !this.seeChat
@@ -710,12 +718,10 @@ export default {
   .chat-modal {
     position: absolute;
     bottom: 60px;
-    z-index: 2;
   }
 
   .user-list-modal {
     position: absolute;
     bottom: 60px;
-    z-index: 3;
   }
 </style>
