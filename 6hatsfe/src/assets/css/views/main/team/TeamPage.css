@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+/* teamPage 바디 css*/
+.team-body {
+    margin: 50px;
+
+}
+
+.team-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+
+.polaroid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFFFFF;
+    margin: 5px;
+    border: 2px solid #000000;
+    box-shadow: 10px 10px 5px #C7C6C6;
+    border-radius: 8px;
+}
+
+.polaroid div{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    text-align: center;
+    padding: 10px;
+
+}
+
+.profile {
+    width: 130px;
+    height: 160px;
+
+}
