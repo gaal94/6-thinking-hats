@@ -1,5 +1,5 @@
 <template>
-  <div class="user-modal-box" @mousedown="mouseDown">
+  <div class="user-modal-box">
     <div class="user-modal-header">
       <div class="header-content">
         <i class="user-icon bx bxs-user"></i>
@@ -35,30 +35,62 @@ export default {
     closeUserListModal () {
       this.$emit('closeUserListModal')
     },
-    mouseDown (event) {
-      this.oldX = event.clientX
-      this.oldY = event.clientY
-      let userModalBox = document.querySelector('div.user-modal-box')
-      userModalBox.addEventListener('mousemove', this.mouseMove)
-      userModalBox.addEventListener('mouseup', () => {
-        userModalBox.removeEventListener('mousemove', this.mouseMove)
-      })
-    },
-    mouseMove (event) {
-      let newX = event.clientX
-      let newY = event.clientY
-      let difX = newX - this.oldX
-      let difY = newY - this.oldY
-      let userModalBox = document.querySelector('div.user-modal-box')
-      let modalX = userModalBox.getBoundingClientRect().left
-      let modalY = userModalBox.getBoundingClientRect().top
-      userModalBox.style.left = `${modalX + difX}px`
-      userModalBox.style.top = `${modalY + difY}px`
-      this.oldX = newX
-      this.oldY = newY
-    }
   },
-}
+  mounted() {
+      dragElement(document.querySelector('div.user-list-modal'));
+
+      function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.querySelector('div.user-modal-header')) {
+          // if present, the header is where you move the DIV from:
+          document.querySelector('div.user-modal-header').onmousedown = dragMouseDown;
+        } else {
+          // otherwise, move the DIV from anywhere inside the DIV:
+          elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // get the mouse cursor position at startup:
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          // call a function whenever the cursor moves:
+          document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // calculate the new cursor position:
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          // set the element's new position:
+          elmnt.style.top = (elmnt.offsetTop - pos2) + 'px';
+          if (elmnt.style.top.replace('px', '') < 0) {
+            elmnt.style.top = '0px'
+          } else if (elmnt.style.top.replace('px', '') > window.innerHeight - elmnt.clientHeight - 2){
+            elmnt.style.top = String(window.innerHeight - elmnt.clientHeight - 2) + 'px'
+          }
+          elmnt.style.left = (elmnt.offsetLeft - pos1) + 'px';
+          if (elmnt.style.left.replace('px', '') < 0) {
+            elmnt.style.left = '0px'
+          } else if (elmnt.style.left.replace('px', '') > window.innerWidth - elmnt.clientWidth - 2){
+            elmnt.style.left = String(window.innerWidth - elmnt.clientWidth - 2) + 'px'
+          }
+        }
+
+        function closeDragElement() {
+          // stop moving when mouse button is released:
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+    }
+  }
 </script>
 
 <style scoped>
@@ -78,6 +110,7 @@ export default {
     width: 280px;
     height: 36px;
     justify-content: space-between;
+    cursor: move;
   }
 
   .header-content {
