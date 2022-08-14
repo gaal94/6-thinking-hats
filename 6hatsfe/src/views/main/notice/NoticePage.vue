@@ -26,11 +26,14 @@
     </tr>
   </tbody>
 </table>
- <div class ="boardbtn"><button type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>  <button type="button" class="btn btn-danger" id="boarddeletebtn" >삭제</button></div>
+  <div class ="boardbtn">
+   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+  </div>
 </div>
 </template>
 
 <script>
+import router from "@/router";
 import interceptor from "@/api/interceptors";
 export default {
   name: 'NoticePage'
@@ -41,21 +44,23 @@ export default {
       length: '',
     };
   }, 
-    methods: {
-      
+  methods: {
+    routeToWritePage(){
+      router.push({ name: "NoticeWritePage" });
+    }
   },
-    mounted() {
+  mounted() {
           // Intercepotor 시작
     interceptor({
-            url: '/board/notice',
-            method: 'get'
-          }).then((res) => {
-            this.boards = res.data;
-            this.length = res.data.length;
-          }).catch((err) => {
-            alert(err);
-          });
-      }
+          url: '/board/notice',
+          method: 'get'
+        }).then((res) => {
+          this.boards = res.data;
+          this.length = res.data.length;
+        }).catch((err) => {
+          alert(err);
+        });
+  }
 }
 </script>
 
