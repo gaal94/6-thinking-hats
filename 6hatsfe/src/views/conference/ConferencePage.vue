@@ -821,9 +821,7 @@ export default {
             this.initialSetting(settingData)
           }
         } else {
-          if (settingData.users[settingData.users.length - 1].connectionId === this.publisher.stream.session.connection.connectionId) {
             this.initialSetting(settingData)
-          }
         }
       }
     })
