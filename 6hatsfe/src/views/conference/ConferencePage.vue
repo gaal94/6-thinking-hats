@@ -97,8 +97,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -379,16 +379,6 @@ export default {
         }
       })
 
-      // this.session.on('publisherStartSpeaking', ({ connection }) => {
-      //   console.log('마이크 감지')
-      //   console.log(connection)
-      // })
-
-      // this.session.on('publisherStopSpeaking', ({ connection }) => {
-      //   console.log('마이크 중지')
-      //   console.log(connection)
-      // })
-
 			// --- Connect to the session with a valid user token ---
 
 			// 'getToken' method is simulating what your server-side should do.
@@ -542,6 +532,23 @@ export default {
     },
 
     changeVideo(){
+            axios
+                .post(
+                    `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
+                    {},
+                    {
+                        auth: {
+                            username: "OPENVIDUAPP",
+                            password: OPENVIDU_SERVER_SECRET,
+                        },
+                    }
+                )
+                .then((res) => {
+                    console.log(res);
+                    console.log(res.data.url);
+                    this.recordingUrl = res.data.url;
+                });
+
       this.video = !this.video
       if (this.video) {
         this.turnOnVideo()
@@ -599,34 +606,29 @@ export default {
     recording() {
       if (this.isRecording) {
         // 녹화 중이었을 때 녹화 끄기
-        this.localRecorder.stop()
+        this.recordingStop()
         this.isRecording = false
         this.recordingSession.unpublish(this.recordPublisher)
         this.recordingSession.disconnect()
         this.recordPublisher = undefined
         this.recordingOV = undefined
-
       } else {
         // 녹화 중이 아니었을 때 녹화 시작하기
-      
         this.recordingOV = new OpenVidu()
         this.recordingSession = this.recordingOV.initSession()
 
-        this.getToken(this.mySessionId).then(token => {
+        this.getToken(this.mySessionId + 'A').then(token => {
+        //녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
 				this.recordingSession.connect(token)
 					.then(() => {
 
             this.recordPublisher = this.recordingOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
             this.recordPublisher.once('accessAllowed', () => {
-              var localRecorder = this.recordingOV.initLocalRecorder(this.recordPublisher.stream)
-              this.localRecorder = localRecorder
-
-              this.localRecorder.record()
               this.isRecording = true
               
               this.recordPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                this.localRecorder.stop()
+                this.recordingStop()
                 this.recordingSession.unpublish(this.recordPublisher)
                 this.recordingSession.disconnect()
                 this.recordPublisher = undefined
@@ -636,12 +638,55 @@ export default {
             })
             this.recordingSession.publish(this.recordPublisher)
 
-            })
-					.catch(error => {
-						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
+          })
+          .then(() => {
+            this.recordingStart()
+          })
+					// .catch(error => {
+					// 	console.log('There was an error connecting to the session:', error.code, error.message);
+					// });
         });    
       }
+    },
+    recordingStart () {
+      axios
+        .post(
+          `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`,
+          {
+            session: this.mySessionId + 'A',
+            // session: 녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
+          },
+          {
+            auth: {
+              username: "OPENVIDUAPP",
+              password: OPENVIDU_SERVER_SECRET,
+            },
+          }
+        )
+        .then((res) => {
+            console.log(res);
+            this.recordingId = res.data.id;
+            console.log(this.recordingId);
+        })
+    },
+    recordingStop () {
+      console.log(this.recordingId);
+      axios
+        .post(
+          `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
+          {},
+          {
+            auth: {
+              username: "OPENVIDUAPP",
+              password: OPENVIDU_SERVER_SECRET,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          console.log(res.data.url);
+          this.recordingUrl = res.data.url;
+        })
     },
     testDown() {
       this.localRecorder.download()
