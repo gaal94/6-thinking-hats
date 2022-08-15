@@ -307,7 +307,7 @@ export default {
     },
     initialSetting({commit}, payload) {
       commit('initialSetting', payload)
-      if (payload.conferenceStatus === true) {
+      if (payload.timer) {
         commit('startTimer')
       }
     },

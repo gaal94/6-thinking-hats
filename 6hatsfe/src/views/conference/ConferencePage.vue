@@ -149,7 +149,7 @@ export default {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
                     'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
-                    'conferenceStatus',]),
+                    'conferenceStatus', 'timer',]),
     leftSubscribers () {
       let leftSubscribers = []
       for (let idx in this.subscribers) {
@@ -294,7 +294,8 @@ export default {
                                 confSubject: this.confSubject,
                                 opinions: this.opinions,
                                 hostConnectionId: this.hostConnectionId,
-                                conferenceStatus: this.conferenceStatus}
+                                conferenceStatus: this.conferenceStatus,
+                                timer: this.timer }
           const jsonSettingData = JSON.stringify(settingData)
           
           this.session.signal({
@@ -327,9 +328,13 @@ export default {
             isSubscriber = true
             let currentSubscriber = this.subscribers[idx]
             this.subscribers.splice(0, 0, currentSubscriber)
-            this.subscribers.splice(idx + 1, 1)
-            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-            subcriberCam.classList.add('highlight')
+            .then(() => {
+              this.subscribers.splice(idx + 1, 1)
+              .then(() => {
+                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+                subcriberCam.classList.add('highlight')
+              })
+            })
             break
           }
         }
@@ -677,11 +682,11 @@ export default {
             alert('12명 까지만 입장할 수 있습니다.')
             this.leaveSession()
             this.$router.push({name: 'LandingPage'})
-          } else {
-            this.initialSetting(settingData)
           }
         } else {
-          this.initialSetting(settingData)
+          if (settingData.users[settingData.users.length - 1].connectionId === this.publisher.stream.session.connection.connectionId) {
+            this.initialSetting(settingData)
+          }
         }
       }
     })
