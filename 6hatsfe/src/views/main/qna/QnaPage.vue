@@ -16,17 +16,24 @@
   <tbody>
     <tr v-for="(no,idx) in boards" :key ="idx">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4">{{no.title}}</td>
+      <td colspan="4"><router-link :to ="{
+              path: '/qnacontentspage/' + no.boardId
+            }">
+      {{no.title}}</router-link></td>
       <td>{{no.name}}</td>
       <td>{{no.boardCreatedAt}}</td>
       <td>{{no.views}}</td>
     </tr>
   </tbody>
 </table>
+<div class ="boardbtn">
+   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+  </div>
 </div>
 </template>
 
 <script>
+import router from "@/router";
 import interceptor from "@/api/interceptors";
 export default {
   name: 'QnaPage'
@@ -37,8 +44,10 @@ export default {
       length: '',
     };
   }, 
-    methods: {
-      
+  methods: {
+    routeToWritePage(){
+      router.push({ name: "QnaWritePage" });
+    }
   },
     mounted() {
           // Intercepotor 시작
@@ -46,7 +55,10 @@ export default {
             url: '/board/qna',
             method: 'get'
           }).then((res) => {
+            console.log("qna data");
+            console.log(res.data);
             this.boards = res.data;
+            console.log();
             this.length = res.data.length;
           }).catch((err) => {
             alert(err);

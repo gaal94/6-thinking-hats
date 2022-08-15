@@ -15,7 +15,7 @@
   		</div>
   		<textarea v-model="board.boardContents" class="form-control" aria-label="With textarea"></textarea>
 		</div>
-		<button v-on:click="PostBoard" type="button" class="btn btn-primary" style="float: right;">Submit</button>
+		<button v-on:click="PostBoard" type="button" class="btn btn-primary" style="float: right;">저장</button>
 		<div>
 
 		</div>
