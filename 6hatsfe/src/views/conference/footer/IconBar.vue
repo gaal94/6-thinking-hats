@@ -20,7 +20,7 @@
 
     <button @click="menuModal"><i class='bx bx-dots-vertical-rounded'></i></button>
 
-    <button><i class='bx bx-link-alt' ></i></button>
+    <button @click="copyURL"><i class='bx bx-link-alt' ></i></button>
 
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickBackToPreTurn"
@@ -31,7 +31,7 @@
     :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
     <button class="pass-btn" 
-    v-if="isConferencing && speechOrder[currentTurn] === hatColor && hatColor !== 'blue-hat'" 
+    v-if="isConferencing && hatMode === 'sixhats' && speechOrder[currentTurn] === hatColor && hatColor !== 'blue-hat'" 
     :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
@@ -180,6 +180,17 @@ export default {
     },
     record() {
       this.$emit('record')
+    },
+    copyURL() {
+      let url = '';
+      const textarea = document.createElement("textarea");
+      document.body.appendChild(textarea);
+      url = window.document.location.href;
+      textarea.value = url;
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      alert("URL이 복사되었습니다.")
     },
 	},
   created() {
