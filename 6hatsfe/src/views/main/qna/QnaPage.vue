@@ -16,7 +16,10 @@
   <tbody>
     <tr v-for="(no,idx) in boards" :key ="idx">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4">{{no.title}}</td>
+      <td colspan="4"><router-link :to ="{
+              path: '/qnacontentspage/' + no.boardId
+            }">
+      {{no.title}}</router-link></td>
       <td>{{no.name}}</td>
       <td>{{no.boardCreatedAt}}</td>
       <td>{{no.views}}</td>
@@ -52,7 +55,10 @@ export default {
             url: '/board/qna',
             method: 'get'
           }).then((res) => {
+            console.log("qna data");
+            console.log(res.data);
             this.boards = res.data;
+            console.log();
             this.length = res.data.length;
           }).catch((err) => {
             alert(err);
