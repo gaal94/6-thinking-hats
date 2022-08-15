@@ -2,8 +2,10 @@
 
 /* explain.page 전체 바디 css*/
 .explain-container {
-  margin: 10%;
-
+  margin-top: 20px;
+  margin-left: 200px;
+  margin-right: 200px;
+  padding-bottom: 70px;
 }
 
 /* explain.page div 한칸 바디 css*/
