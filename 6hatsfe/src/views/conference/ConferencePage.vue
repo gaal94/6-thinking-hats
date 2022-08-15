@@ -297,7 +297,6 @@ export default {
          }
         } else {
           this.leaveSession()
-          this.$router.push({name: 'LandingPage'})
         }
       })
 
@@ -367,6 +366,7 @@ export default {
       this.resetTimer()
       this.endConference()
       this.exitConferenceRoom()
+      this.$router.push({name: 'LandingPage'})
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -561,6 +561,14 @@ export default {
     },
 
 	},
+  watch: {
+    // 회의화면에서 뒤로가기 했을 때 회의 나가기
+    $route(to, from) {
+      if (to.path !== from.path) {
+        this.leaveSession()
+      }
+    }
+  },
   created() {
     this.joinSession()
 
@@ -624,7 +632,6 @@ export default {
           if (idx === -1) {
             alert('12명 까지만 입장할 수 있습니다.')
             this.leaveSession()
-            this.$router.push({name: 'LandingPage'})
           } else {
             this.initialSetting(settingData)
           }
@@ -653,7 +660,6 @@ export default {
     this.session.on('signal:kick-user', ({data}) => {
       if (this.users[data]['connectionId'] == this.publisher.stream.session.connection.connectionId) {
         this.leaveSession()
-        this.$router.push({name: 'LandingPage'})
         .then(() => {
           alert('당신은 강퇴당했습니다.')
         })
