@@ -47,7 +47,8 @@
     <!-- 아이콘바 -->
     <icon-bar 
     :hat-color="myHat"
-    @changeConferenceStatus="changeConf"
+    @startConference="popSubjectModal"
+    @endConference="changeConf"
     @leaveRoom="leaveSession"
     @changeMic="changeMicrophone"
     @changeVideo="changeVideo"
@@ -75,6 +76,18 @@
     v-show="seeUserList"
     ref="userListRef"
     @closeUserListModal="closeUserListModal"></user-list-modal>
+
+    <div v-if="subjectModalOpend" class="subject-modal">
+      <p class="sub-modal-header">회의 주제를 입력해 주세요</p>
+      <input type="text" class="sub-modal-input" v-model="subject">
+      <div class="sub-btn">
+        <button class="sub-confirm-btn" @click="changeConf"><span>시작</span></button>
+        <button class="sub-reject-btn" @click="closeSubjectModal"><span>취소</span></button>
+      </div>
+    </div>
+
+    <div v-if="subjectModalOpend" class="modal-bg"></div>
+
   </div>
 </template>
 
@@ -133,6 +146,8 @@ export default {
       recordingId: undefined,
       recordingURL: undefined,
       localRecorder: undefined,
+      subjectModalOpend: false,
+      subject: '',
 
 			mySessionId: 'SessionAAAAAA',
 			myUserName: 'Participant' + Math.floor(Math.random() * 100),
@@ -157,7 +172,7 @@ export default {
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
-                    'joinConferenceRoom', 'exitConferenceRoom',]),
+                    'joinConferenceRoom', 'exitConferenceRoom', 'setConfSubject',]),
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -196,14 +211,40 @@ export default {
     closeUserListModal () {
       this.seeUserList = false
     },
+    popSubjectModal() {
+      this.subjectModalOpend = true
+    },
+    closeSubjectModal() {
+      this.subjectModalOpend = false
+    },
     changeConf() {
-      this.session.signal({
-        to: [],
-        type: 'changeConf'
-      })
-      .then(() => {
-        console.log('conference just started!');
-      })
+      if (this.isConferencing) {
+        // 회의 종료할 때
+        this.session.signal({
+          to: [],
+          type: 'changeConf'
+        })
+        .then(() => {
+          console.log('conference just started!');
+        })
+
+      } else {
+
+        // 회의 시작할 때
+        if (this.subject) {
+          this.session.signal({
+            to: [],
+            type: 'changeConf'
+          })
+          .then(() => {
+            console.log('conference just started!');
+          })
+          this.setConfSubject(this.subject)
+          this.subject = ''
+        } else {
+          alert('안건을 입력해주세요!')
+        }
+      }
     },
     joinSession () {
 			// --- Get an OpenVidu object ---
@@ -357,26 +398,27 @@ export default {
 
 		leaveSession () {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
-      this.$router.push({name: 'LandingPage'})
       this.resetTimer()
-      this.endConference()
-			if (this.session) this.session.disconnect();
-      if (this.screenSession) this.screenSession.disconnect()
-      if (this.recordingSession) this.recordingSession.disconnect()
-
-			this.session = undefined;
-      this.setSession(undefined)
-			this.mainStreamManager = undefined;
-			this.setPublisher(undefined);
-			this.subscribers = [];
-			this.OV = undefined;
-      this.screenSession = undefined
-      this.recordingSession = undefined
-      this.isMyScreenShared = false
-      this.clearUsers()
-      this.setRole('particitant')
-      this.setHostConnectionId(undefined)
-      this.exitConferenceRoom()
+      this.endConference().then(() => {
+        if (this.session) this.session.disconnect();
+        if (this.screenSession) this.screenSession.disconnect()
+        if (this.recordingSession) this.recordingSession.disconnect()
+  
+        this.session = undefined;
+        this.setSession(undefined)
+        this.mainStreamManager = undefined;
+        this.setPublisher(undefined);
+        this.subscribers = [];
+        this.OV = undefined;
+        this.screenSession = undefined
+        this.recordingSession = undefined
+        this.isMyScreenShared = false
+        this.clearUsers()
+        this.setRole('particitant')
+        this.setHostConnectionId(undefined)
+        this.exitConferenceRoom()
+        this.$router.push({name: 'LandingPage'})
+      })
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -597,6 +639,7 @@ export default {
       } else {
 
         // 회의 시작 시
+        this.subjectModalOpend = false
         this.startTimer()
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
@@ -771,5 +814,59 @@ export default {
 
   .cam {
     flex-shrink: 1;
+  }
+
+  .subject-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: #F6F6F6;
+    position: absolute;
+    width: 500px;
+    height: 200px;
+    border-radius: 14px;
+    padding: 12px;
+    z-index: 1000;
+  }
+
+  .sub-modal-input {
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 2px;
+  }
+
+  .sub-btn {
+    align-self: center;
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+  }
+
+  .sub-confirm-btn, .sub-reject-btn {
+    width: 50px;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    padding: 4px;
+  }
+
+  .sub-confirm-btn {
+    background-color: #4285F4;
+  }
+
+  .sub-reject-btn {
+    background-color: #EA4335;
+  }
+
+  .modal-bg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+  }
+
+  .sub-modal-invisible {
+    display: none;
   }
 </style>

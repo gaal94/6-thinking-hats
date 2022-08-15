@@ -226,6 +226,7 @@ export default {
   height: 3.3259vh;
   margin-right: 4px;
   font-size: 0.7813vw;
+  padding: 4px;
 }
 
 .sub-update-btn:hover, .sub-update-confirm-btn:hover, .sub-update-cancel-btn:hover {

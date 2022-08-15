@@ -113,7 +113,7 @@ export default {
               type: 'change-hat-color'
             })
           }
-          this.$emit('changeConferenceStatus')
+          this.$emit('startConference')
         } else {
           alert('한 모자에 적어도 한 명이 배정될 수 있어야 합니다.')
         }
@@ -128,14 +128,14 @@ export default {
         });
 
         if (bluehatCnt === 1) {
-          this.$emit('changeConferenceStatus')
+          this.$emit('startConference')
         } else {
           alert('파란 모자가 한 명 있어야 합니다.')
         }
       }
     },
     endConference() {
-      this.$emit('changeConferenceStatus')
+      this.$emit('endConference')
     },
     outToMain() {
       const answer = confirm('회의에서 나가시겠습니까?')
