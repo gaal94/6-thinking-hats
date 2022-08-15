@@ -27,7 +27,7 @@
   </tbody>
 </table>
   <div class ="boardbtn">
-   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+   <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
   </div>
 </div>
 </template>
@@ -35,13 +35,16 @@
 <script>
 import router from "@/router";
 import interceptor from "@/api/interceptors";
+import jwt_decode from "jwt-decode";
+
 export default {
   name: 'NoticePage'
   ,
   data() {
     return {
       boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
-      length: '',
+      length: '', 
+      userType:'',
     };
   }, 
   methods: {
@@ -57,15 +60,36 @@ export default {
         }).then((res) => {
           this.boards = res.data;
           this.length = res.data.length;
+          console.log(res.data);
         }).catch((err) => {
           alert(err);
         });
+          var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
+    interceptor({
+          url: '/user/' + decoded.userId,
+          method: 'get'
+    }).then((res) => {
+        this.userType = res.data.user.userType;
+        }).catch((err) => {
+          alert(err);
+        });
+    interceptor({
+          url: '/board/notice',
+          method: 'get'
+        }).then((res) => {
+          this.boards = res.data;
+          this.length = res.data.length;
+        }).catch((err) => {
+          alert(err);
+        });
+                
   }
 }
 </script>
 
 <style>
 #recgo{
+  position :relative;
   width:60%;
   margin:auto;
   background-color: white;
@@ -99,6 +123,11 @@ h1, p {
   background-color: #C7C6C6;
 }
 .boardbtn{
-  display:inline;
+  position: absolute;
+  width : 100%;
+}
+#boardwritingbtn{
+  right :0;
+  position: absolute;
 }
 </style>

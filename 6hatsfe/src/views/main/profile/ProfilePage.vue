@@ -71,7 +71,7 @@ export default {
                 this.$store.commit('ChangeJob', info.job);
                 this.$store.commit('ChangeBirth', info.birth);
                 this.$store.commit('ChangeEmail', info.email);
-                this.$store.commit('ChangeGender', info.gender);
+              this.$store.commit('ChangeGender', info.gender);
           }).catch((err) => {
             alert(err);
           });

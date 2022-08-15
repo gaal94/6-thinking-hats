@@ -1,7 +1,7 @@
 <template>
   <div id="recgo">
     <header class="pagename">
-    <h1>공지사항</h1>
+    <h1>Q&A</h1>
     </header>
   <table class="table">
   <thead class="Rechead">
