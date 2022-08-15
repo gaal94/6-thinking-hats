@@ -305,11 +305,12 @@ export default {
     setRole({commit}, role) {
       commit('setRole', role)
     },
-    initialSetting({commit}, payload) {
+    initialSetting({commit, state}, payload) {
       commit('initialSetting', payload)
-      if (payload.timer) {
-        commit('startTimer')
-      }
+      if (payload.users[payload.users.length - 1].connectionId === state.publisher.stream.session.connection.connectionId
+        && payload.timer){
+          commit('startTimer')
+        }
     },
     setHostConnectionId({commit}, conId) {
       commit('setHostConnectionId', conId)
