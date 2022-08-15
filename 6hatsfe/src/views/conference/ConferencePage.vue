@@ -17,7 +17,7 @@
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
         <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"
         class="cam"></cam-screen>
-        <cam-screen v-for="sub in subscribers.slice(0, 2)" :key="sub.stream.connection.connectionId" :stream-manager="sub"
+        <cam-screen v-for="sub in leftSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"
         class="cam"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>
@@ -39,7 +39,7 @@
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
         <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen v-for="sub in subscribers.slice(2, 5)" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <cam-screen v-for="sub in rightSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
         <i class='bx bx-chevron-down cam-arrow-icon' ></i>
       </div>  
     </div>
@@ -110,8 +110,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -164,7 +164,25 @@ export default {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
                     'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
-                    'conferenceStatus',]),
+                    'conferenceStatus', 'timer',]),
+    leftSubscribers () {
+      let leftSubscribers = []
+      for (let idx in this.subscribers) {
+        if (idx % 2 == 1) {
+          leftSubscribers.push(this.subscribers[idx])
+        }
+      }
+      return leftSubscribers
+    },
+    rightSubscribers () {
+      let rightSubscribers = []
+      for (let idx in this.subscribers) {
+        if (idx % 2 == 0) {
+          rightSubscribers.push(this.subscribers[idx])
+        }
+      }
+      return rightSubscribers
+    }
 	},
 	methods: {
     ...mapActions(['startTimer', 'resetTimer', 'resetTurn', 'setSession', 'addUser',
@@ -172,7 +190,10 @@ export default {
                     'setMyName', 'removeUser', 'addOpinion', 'removeOpinion', 'setRole',
                     'initialSetting', 'setHostConnectionId', 'turnOffAudio', 'turnOnAudio',
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
-                    'joinConferenceRoom', 'exitConferenceRoom', 'setConfSubject',]),
+                    'joinConferenceRoom', 'exitConferenceRoom', 'someoneTurnOffAudio',
+                    'someoneTurnOnAudio', 'someoneTurnOffVideo', 'someoneTurnOnVideo',
+                    'setConfSubject',]),
+
     sendChat (chat) {
       this.session.signal({
         data: chat,
@@ -268,9 +289,12 @@ export default {
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
+          console.log('카메라 생성')
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
+          console.log(subscriber)
+          console.log(this.subscribers)
         }
 			});
 
@@ -292,7 +316,7 @@ export default {
 				console.warn(exception);
 			});
       
-      this.session.on('connectionCreated', ({connection}) => {
+      this.session.on('connectionCreated', ({ connection }) => {
         if (this.isHost) {
 
           if (this.users.length < 12) {
@@ -316,7 +340,8 @@ export default {
                                 confSubject: this.confSubject,
                                 opinions: this.opinions,
                                 hostConnectionId: this.hostConnectionId,
-                                conferenceStatus: this.conferenceStatus}
+                                conferenceStatus: this.conferenceStatus,
+                                timer: this.timer }
           const jsonSettingData = JSON.stringify(settingData)
           
           this.session.signal({
@@ -326,7 +351,7 @@ export default {
         }
       })
 
-      this.session.on('connectionDestroyed', ({connection}) => {
+      this.session.on('connectionDestroyed', ({ connection }) => {
         if (this.hostConnectionId !== connection.connectionId) {
           let idx = this.users.findIndex(userInfo => {
           if (userInfo.connectionId === connection.connectionId) {
@@ -348,6 +373,61 @@ export default {
          }
         } else {
           this.leaveSession()
+        }
+      })
+
+      this.session.on('publisherStartSpeaking', ({ connection }) => {
+        if (this.subscribers.length == 0) {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          publisherCam.classList.add('highlight')
+        } else if (this.subscribers.length == 1) {
+          if (this.subscribers[0].stream.connection.connectionId == connection.connectionId) {
+            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+            subcriberCam.classList.add('highlight')
+          } else {
+            let publisherCam = document.querySelector('#local-video-undefined')
+            publisherCam.classList.add('highlight')
+          }
+        } else {
+          let isSubscriber = false
+          for (let idx in this.subscribers) {
+            if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
+              isSubscriber = true
+              let currentSubscriber = this.subscribers[idx]
+              this.subscribers.splice(idx, 1)
+              this.subscribers.splice(0, 0, currentSubscriber)
+              if (idx == 0) {
+                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+                subcriberCam.classList.add('highlight')
+              } else {
+                setTimeout(() => {
+                  let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+                  subcriberCam.classList.add('highlight')
+                }, 200);
+              }
+              break
+            }
+          }
+          if (!isSubscriber) {
+            let publisherCam = document.querySelector('#local-video-undefined')
+            publisherCam.classList.add('highlight')
+          }
+        }
+      })
+
+      this.session.on('publisherStopSpeaking', ({ connection }) => {
+        let isSubscriber = false
+        for (let idx in this.subscribers) {
+          if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
+            isSubscriber = true
+            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+            subcriberCam.classList.remove('highlight')
+            break
+          }
+        }
+        if (!isSubscriber) {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          publisherCam.classList.remove('highlight')
         }
       })
 
@@ -491,13 +571,13 @@ export default {
     changeMicrophone() {
       this.audio = !this.audio
       if (this.audio) {
-        this.turnOnAudio(this.publisher.stream.session.connection.connectionId)
+        this.turnOnAudio()
         this.session.signal({
           data: this.publisher.stream.session.connection.connectionId,
           type: 'turn-on-audio'
         })
       } else {
-        this.turnOffAudio(this.publisher.stream.session.connection.connectionId)
+        this.turnOffAudio()
         this.session.signal({
           data: this.publisher.stream.session.connection.connectionId,
           type: 'turn-off-audio'
@@ -506,15 +586,32 @@ export default {
     },
 
     changeVideo(){
+            axios
+                .post(
+                    `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
+                    {},
+                    {
+                        auth: {
+                            username: "OPENVIDUAPP",
+                            password: OPENVIDU_SERVER_SECRET,
+                        },
+                    }
+                )
+                .then((res) => {
+                    console.log(res);
+                    console.log(res.data.url);
+                    this.recordingUrl = res.data.url;
+                });
+
       this.video = !this.video
       if (this.video) {
-        this.turnOnVideo(this.publisher.stream.session.connection.connectionId)
+        this.turnOnVideo()
         this.session.signal({
           data: this.publisher.stream.session.connection.connectionId,
           type: 'turn-on-video'
         })
       } else {
-        this.turnOffVideo(this.publisher.stream.session.connection.connectionId)
+        this.turnOffVideo()
         this.session.signal({
           data: this.publisher.stream.session.connection.connectionId,
           type: 'turn-off-video'
@@ -533,7 +630,6 @@ export default {
 						// --- Get your own camera stream with the desired properties ---
 
             this.screenPublisher = this.screenOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
-
             this.screenPublisher.once('accessAllowed', () => {
               this.isMyScreenShared = true
               this.screenPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
@@ -564,34 +660,29 @@ export default {
     recording() {
       if (this.isRecording) {
         // 녹화 중이었을 때 녹화 끄기
-        this.localRecorder.stop()
+        this.recordingStop()
         this.isRecording = false
         this.recordingSession.unpublish(this.recordPublisher)
         this.recordingSession.disconnect()
         this.recordPublisher = undefined
         this.recordingOV = undefined
-
       } else {
         // 녹화 중이 아니었을 때 녹화 시작하기
-      
         this.recordingOV = new OpenVidu()
         this.recordingSession = this.recordingOV.initSession()
 
-        this.getToken(this.mySessionId).then(token => {
+        this.getToken(this.mySessionId + 'A').then(token => {
+        //녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
 				this.recordingSession.connect(token)
 					.then(() => {
 
             this.recordPublisher = this.recordingOV.initPublisher(undefined, { videoSource: 'screen', publishAudio: false})
 
             this.recordPublisher.once('accessAllowed', () => {
-              var localRecorder = this.recordingOV.initLocalRecorder(this.recordPublisher.stream)
-              this.localRecorder = localRecorder
-
-              this.localRecorder.record()
               this.isRecording = true
               
               this.recordPublisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                this.localRecorder.stop()
+                this.recordingStop()
                 this.recordingSession.unpublish(this.recordPublisher)
                 this.recordingSession.disconnect()
                 this.recordPublisher = undefined
@@ -601,17 +692,59 @@ export default {
             })
             this.recordingSession.publish(this.recordPublisher)
 
-            })
-					.catch(error => {
-						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
+          })
+          .then(() => {
+            this.recordingStart()
+          })
+					// .catch(error => {
+					// 	console.log('There was an error connecting to the session:', error.code, error.message);
+					// });
         });    
       }
     },
+    recordingStart () {
+      axios
+        .post(
+          `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`,
+          {
+            session: this.mySessionId + 'A',
+            // session: 녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
+          },
+          {
+            auth: {
+              username: "OPENVIDUAPP",
+              password: OPENVIDU_SERVER_SECRET,
+            },
+          }
+        )
+        .then((res) => {
+            console.log(res);
+            this.recordingId = res.data.id;
+            console.log(this.recordingId);
+        })
+    },
+    recordingStop () {
+      console.log(this.recordingId);
+      axios
+        .post(
+          `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
+          {},
+          {
+            auth: {
+              username: "OPENVIDUAPP",
+              password: OPENVIDU_SERVER_SECRET,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          console.log(res.data.url);
+          this.recordingUrl = res.data.url;
+        })
+    },
     testDown() {
       this.localRecorder.download()
-    },
-
+    }
 	},
   watch: {
     // 회의화면에서 뒤로가기 했을 때 회의 나가기
@@ -686,25 +819,27 @@ export default {
             this.initialSetting(settingData)
           }
         } else {
-          this.initialSetting(settingData)
+          if (settingData.users[settingData.users.length - 1].connectionId === this.publisher.stream.session.connection.connectionId) {
+            this.initialSetting(settingData)
+          }
         }
       }
     })
 
     this.session.on('signal:turn-on-audio', ({data}) => {
-      this.turnOnAudio(data)
+      this.someoneTurnOnAudio(data)
     })
 
     this.session.on('signal:turn-off-audio', ({data}) => {
-      this.turnOffAudio(data)
+      this.someoneTurnOffAudio(data)
     })
 
     this.session.on('signal:turn-on-video', ({data}) => {
-      this.turnOnVideo(data)
+      this.someoneTurnOnVideo(data)
     })
 
     this.session.on('signal:turn-off-video', ({data}) => {
-      this.turnOffVideo(data)
+      this.someoneTurnOffVideo(data)
     })
 
     this.session.on('signal:kick-user', ({data}) => {

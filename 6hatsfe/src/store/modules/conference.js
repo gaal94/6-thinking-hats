@@ -175,41 +175,17 @@ export default {
     setHostConnectionId(state, conId) {
       state.hostConnectionId = conId
     },
-    turnOffAudio(state, conId) {
+    turnOffAudio(state) {
       state.publisher.publishAudio(false)
-      for (let user of state.users) {
-        if (user['connectionId'] == conId) {
-          user['micOn'] = false
-          break
-        }
-      }
     },
-    turnOnAudio(state, conId) {
+    turnOnAudio(state) {
       state.publisher.publishAudio(true)
-      for (let user of state.users) {
-        if (user['connectionId'] == conId) {
-          user['micOn'] = true
-          break
-        }
-      }
     },
-    turnOffVideo(state, conId) {
+    turnOffVideo(state) {
       state.publisher.publishVideo(false)
-      for (let user of state.users) {
-        if (user['connectionId'] == conId) {
-          user['camOn'] = false
-          break
-        }
-      }
     },
-    turnOnVideo(state, conId) {
+    turnOnVideo(state) {
       state.publisher.publishVideo(true)
-      for (let user of state.users) {
-        if (user['connectionId'] == conId) {
-          user['camOn'] = true
-          break
-        }
-      }
     },
     startConference(state) {
       state.conferenceStatus = true
@@ -225,6 +201,38 @@ export default {
     },
     exitConferenceRoom(state) {
       state.isInConferenceRoom = false
+    },
+    someoneTurnOnAudio(state, conId) {
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = true
+          break
+        }
+      }
+    },
+    someoneTurnOffAudio(state, conId) {
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['micOn'] = false
+          break
+        }
+      }
+    },
+    someoneTurnOnVideo(state, conId) {
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOn'] = true
+          break
+        }
+      }
+    },
+    someoneTurnOffVideo(state, conId) {
+      for (let user of state.users) {
+        if (user['connectionId'] == conId) {
+          user['camOff'] = false
+          break
+        }
+      }
     },
   },
   actions: {
@@ -299,24 +307,24 @@ export default {
     },
     initialSetting({commit}, payload) {
       commit('initialSetting', payload)
-      if (payload.conferenceStatus === true) {
+      if (payload.timer) {
         commit('startTimer')
       }
     },
     setHostConnectionId({commit}, conId) {
       commit('setHostConnectionId', conId)
     },
-    turnOffAudio({commit}, conId) {
-      commit('turnOffAudio', conId)
+    turnOffAudio({commit}) {
+      commit('turnOffAudio')
     },
-    turnOnAudio({commit}, conId) {
-      commit('turnOnAudio', conId)
+    turnOnAudio({commit}) {
+      commit('turnOnAudio')
     },
-    turnOffVideo({commit}, conId) {
-      commit('turnOffVideo', conId)
+    turnOffVideo({commit}) {
+      commit('turnOffVideo')
     },
-    turnOnVideo({commit}, conId) {
-      commit('turnOnVideo', conId)
+    turnOnVideo({commit}) {
+      commit('turnOnVideo')
     },
     startConference({commit}) {
       commit('startConference')
@@ -329,6 +337,18 @@ export default {
     },
     exitConferenceRoom({commit}) {
       commit('exitConferenceRoom')
+    },
+    someoneTurnOffAudio({commit}, conId) {
+      commit('someoneTurnOffAudio', conId)
+    },
+    someoneTurnOnAudio({commit}, conId) {
+      commit('someoneTurnOnAudio', conId)
+    },
+    someoneTurnOffVideo({commit}, conId) {
+      commit('someoneTurnOffVideo', conId)
+    },
+    someoneTurnOnVideo({commit}, conId) {
+      commit('someoneTurnOnVideo', conId)
     },
   },
 }

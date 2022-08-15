@@ -121,7 +121,36 @@ const routes = [
     //notice contests router
 
     component: () => import('@/views/main/notice/NoticecontentsPage')
+  },
+  {
+    path: '/noticecontentspage/:boardId',
+    name: 'NoticecontentsPage',
+    //notice contests router
+
+    component: () => import('@/views/main/notice/NoticecontentsPage')
+  },
+  {
+    path: '/noticemodifypage/:boardId',
+    name: 'NoticemodifyPage',
+    //notice modify router
+
+    component: () => import('@/views/main/notice/NoticemodifyPage')
+  },
+  {
+    path: '/qnamodifypage/:boardId',
+    name: 'QnamodifyPage',
+    //notice contests router
+
+    component: () => import('@/views/main/qna/QnamodifyPage')
+  },
+  {
+    path: '/qnacontentspage/:boardId',
+    name: 'QnacontentsPage',
+    //notice contests router
+
+    component: () => import('@/views/main/qna/QnacontentsPage')
   }
+
 
 ]
 

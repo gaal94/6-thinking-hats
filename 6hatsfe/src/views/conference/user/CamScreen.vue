@@ -91,4 +91,8 @@ export default {
     width: 2.0833vw;
     height: 2.0833vw;
   }
+
+  .highlight {
+    border: 2px solid white;
+  }
 </style>

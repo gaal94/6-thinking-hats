@@ -1,8 +1,22 @@
 <template>
     <div class="team-body">
-		
+
+		<!--맨위 팀 소개 -->
+		<div class="team-row" style="align-items: center;padding:20px;">
+			<img class="logo" src="@/assets/logoExplain.png" alt="logo">
+			<p style="font-weight: bold;font-size:30px">모자라지 않은 회의 프로젝트 팀을 소개합니다</p>
+			<img class="logo" src="@/assets/logoExplain.png" alt="logo">
+		</div>	
+
+		<!--fe be 나누는 회색 바 -->
+		<div class="team-row" style="align-items: center;padding:10px;">
+			<button class="button button4">Front-End</button>
+			<button class="button button4">Back-End</button>
+		</div>	
+
+		<!--팀원 각자 소개 -->
 		<div class="team-row">
-			<div class="polaroid" style="border-color: #EA4335;">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/cbs.png" alt="최병성" >
 				</div>
@@ -12,7 +26,7 @@
 				</div>	
 			</div>
 
-			<div class="polaroid" style="border-color: #FBBC05;">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/ksr.png" alt="권수린" >
 				</div>
@@ -22,7 +36,7 @@
 				</div>
 			</div>
 
-			<div class="polaroid" style="border-color: #34a853;">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/hsy.png" alt="황석영" >
 				</div>
@@ -32,7 +46,7 @@
 				</div>
 			</div>
 		
-			<div class="polaroid" style="border-color: #4285f4;">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/fsj.png" alt="오성준" >
 				</div>
@@ -43,7 +57,7 @@
 				</div>
 		    </div>
 		
-			<div class="polaroid">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/ksj.png" alt="김성진" >
 				</div>
@@ -53,7 +67,7 @@
 				</div>
 		    </div>
 
-			<div class="polaroid" style="border-color: #C7C6C6;">
+			<div class="polaroid" style="border-color: #FFFFFF;">
 				<div>
 					<img class="profile" src="@/assets/cjw.png" alt="최지원" >
 				</div>
@@ -63,23 +77,30 @@
 				</div>
 		    </div>
   	    </div>
+
+		<!--팀문서 링크 걸어놓음 -->
 		<div class="team-row">
-
-			<div class="polaroid" style="border-color: #C7C6C6;" >
+			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;" >
 				<div> 
-					<img src="@/assets/notion.png" alt="노션" onclick="window.open('https://www.notion.so/9fab16fcf2344d6bbc8076c9e4f85383')">
+					<img src="@/assets/notion.png" alt="노션" style="width:100px;height100px;justify-content: center;" onclick="window.open('https://www.notion.so/9fab16fcf2344d6bbc8076c9e4f85383')">
 				</div>
 			</div>
 
-			<div class="polaroid" style="border-color: #C7C6C6;">
+			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
 				<div> 
-					<img src="@/assets/gitlab.png" alt="깃랩" onclick="window.open('https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709')">
+					<img src="@/assets/gitlab.png" alt="깃랩" style="width:100px;height100px;" onclick="window.open('https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709')">
 				</div>
 			</div>
 
-			<div class="polaroid" style="border-color: #C7C6C6;">
+			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
 				<div> 
-					<img src="@/assets/jira.jpg" alt="지라" onclick="window.open('https://jira.ssafy.com/secure/RapidBoard.jspa?rapidView=12687&projectKey=S07P12A709&view=planning.nodetail&issueLimit=100')">
+					<img src="@/assets/jira.png" alt="지라" style="width:100px;height100px;" onclick="window.open('https://jira.ssafy.com/secure/RapidBoard.jspa?rapidView=12687&projectKey=S07P12A709&view=planning.nodetail&issueLimit=100')">
+				</div>
+			</div>
+
+			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
+				<div> 
+					<img src="@/assets/youtube.png" alt="유투브" style="width:100px;height100px;" onclick="window.open('')">
 				</div>
 			</div>
 
