@@ -27,15 +27,13 @@
         </ul>
       </div>
     </li>
-    <li><router-link to="/conferencepage" class = "navbarright">방 생성</router-link></li>
+    <li @click="createRoom" class = "navbarright">방 생성</li>
     <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
 </template>
 
 <script>
 import { mapGetters } from "vuex"
-
-
 
 export default {
   name : 'NavBar',
@@ -50,7 +48,7 @@ export default {
       const sessionCode = Math.random().toString(22).substring(2,22);
       alert(sessionCode);
       this.$router.push({
-        name: "RoomPage",
+        name: "ConferencePage",
         params: {
           sessionCode: sessionCode
         }
