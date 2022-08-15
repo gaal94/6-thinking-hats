@@ -65,23 +65,25 @@ p {
 .opinion-item-box {
   display: flex;
   align-items: center;
+  width: 65.1042vw;
   gap: 8px;
-  border-radius: 50px;
+  border-radius: 3.2552vw;
+  padding: 2px;
 }
 
 .opinion-item-hatface {
-  width: 44px;
-  height: 44px;
+  width: 2.6042vw;
+  height: 2.6042vw;
   margin-left: 4px;
 }
 
 .username {
-  font-size: 14px;
+  font-size: 0.9115vw;
 }
 
 .hatname {
   margin-right: 14px;
-  font-size: 16px;
+  font-size: 0.9115vw;
 }
 
 .delete-icon {

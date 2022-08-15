@@ -9,9 +9,9 @@
           {{ minutes }} : {{ seconds }}
         </div>
         <i class='bx bx-play' @click="clickStartTimer"
-        v-if="hatColor === 'blue-hat'"></i>
+        v-if="hatColor === 'blue-hat' && !timer"></i>
         <i class='bx bx-pause' @click="clickStopTimer"
-        v-if="hatColor === 'blue-hat'"></i>
+        v-if="hatColor === 'blue-hat' && timer"></i>
         <i class='bx bx-revision' @click="clickResetTimer"
         v-if="hatColor === 'blue-hat'"></i>
       </div>
@@ -78,7 +78,7 @@ export default {
 	computed: {
     ...mapGetters(['minutes', 'seconds', 'confSubject', 'session', 'opinions',
                     'publisher', 'myName', 'speechOrder', 'currentTurn',
-                    'hatMode',]),
+                    'hatMode', 'timer',]),
 	},
 	methods: {
     ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
@@ -173,22 +173,27 @@ export default {
   justify-content: space-between;
   background-color: #F6F6F6;
   align-items: center;
-  border-radius: 14px;
-  height: 52px;
-  width: 1080px;
-  margin-bottom: 12px;
+  border-radius: 0.6510vw;
+  height: 2.3438vw;
+  width: 66.4063vw;
+  margin-bottom: 8px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .timer-box {
   display: flex;
+  align-items: center;
   gap: 4px;
   margin-left: 8px;
 }
 
+.time {
+  font-size: 0.9115vw;
+}
+
 .timer-icon {
-  font-size: 36px;
+  font-size: 2.0833vw;
 }
 
 .subject-btn {
@@ -199,9 +204,11 @@ export default {
 .sub-update-btn, .sub-update-confirm-btn, .sub-update-cancel-btn {
   border: none;
   color: white;
-  border-radius: 36px;
-  width: 64px;
-  height: 36px;
+  border-radius: 2.3438vw;
+  width: 2.8646vw;
+  height: 1.5625vw;
+  margin-right: 4px;
+  font-size: 0.7813vw;
 }
 
 .sub-update-btn:hover, .sub-update-confirm-btn:hover, .sub-update-cancel-btn:hover {
@@ -222,9 +229,9 @@ export default {
 
 .opinion-content-box {
   background-color: #F6F6F6;
-  width: 1080px;
-  height: 565px;
-  border-radius: 14px;
+  width: 66.4063vw;
+  height: 31.2500vw;
+  border-radius: 0.9115vw;
   margin-left: auto;
   margin-right: auto;
   padding: 12px;
@@ -235,27 +242,28 @@ export default {
 }
 
 .opinion-contents {
-  width: 1020px;
+  width: 66.4063vw;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
   overflow: auto;
 }
 
 .input-box {
   display: flex;
-  width: 1020px;
-  height: 48px;
+  width: 65.1042vw;
+  height: 2.3438vw;
   border: black solid 1px;
-  border-radius: 14px;
+  border-radius: 0.7813vw;
   align-items: center;
   background-color: white;
 }
 
 .input-box-content {
   border: none;
-  width: 980px;
-  height: 36px;
+  width: 62.5000vw;
+  height: 1.5625vw;
   margin-left: 10px;
   position: relative;
   bottom: 4px;
@@ -271,11 +279,11 @@ export default {
 }
 
 .bx-play, .bx-pause {
-  font-size: 24px;
+  font-size: 1.5625vw;
 }
 
 .bx-revision {
-  font-size: 20px;
+  font-size: 1.3021vw;
 }
 
 .bx-play:hover, .bx-pause:hover, .bx-revision:hover {
