@@ -6,6 +6,7 @@
 
 }
 
+/*teamPage 전체 바디로 봤을때 한줄 */
 .team-row {
     display: flex;
     flex-direction: row;
@@ -14,27 +15,45 @@
     margin-bottom: 20px;
 
 }
-
+/* fe be 나누는 버튼*/
+.button {
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+/* fe be 나누는 버튼 세부 사항*/
+.button4 {
+    background-color: #C7C6C6;
+    color: black;
+    width: 50%;
+}
+/* 팀원 한명 칸*/
 .polaroid {
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #FFFFFF;
     margin: 5px;
-    border: 2px solid #000000;
     box-shadow: 10px 10px 5px #C7C6C6;
     border-radius: 8px;
 }
-
+/*팀원 한명 칸에서 이미지와 소개 글 나눔*/
 .polaroid div{
     display: flex;
     flex-direction: column;
+    align-items: center;
     background-color: #FFFFFF;
     text-align: center;
     padding: 10px;
+    width:200px;
 
 }
-
+/*팀원 사진 크기 */
 .profile {
     width: 130px;
     height: 160px;
