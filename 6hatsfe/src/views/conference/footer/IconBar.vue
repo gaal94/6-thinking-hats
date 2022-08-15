@@ -74,6 +74,7 @@ export default {
     startConference() {
       // sixhats 모드, 6모자가 각 한 명 이상 있어야 시작 가능 
       if (this.hatMode === 'sixhats') {
+        // 각 모자가 몇 명씩 있는지 계산
         let hats = ['red-hat', 'yellow-hat', 'green-hat', 'blue-hat', 'black-hat', 
                     'white-hat']
         let hatCnts = [0, 0, 0, 0, 0, 0]
@@ -89,7 +90,16 @@ export default {
           }
         });
 
-        if (hatCnts.reduce((sum, value) => sum + value, 0) + randomHatCnt >= 6) {
+        // 여섯 모자 모두 배정될 수 있는지 판별
+        if (hatCnts.reduce((sum, value) => {
+          if (value > 0) {
+            return sum + 1
+          } else {
+            return sum
+          }
+        }, 0) + randomHatCnt >= 6) {
+          
+          // 랜덤 모자 배정
           for (let randomCnt = randomHatCnt; randomCnt > 0; randomCnt -= 1) {
             let targetColor = hats[hatCnts.indexOf(Math.min(...hatCnts.slice(0, 6)))]
             let userIdx = this.users.findIndex(userInfo => userInfo.hatColor === 'random-hat')
@@ -104,6 +114,8 @@ export default {
             })
           }
           this.$emit('changeConferenceStatus')
+        } else {
+          alert('한 모자에 적어도 한 명이 배정될 수 있어야 합니다.')
         }
       } else {
         // onehat 모드, 파란 모자가 한 명 있어야 시작 가능
@@ -117,6 +129,8 @@ export default {
 
         if (bluehatCnt === 1) {
           this.$emit('changeConferenceStatus')
+        } else {
+          alert('파란 모자가 한 명 있어야 합니다.')
         }
       }
     },

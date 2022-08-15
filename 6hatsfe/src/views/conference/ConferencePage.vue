@@ -293,7 +293,17 @@ export default {
           }
         })
          if (idx > -1) {
-           this.removeUser(idx)
+           if (this.isConferencing && this.users[idx].hatColor !== 'spectator') {
+             // 회의 종료 시
+            this.resetTimer()
+            this.endConference()
+
+            // 관전자일 때 회의가 끝나면 다시 카메라 복원
+            if (this.myHat === 'spectator') {
+              this.session.publish(this.publisher)
+            }
+          }
+          this.removeUser(idx)
          }
         } else {
           this.leaveSession()
@@ -346,7 +356,10 @@ export default {
 		},
 
 		leaveSession () {
-			// --- Leave the session by calling 'disconnect' method over the Session object ---
+      // --- Leave the session by calling 'disconnect' method over the Session object ---
+      this.$router.push({name: 'LandingPage'})
+      this.resetTimer()
+      this.endConference()
 			if (this.session) this.session.disconnect();
       if (this.screenSession) this.screenSession.disconnect()
       if (this.recordingSession) this.recordingSession.disconnect()
@@ -363,10 +376,7 @@ export default {
       this.clearUsers()
       this.setRole('particitant')
       this.setHostConnectionId(undefined)
-      this.resetTimer()
-      this.endConference()
       this.exitConferenceRoom()
-      this.$router.push({name: 'LandingPage'})
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
@@ -576,6 +586,7 @@ export default {
     this.session.on('signal:changeConf', () => {
       this.resetTurn()
       if (this.isConferencing) {
+        // 회의 종료 시
         this.resetTimer()
         this.endConference()
 
@@ -584,6 +595,8 @@ export default {
           this.session.publish(this.publisher)
         }
       } else {
+
+        // 회의 시작 시
         this.startTimer()
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
