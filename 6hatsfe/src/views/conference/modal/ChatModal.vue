@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-modal-box">
+  <div class="chat-modal-box" @mousedown="highlightChatModal">
     <div class="chat-modal-header">
       <div class="header-content">
         <i class="header-content-icon bx bxs-message-rounded-dots" ></i>
@@ -90,62 +90,68 @@ export default {
     },
     closeChatModal () {
       this.$emit('closeChatModal')
+    },
+    highlightChatModal () {
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '3'
+      userListModal.style.zIndex = '2'
     }
   },
   mounted() {
-      dragElement(document.querySelector('div.chat-modal'));
+    dragElement(document.querySelector('div.chat-modal'));
 
-      function dragElement(elmnt) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (document.querySelector('div.chat-modal-header')) {
-          // if present, the header is where you move the DIV from:
-          document.querySelector('div.chat-modal-header').onmousedown = dragMouseDown;
-        } else {
-          // otherwise, move the DIV from anywhere inside the DIV:
-          elmnt.onmousedown = dragMouseDown;
+    function dragElement(elmnt) {
+      var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (document.querySelector('div.chat-modal-header')) {
+        // if present, the header is where you move the DIV from:
+        document.querySelector('div.chat-modal-header').onmousedown = dragMouseDown;
+      } else {
+        // otherwise, move the DIV from anywhere inside the DIV:
+        elmnt.onmousedown = dragMouseDown;
+      }
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + 'px';
+        if (elmnt.style.top.replace('px', '') < 0) {
+          elmnt.style.top = '0px'
+        } else if (elmnt.style.top.replace('px', '') > window.innerHeight - elmnt.clientHeight - 2){
+          elmnt.style.top = String(window.innerHeight - elmnt.clientHeight - 2) + 'px'
         }
-
-        function dragMouseDown(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // get the mouse cursor position at startup:
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          document.onmouseup = closeDragElement;
-          // call a function whenever the cursor moves:
-          document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // calculate the new cursor position:
-          pos1 = pos3 - e.clientX;
-          pos2 = pos4 - e.clientY;
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          // set the element's new position:
-          elmnt.style.top = (elmnt.offsetTop - pos2) + 'px';
-          if (elmnt.style.top.replace('px', '') < 0) {
-            elmnt.style.top = '0px'
-          } else if (elmnt.style.top.replace('px', '') > window.innerHeight - elmnt.clientHeight - 2){
-            elmnt.style.top = String(window.innerHeight - elmnt.clientHeight - 2) + 'px'
-          }
-          elmnt.style.left = (elmnt.offsetLeft - pos1) + 'px';
-          if (elmnt.style.left.replace('px', '') < 0) {
-            elmnt.style.left = '0px'
-          } else if (elmnt.style.left.replace('px', '') > window.innerWidth - elmnt.clientWidth - 2){
-            elmnt.style.left = String(window.innerWidth - elmnt.clientWidth - 2) + 'px'
-          }
-        }
-
-        function closeDragElement() {
-          // stop moving when mouse button is released:
-          document.onmouseup = null;
-          document.onmousemove = null;
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + 'px';
+        if (elmnt.style.left.replace('px', '') < 0) {
+          elmnt.style.left = '0px'
+        } else if (elmnt.style.left.replace('px', '') > window.innerWidth - elmnt.clientWidth - 2){
+          elmnt.style.left = String(window.innerWidth - elmnt.clientWidth - 2) + 'px'
         }
       }
+
+      function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
     }
+  }
 }
 </script>
 
