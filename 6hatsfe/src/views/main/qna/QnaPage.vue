@@ -23,10 +23,14 @@
     </tr>
   </tbody>
 </table>
+<div class ="boardbtn">
+   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+  </div>
 </div>
 </template>
 
 <script>
+import router from "@/router";
 import interceptor from "@/api/interceptors";
 export default {
   name: 'QnaPage'
@@ -37,8 +41,10 @@ export default {
       length: '',
     };
   }, 
-    methods: {
-      
+  methods: {
+    routeToWritePage(){
+      router.push({ name: "QnaWritePage" });
+    }
   },
     mounted() {
           // Intercepotor 시작
