@@ -31,8 +31,11 @@
                     <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
                 </div>
                 <div>
-                    <button>수정</button>
-                    <button>삭제</button>
+                        <router-link :to ="{
+                        path: '/noticemodifypage/' + this.boardId
+                        }">
+                     <button>수정</button></router-link>
+                    <button @click="boarddelete">삭제</button>
                 </div>
 
     </div>
@@ -41,38 +44,61 @@
 </template>
 <script>
 import interceptor from "@/api/interceptors";
+import router from "@/router";
 export default {
     name: 'NoticecontentsPage',
     data() {
         return {
-            boardId:'',
-            title:'',
-            boardContents:'',
-            name:'',
-            views:'',
-            boardCreatedAt:'',
+            boardId: '',
+            title: '',
+            boardContents: '',
+            name: '',
+            views: '',
+            boardCreatedAt: '',
 
         }
     },
     created() {
         this.boardId = this.$route.params.boardId;
-    interceptor({
-            url: '/board/notice/'+this.boardId,
+        interceptor({
+            url: '/board/notice/' + this.boardId,
             method: 'get'
-          }).then((res) => {
-              console.log(res);
-              this.title = res.data.title;
-              this.boardContents = res.data.boardContents;
-              this.name = res.data.name;
-              this.views = res.data.views;
-              this.boardCreatedAt = res.data.boardCreatedAt;
+        }).then((res) => {
+            console.log(res);
+            this.title = res.data.title;
+            this.boardContents = res.data.boardContents;
+            this.name = res.data.name;
+            this.views = res.data.views;
+            this.boardCreatedAt = res.data.boardCreatedAt;
 
-          }).catch((err) => {
+        }).catch((err) => {
             alert(err);
-          });
+        });
 
+    },
+    methods: {
+        boarddelete() {
+            if (confirm("정말로 삭제하시겠습니까?") == true) {
+                interceptor({
+                    url: '/board/' + this.boardId,
+                    method: 'delete'
+                }).then((res) => {
+                    console.log(res);
+                    console.log("완료되었습니다.");
+                    router.push({ name: "NoticePage" });
+
+                }).catch((err) => {
+                    alert(err);
+                });
+            }
+            else {
+                console.log("취소되었습니다");
+            }
+        }
     }
 }
+
+
 </script>
 
 <style>

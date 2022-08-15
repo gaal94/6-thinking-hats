@@ -142,7 +142,15 @@ const routes = [
     //notice contests router
 
     component: () => import('@/views/main/qna/QnamodifyPage')
+  },
+  {
+    path: '/qnacontentspage/:boardId',
+    name: 'QnacontentsPage',
+    //notice contests router
+
+    component: () => import('@/views/main/qna/QnacontentsPage')
   }
+
 
 ]
 

@@ -53,36 +53,40 @@ export default {
     }
   },
   mounted() {
-          // Intercepotor 시작
+    // Intercepotor 시작
     interceptor({
-          url: '/board/notice',
-          method: 'get'
-        }).then((res) => {
-          this.boards = res.data;
-          this.length = res.data.length;
-          console.log(res.data);
-        }).catch((err) => {
-          alert(err);
-        });
-          var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
-    interceptor({
-          url: '/user/' + decoded.userId,
-          method: 'get'
+      url: '/board/notice',
+      method: 'get'
     }).then((res) => {
+      this.boards = res.data;
+      this.length = res.data.length;
+      console.log(res.data);
+    }).catch((err) => {
+      alert(err);
+    });
+
+    if (localStorage.getItem('access-token')){
+
+      var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
+      interceptor({
+        url: '/user/' + decoded.userId,
+        method: 'get'
+      }).then((res) => {
         this.userType = res.data.user.userType;
-        }).catch((err) => {
-          alert(err);
-        });
-    interceptor({
-          url: '/board/notice',
-          method: 'get'
-        }).then((res) => {
-          this.boards = res.data;
-          this.length = res.data.length;
-        }).catch((err) => {
-          alert(err);
-        });
-                
+      }).catch((err) => {
+        alert(err);
+      });
+      interceptor({
+        url: '/board/notice',
+        method: 'get'
+      }).then((res) => {
+        this.boards = res.data;
+        this.length = res.data.length;
+      }).catch((err) => {
+        alert(err);
+      });
+    
+    }
   }
 }
 </script>
