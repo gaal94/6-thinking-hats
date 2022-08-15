@@ -42,7 +42,9 @@
             'random-hat-back' : userInfo.hatColor !== 'spectator' && userInfo.hatColor !== 'blue-hat',
             'spectator-back' : userInfo.hatColor === 'spectator', }">
     <span class="user-name">{{ userInfo.userName }}</span>
-    <div class="cnt-status dropdown">
+
+    <!-- 호스트일 때 드롭다운 -->
+    <div v-if="isHost" class="cnt-status dropdown">
       <div class="cnt-hat"
             :class="{'random-hat': userInfo.hatColor !== 'blue-hat', 'blue-hat': userInfo.hatColor === 'blue-hat'}"
             data-bs-toggle="dropdown" aria-expanded="false">

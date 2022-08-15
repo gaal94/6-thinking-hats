@@ -2,9 +2,11 @@
   <div class="icon-box">
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="changeMic" 
-    :disabled="isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]">
+    :disabled="isConferencing && hatColor !== 'blue-hat' && 
+                hatColor !== speechOrder[currentTurn] && hatMode === 'sixhats'">
     <i class='bx bxs-microphone-off mic' 
-    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]}"></i>
+    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]
+                            && hatMode === 'sixhats'}"></i>
     </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
@@ -16,11 +18,9 @@
     <button v-if="isHost" @click="record"
     ><i class='bx bx-radio-circle-marked' :class="{'record-activated': isRecording}"></i></button>
 
-    <button><i class='bx bxs-smile'></i></button>
-
     <button @click="menuModal"><i class='bx bx-dots-vertical-rounded'></i></button>
 
-    <button><i class='bx bx-link-alt' ></i></button>
+    <button @click="copyURL"><i class='bx bx-link-alt' ></i></button>
 
     <button class="pre-btn" v-if="isConferencing && hatColor == 'blue-hat'"
     @click="clickBackToPreTurn"
@@ -30,7 +30,9 @@
     @click="clickPassTurn"
     :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
-    <button class="pass-btn" v-if="isConferencing && speechOrder[currentTurn] === hatColor" :class="hatColor"
+    <button class="pass-btn" 
+    v-if="isConferencing && hatMode === 'sixhats' && speechOrder[currentTurn] === hatColor && hatColor !== 'blue-hat'" 
+    :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
     <button class="end-btn" @click="startConference()" 
@@ -72,6 +74,7 @@ export default {
     startConference() {
       // sixhats 모드, 6모자가 각 한 명 이상 있어야 시작 가능 
       if (this.hatMode === 'sixhats') {
+        // 각 모자가 몇 명씩 있는지 계산
         let hats = ['red-hat', 'yellow-hat', 'green-hat', 'blue-hat', 'black-hat', 
                     'white-hat']
         let hatCnts = [0, 0, 0, 0, 0, 0]
@@ -87,7 +90,16 @@ export default {
           }
         });
 
-        if (hatCnts.reduce((sum, value) => sum + value, 0) + randomHatCnt >= 6) {
+        // 여섯 모자 모두 배정될 수 있는지 판별
+        if (hatCnts.reduce((sum, value) => {
+          if (value > 0) {
+            return sum + 1
+          } else {
+            return sum
+          }
+        }, 0) + randomHatCnt >= 6) {
+          
+          // 랜덤 모자 배정
           for (let randomCnt = randomHatCnt; randomCnt > 0; randomCnt -= 1) {
             let targetColor = hats[hatCnts.indexOf(Math.min(...hatCnts.slice(0, 6)))]
             let userIdx = this.users.findIndex(userInfo => userInfo.hatColor === 'random-hat')
@@ -101,7 +113,9 @@ export default {
               type: 'change-hat-color'
             })
           }
-          this.$emit('changeConferenceStatus')
+          this.$emit('startConference')
+        } else {
+          alert('한 모자에 적어도 한 명이 배정될 수 있어야 합니다.')
         }
       } else {
         // onehat 모드, 파란 모자가 한 명 있어야 시작 가능
@@ -114,12 +128,14 @@ export default {
         });
 
         if (bluehatCnt === 1) {
-          this.$emit('changeConferenceStatus')
+          this.$emit('startConference')
+        } else {
+          alert('파란 모자가 한 명 있어야 합니다.')
         }
       }
     },
     endConference() {
-      this.$emit('changeConferenceStatus')
+      this.$emit('endConference')
     },
     outToMain() {
       const answer = confirm('회의에서 나가시겠습니까?')
@@ -164,6 +180,17 @@ export default {
     },
     record() {
       this.$emit('record')
+    },
+    copyURL() {
+      let url = '';
+      const textarea = document.createElement("textarea");
+      document.body.appendChild(textarea);
+      url = window.document.location.href;
+      textarea.value = url;
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      alert("URL이 복사되었습니다.")
     },
 	},
   created() {
