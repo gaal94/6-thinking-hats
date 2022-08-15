@@ -107,9 +107,10 @@ export default {
 }
 
 .name-box {
-  width: 184px;
-  height: 24px;
-  border-radius: 8px;
+  width: 11.9792vw;
+  height: 1.5625vw;
+  border-radius: 0.5208vw;
+  margin-bottom: 4px;
 }
 
 .select {
@@ -131,8 +132,8 @@ ul li:hover {
 .cnt-hat {
   border-radius: 50%;
   margin: 0, 4px;
-  width: 20px;
-  height: 20px;
+  width: 1.3021vw;
+  height: 1.3021vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,7 +141,7 @@ ul li:hover {
 
 .cnt-hat .bx {
   color: white;
-  font-size: 12px;
+  font-size: 0.7813vw;
 }
 
 .cnt-hat:hover {
@@ -154,8 +155,8 @@ ul li:hover {
 }
 
 .status {
-  width: 20px;
-  height: 20px;
+  width: 1.3021vw;
+  height: 1.3021vw;
   border-radius: 50%;
 }
 
@@ -163,7 +164,6 @@ ul li:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px 0;
 }
 
 .user-name {
@@ -214,7 +214,7 @@ ul li:hover {
 }
 
 .random-hat .bx, .spectator .bx {
-  font-size: 12px;
+  font-size: 0.7813vw;
   color: white;
 }
 

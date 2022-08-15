@@ -8,14 +8,14 @@
 <script>
 import NavBar from "@/views/main/header/NavBar.vue"
 import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
-import MainFooter from '@/views/main/footer/MainFooter.vue'
+//import MainFooter from '@/views/main/footer/MainFooter.vue'
 import { mapGetters } from 'vuex'
 
 export default{
+  name: 'App',
   components : {
     NavBar,
     BackgroundWave,
-    MainFooter
   },
 	computed: {
     ...mapGetters(['isInConferenceRoom',]),

@@ -122,9 +122,11 @@ export default {
       this.$emit('changeConferenceStatus')
     },
     outToMain() {
-      alert('회의에서 나가시겠습니까?')
-      this.$emit('leaveRoom')
-      this.$router.push({name: 'LandingPage'})
+      const answer = confirm('회의에서 나가시겠습니까?')
+      if (answer) {
+        this.$emit('leaveRoom')
+        this.$router.push({name: 'LandingPage'})
+      }
     },
     changeMic() {
       this.$emit('changeMic')
@@ -186,14 +188,15 @@ export default {
 .icon-box {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 button {
   border: none;
   background-color: rgb(18, 18, 18);
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -212,18 +215,16 @@ i {
   color: rgb(223, 58, 58);
 }
 
-.pre-btn {
+.pre-btn, .next-btn {
   border-radius: 50%;
-}
-
-.next-btn {
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
 }
 
 .pass-btn, .end-btn {
-  width: 160px;
-  height: 48px;
-  border-radius: 36px;
+  width: 132px;
+  height: 40px;
+  border-radius: 32px;
   color: white;
 }
 

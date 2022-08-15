@@ -43,20 +43,27 @@ export default {
 		}
 	},
 	computed: {
-    ...mapGetters(['users', 'publisher', 'hostConnectionId', 'session',])
+    ...mapGetters(['users', 'publisher', 'hostConnectionId', 'session', 'isConferencing',])
 	},
 	methods: {
     ...mapActions(['removeUser',]),
     kickUser (conId) {
-      for (let idx in this.users) {
-        if (this.users[idx]['connectionId'] == conId) {
-          this.session.signal({
-            data: idx,
-            type: 'kick-user'
-          })
-          break
+      if (this.isConferencing) {
+        alert('회의 중엔 강퇴할 수 없습니다.')
+      } else {
+        for (let idx in this.users) {
+          if (this.users[idx]['connectionId'] == conId) {
+            if(window.confirm(this.users[idx]['userName'] + '님을 정말로 강퇴하시겠습니까?')) {
+                this.session.signal({
+                data: idx,
+                type: 'kick-user'
+              })
+            }
+            break
+          }
         }
       }
+      
     }
 	},
 }

@@ -15,7 +15,7 @@ export default {
     created() {
         this.boardId = this.$route.params.boardId;
     interceptor({
-            url: '/board/'+this.boardId,
+            url: '/board/notice/'+this.boardId,
             method: 'get'
           }).then((res) => {
               console.log(res);
