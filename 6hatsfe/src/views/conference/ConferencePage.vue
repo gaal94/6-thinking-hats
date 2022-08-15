@@ -97,8 +97,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -246,9 +246,12 @@ export default {
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
+          console.log('카메라 생성')
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
           this.subscribers.push(subscriber);
+          console.log(subscriber)
+          console.log(this.subscribers)
         }
 			});
 
@@ -322,25 +325,41 @@ export default {
       })
 
       this.session.on('publisherStartSpeaking', ({ connection }) => {
-        let isSubscriber = false
-        for (let idx in this.subscribers) {
-          if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
-            isSubscriber = true
-            let currentSubscriber = this.subscribers[idx]
-            this.subscribers.splice(0, 0, currentSubscriber)
-            .then(() => {
-              this.subscribers.splice(idx + 1, 1)
-              .then(() => {
-                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-                subcriberCam.classList.add('highlight')
-              })
-            })
-            break
-          }
-        }
-        if (!isSubscriber) {
+        if (this.subscribers.length == 0) {
           let publisherCam = document.querySelector('#local-video-undefined')
           publisherCam.classList.add('highlight')
+        } else if (this.subscribers.length == 1) {
+          if (this.subscribers[0].stream.connection.connectionId == connection.connectionId) {
+            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+            subcriberCam.classList.add('highlight')
+          } else {
+            let publisherCam = document.querySelector('#local-video-undefined')
+            publisherCam.classList.add('highlight')
+          }
+        } else {
+          let isSubscriber = false
+          for (let idx in this.subscribers) {
+            if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
+              isSubscriber = true
+              let currentSubscriber = this.subscribers[idx]
+              this.subscribers.splice(idx, 1)
+              this.subscribers.splice(0, 0, currentSubscriber)
+              if (idx == 0) {
+                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+                subcriberCam.classList.add('highlight')
+              } else {
+                setTimeout(() => {
+                  let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
+                  subcriberCam.classList.add('highlight')
+                }, 200);
+              }
+              break
+            }
+          }
+          if (!isSubscriber) {
+            let publisherCam = document.querySelector('#local-video-undefined')
+            publisherCam.classList.add('highlight')
+          }
         }
       })
 
@@ -359,6 +378,16 @@ export default {
           publisherCam.classList.remove('highlight')
         }
       })
+
+      // this.session.on('publisherStartSpeaking', ({ connection }) => {
+      //   console.log('마이크 감지')
+      //   console.log(connection)
+      // })
+
+      // this.session.on('publisherStopSpeaking', ({ connection }) => {
+      //   console.log('마이크 중지')
+      //   console.log(connection)
+      // })
 
 			// --- Connect to the session with a valid user token ---
 
