@@ -57,7 +57,7 @@
     @record="recording"
     :isRecording="isRecording"></icon-bar>
 
-    <button @click="testDown">test</button>
+    <!-- <button @click="testDown">test</button> -->
     
     <menu-modal
     class="menu-modal"

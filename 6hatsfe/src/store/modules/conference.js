@@ -69,7 +69,7 @@ export default {
     },
     passTurn(state, myturnAudio) {
       state.currentTurn = (state.currentTurn + 1) % 6
-      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+      if (state.hatMode === 'sixhats' && state.myHat !== state.speechOrder[state.currentTurn]) {
         state.publisher.publishAudio(false)
       }
       if (state.myHat == state.speechOrder[state.currentTurn]) {
@@ -78,7 +78,7 @@ export default {
     },
     backToPreTurn(state, myturnAudio) {
       state.currentTurn = (state.currentTurn + 5) % 6
-      if (state.myHat !== state.speechOrder[state.currentTurn]) {
+      if (state.hatMode === 'sixhats' && state.myHat !== state.speechOrder[state.currentTurn]) {
         state.publisher.publishAudio(false)
       }
       if (state.myHat == state.speechOrder[state.currentTurn]) {

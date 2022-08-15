@@ -19,8 +19,11 @@
 
   <!-- 1hat 모드 -->
   <div v-else-if="hatMode === 'onehat'" class="cam-box">
-    <img v-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
-    <img v-else-if="hat !== 'blue-hat' && hat !== 'spectator'" :src="require(`@/assets/${speechOrder[currentTurn].replace('-', '')}.png`)" alt="" class="hat-img">
+    <div class="hat-img-box">
+      <img v-if="hat === 'blue-hat'" src="@/assets/bluehat.png" alt="" class="hat-img">
+      <img v-else-if="hat !== 'blue-hat' && hat !== 'spectator' && speechOrder[currentTurn] !== 'blue-hat'" 
+      :src="require(`@/assets/${speechOrder[currentTurn].replace('-', '')}.png`)" alt="" class="hat-img">
+    </div>
     <div class="cam-screen-box">
 			<div v-if="streamManager">
         <ov-video class="cam-screen" :stream-manager="streamManager"/>
@@ -75,7 +78,7 @@ export default {
 
   .cam-screen {
     width: 13.0208vw;
-    height: 7.5521vw;
+    height: 14.9667vh;
     border-radius: 1.9531vw;
   }
 

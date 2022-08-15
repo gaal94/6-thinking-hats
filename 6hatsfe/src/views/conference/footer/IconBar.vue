@@ -2,9 +2,11 @@
   <div class="icon-box">
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="changeMic" 
-    :disabled="isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]">
+    :disabled="isConferencing && hatColor !== 'blue-hat' && 
+                hatColor !== speechOrder[currentTurn] && hatMode === 'sixhats'">
     <i class='bx bxs-microphone-off mic' 
-    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]}"></i>
+    :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]
+                            && hatMode === 'sixhats'}"></i>
     </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
@@ -15,8 +17,6 @@
 
     <button v-if="isHost" @click="record"
     ><i class='bx bx-radio-circle-marked' :class="{'record-activated': isRecording}"></i></button>
-
-    <button><i class='bx bxs-smile'></i></button>
 
     <button @click="menuModal"><i class='bx bx-dots-vertical-rounded'></i></button>
 
@@ -30,7 +30,9 @@
     @click="clickPassTurn"
     :class="speechOrder[(currentTurn + 1) % 6]"><i class='bx bx-chevron-right'></i></button>
 
-    <button class="pass-btn" v-if="isConferencing && speechOrder[currentTurn] === hatColor" :class="hatColor"
+    <button class="pass-btn" 
+    v-if="isConferencing && speechOrder[currentTurn] === hatColor && hatColor !== 'blue-hat'" 
+    :class="hatColor"
     @click="clickPassTurn">차례 넘기기</button>
 
     <button class="end-btn" @click="startConference()" 
