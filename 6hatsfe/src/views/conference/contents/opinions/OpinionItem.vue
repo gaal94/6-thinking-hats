@@ -65,7 +65,7 @@ p {
 .opinion-item-box {
   display: flex;
   align-items: center;
-  width: 65.1042vw;
+  width: 62.5000vw;
   gap: 8px;
   border-radius: 3.2552vw;
   padding: 2px;

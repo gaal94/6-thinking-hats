@@ -17,8 +17,8 @@
       </div>
 
       <!-- 회의 주제 변경 인풋, 데이터 창 -->
-      <div class="subject-content">
-        <p v-if="!subUpdating">{{ confSubject }}</p>
+      <div class="subject-content" :class="{'other-hat-sub-content': hatColor !== 'blue-hat'}">
+        <span v-if="!subUpdating">{{ confSubject }}</span>
         <input class="sub-input" 
         v-else-if="subUpdating" type="text">
       </div>
@@ -81,7 +81,7 @@ export default {
                     'hatMode', 'timer',]),
 	},
 	methods: {
-    ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject']),
+    ...mapActions(['startTimer', 'stopTimer', 'resetTimer', 'setConfSubject', 'addOpinion',]),
     updateToggle() {
       this.subUpdating = !this.subUpdating
     },
@@ -159,6 +159,14 @@ export default {
     this.resetTimer()
   })
 
+  // 의견창구에 의견을 보낼 때 실행됨
+  this.session.on('signal:send-opinion', ({data}) => {
+    const opinionData = JSON.parse(data)
+    this.addOpinion(opinionData).then(() => {
+      const opScroll = document.querySelector('.opinion-contents')
+      opScroll.scrollTop = opScroll.scrollHeight
+    })
+  })
   }
 }
 </script>
@@ -174,7 +182,7 @@ export default {
   background-color: #F6F6F6;
   align-items: center;
   border-radius: 0.6510vw;
-  height: 2.3438vw;
+  height: 4.9889vh;
   width: 66.4063vw;
   margin-bottom: 8px;
   margin-left: auto;
@@ -196,6 +204,15 @@ export default {
   font-size: 2.0833vw;
 }
 
+.other-hat-sub-content {
+  margin-right: 32.5521vw;
+}
+
+.sub-input {
+  border: none;
+  height: 3.8803vh;
+}
+
 .subject-btn {
   display: flex;
   justify-content: space-between;
@@ -206,7 +223,7 @@ export default {
   color: white;
   border-radius: 2.3438vw;
   width: 2.8646vw;
-  height: 1.5625vw;
+  height: 3.3259vh;
   margin-right: 4px;
   font-size: 0.7813vw;
 }
@@ -230,7 +247,7 @@ export default {
 .opinion-content-box {
   background-color: #F6F6F6;
   width: 66.4063vw;
-  height: 31.2500vw;
+  height: 66.5188vh;
   border-radius: 0.9115vw;
   margin-left: auto;
   margin-right: auto;
@@ -242,18 +259,33 @@ export default {
 }
 
 .opinion-contents {
-  width: 66.4063vw;
+  width: 65.1042vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   overflow: auto;
+  margin-bottom: 8px;
+}
+
+.opinion-contents::-webkit-scrollbar {
+  width: 10px;
+}
+
+.opinion-contents::-webkit-scrollbar-thumb {
+  background-color: rgb(41, 41, 41);
+  border-radius: 10px
+}
+
+.opinion-contents::-webkit-scrollbar-track {
+  background-color: rgb(209, 209, 209);
+  border-radius: 10px
 }
 
 .input-box {
   display: flex;
   width: 65.1042vw;
-  height: 2.3438vw;
+  min-height: 4.9889vh;
   border: black solid 1px;
   border-radius: 0.7813vw;
   align-items: center;
@@ -263,9 +295,10 @@ export default {
 .input-box-content {
   border: none;
   width: 62.5000vw;
-  height: 1.5625vw;
+  height: 3.3259vh;
   margin-left: 10px;
   position: relative;
+  top: 2px;
   bottom: 4px;
   overflow: auto;
 }

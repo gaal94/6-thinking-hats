@@ -606,12 +606,6 @@ export default {
       }
     })
 
-    // 의견창구에 의견을 보낼 때 실행됨
-    this.session.on('signal:send-opinion', ({data}) => {
-      const opinionData = JSON.parse(data)
-      this.addOpinion(opinionData)
-    })
-
     // 의견창구에서 의견을 지울 때 실행됨
     this.session.on('signal:delete-opinion', ({data}) => {
       this.removeOpinion(Number(data))
