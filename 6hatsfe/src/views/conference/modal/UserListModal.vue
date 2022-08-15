@@ -1,5 +1,5 @@
 <template>
-  <div class="user-modal-box">
+  <div class="user-modal-box" @mousedown="highlightUserListModal">
     <div class="user-modal-header">
       <div class="header-content">
         <i class="user-icon bx bxs-user"></i>
@@ -35,6 +35,12 @@ export default {
     closeUserListModal () {
       this.$emit('closeUserListModal')
     },
+    highlightUserListModal () {
+      let chatModal = document.querySelector('div.chat-modal')
+      let userListModal = document.querySelector('div.user-list-modal')
+      chatModal.style.zIndex = '2'
+      userListModal.style.zIndex = '3'
+    }
   },
   mounted() {
       dragElement(document.querySelector('div.user-list-modal'));
