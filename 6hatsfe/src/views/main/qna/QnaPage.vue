@@ -6,9 +6,9 @@
   <table class="table">
   <thead class="Rechead">
     <tr class="headrow">
-      <th scope="col">글번호</th>
-      <th scope ="col" colspan="4">제목</th>
-      <th scope="col">작성자</th>
+      <th scope="col" style="width : 8%">글번호</th>
+      <th scope ="col" style="width : 60%">제목</th>
+      <th scope="col" >작성자</th>
       <th scope="col">작성일</th>
       <th scope="col">조회수</th>
     </tr>
@@ -16,7 +16,7 @@
   <tbody>
     <tr v-for="(no,idx) in boards" :key ="idx">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4">{{no.title}}</td>
+      <td>{{no.title}}</td>
       <td>{{no.name}}</td>
       <td>{{no.boardCreatedAt}}</td>
       <td>{{no.views}}</td>
@@ -24,7 +24,7 @@
   </tbody>
 </table>
 <div class ="boardbtn">
-   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+   <button v-if ="userType==='USER'" v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
   </div>
 </div>
 </template>
@@ -32,6 +32,7 @@
 <script>
 import router from "@/router";
 import interceptor from "@/api/interceptors";
+import jwt_decode from "jwt-decode";
 export default {
   name: 'QnaPage'
   ,
@@ -39,6 +40,7 @@ export default {
     return {
       boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
       length: '',
+      userType:'',
     };
   }, 
   methods: {
@@ -57,6 +59,15 @@ export default {
           }).catch((err) => {
             alert(err);
           });
+    var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
+    interceptor({
+          url: '/user/' + decoded.userId,
+          method: 'get'
+    }).then((res) => {
+        this.userType = res.data.user.userType;
+        }).catch((err) => {
+          alert(err);
+        });
       }
 }
 </script>
@@ -92,5 +103,12 @@ h1, p {
 .table{
   font-size: 14px;
 }
-
+.boardbtn{
+  position: relative;
+  width : 100%;
+}
+#boardwritingbtn{
+  right :0;
+  position: absolute;
+}
 </style>

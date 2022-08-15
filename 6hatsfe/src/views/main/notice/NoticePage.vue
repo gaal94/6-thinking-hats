@@ -6,9 +6,9 @@
   <table class="table">
   <thead class="Rechead">
     <tr class="headrow">
-      <th scope="col">글번호</th>
-      <th scope ="col" colspan="4">제목</th>
-      <th scope="col">작성자</th>
+      <th scope="col" style="width : 8%">글번호</th>
+      <th scope ="col" style="width : 60%">제목</th>
+      <th scope="col" >작성자</th>
       <th scope="col">작성일</th>
       <th scope="col">조회수</th>
     </tr>
@@ -16,7 +16,7 @@
   <tbody>
     <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
       <td scope="row">{{idx+1}}</td>
-      <td colspan="4"><router-link :to ="{
+      <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
             }">
       {{no.title}}</router-link></td>
@@ -60,6 +60,7 @@ export default {
         }).then((res) => {
           this.boards = res.data;
           this.length = res.data.length;
+          console.log(res.data);
         }).catch((err) => {
           alert(err);
         });
