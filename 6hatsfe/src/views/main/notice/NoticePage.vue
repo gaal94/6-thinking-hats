@@ -60,7 +60,6 @@ export default {
         }).then((res) => {
           this.boards = res.data;
           this.length = res.data.length;
-          console.log(res.data);
         }).catch((err) => {
           alert(err);
         });

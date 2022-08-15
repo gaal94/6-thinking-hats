@@ -121,6 +121,20 @@ const routes = [
     //notice contests router
 
     component: () => import('@/views/main/notice/NoticecontentsPage')
+  },
+  {
+    path: '/noticecontentspage/:boardId',
+    name: 'NoticecontentsPage',
+    //notice contests router
+
+    component: () => import('@/views/main/notice/NoticecontentsPage')
+  },
+  {
+    path: '/noticemodifypage/:boardId',
+    name: 'NoticemodifyPage',
+    //notice contests router
+
+    component: () => import('@/views/main/notice/NoticemodifyPage')
   }
 
 ]
