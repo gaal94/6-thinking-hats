@@ -110,7 +110,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
 // const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
@@ -289,12 +290,9 @@ export default {
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
-          console.log('카메라 생성')
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
-          this.subscribers.push(subscriber);
-          console.log(subscriber)
-          console.log(this.subscribers)
+          this.subscribers.push(subscriber)
         }
 			});
 
@@ -377,60 +375,24 @@ export default {
       })
 
       this.session.on('publisherStartSpeaking', ({ connection }) => {
-        if (this.subscribers.length == 0) {
-          let publisherCam = document.querySelector('#local-video-undefined')
-          publisherCam.classList.add('highlight')
-        } else if (this.subscribers.length == 1) {
-          if (this.subscribers[0].stream.connection.connectionId == connection.connectionId) {
-            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-            subcriberCam.classList.add('highlight')
-          } else {
-            let publisherCam = document.querySelector('#local-video-undefined')
-            publisherCam.classList.add('highlight')
-          }
-        } else {
-          let isSubscriber = false
-          for (let idx in this.subscribers) {
-            if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
-              isSubscriber = true
-              let currentSubscriber = this.subscribers[idx]
-              this.subscribers.splice(idx, 1)
-              this.subscribers.splice(0, 0, currentSubscriber)
-              if (idx == 0) {
-                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-                subcriberCam.classList.add('highlight')
-              } else {
-                setTimeout(() => {
-                  let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-                  subcriberCam.classList.add('highlight')
-                }, 200);
-              }
-              break
-            }
-          }
-          if (!isSubscriber) {
-            let publisherCam = document.querySelector('#local-video-undefined')
-            publisherCam.classList.add('highlight')
-          }
-        }
+        this.session.signal({
+          data: JSON.stringify({
+            connectionId: connection.connectionId,
+            streamId: connection.stream.streamId
+          }),
+          type: 'start-speaking'
+        })
       })
 
       this.session.on('publisherStopSpeaking', ({ connection }) => {
-        let isSubscriber = false
-        for (let idx in this.subscribers) {
-          if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
-            isSubscriber = true
-            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-            subcriberCam.classList.remove('highlight')
-            break
-          }
-        }
-        if (!isSubscriber) {
-          let publisherCam = document.querySelector('#local-video-undefined')
-          publisherCam.classList.remove('highlight')
-        }
+        this.session.signal({
+          data: JSON.stringify({
+            connectionId: connection.connectionId,
+            streamId: connection.stream.streamId
+          }),
+          type: 'stop-speaking'
+        })
       })
-
 			// --- Connect to the session with a valid user token ---
 
 			// 'getToken' method is simulating what your server-side should do.
@@ -778,7 +740,9 @@ export default {
         this.startTimer()
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
-        this.turnOffAudio()
+        if (this.audio) {
+          this.changeMicrophone()
+        }
 
         // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
         if (this.myHat === 'spectator') {
@@ -852,11 +816,82 @@ export default {
     })
 
     this.joinConferenceRoom()
+
+    this.session.on('signal:start-speaking', ({data}) => {
+      let speakingData = JSON.parse(data)
+      if (this.subscribers.length == 0) {
+        let publisherCam = document.querySelector('#local-video-undefined')
+        publisherCam.classList.add('highlight')
+      } else if (this.subscribers.length == 1) {
+        if (this.subscribers[0].stream.connection.connectionId == speakingData.connectionId) {
+          let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+          subcriberCam.classList.add('highlight')
+        } else {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          if (publisherCam == null) {
+            publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+          }
+          publisherCam.classList.add('highlight')
+        }
+      } else {
+        let isSubscriber = false
+        for (let idx in this.subscribers) {
+          if (this.subscribers[idx].stream.connection.connectionId == speakingData.connectionId) {
+            isSubscriber = true
+            let currentSubscriber = this.subscribers[idx]
+            this.subscribers.splice(idx, 1)
+            this.subscribers.splice(0, 0, currentSubscriber)
+            if (idx == 0) {
+              let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+              subcriberCam.classList.add('highlight')
+            } else {
+              setTimeout(() => {
+                let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+                subcriberCam.classList.add('highlight')
+              }, 200);
+            }
+            break
+          }
+        }
+        if (!isSubscriber) {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          if (publisherCam == null) {
+            publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+          }
+          publisherCam.classList.add('highlight')
+        }
+      }
+    })
+
+    this.session.on('signal:stop-speaking', ({data}) => {
+      let speakingData = JSON.parse(data)
+      let isSubscriber = false
+      for (let idx in this.subscribers) {
+        if (this.subscribers[idx].stream.connection.connectionId == speakingData.connectionId) {
+          isSubscriber = true
+          let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+          subcriberCam.classList.remove('highlight')
+          break
+        }
+      }
+      if (!isSubscriber) {
+        let publisherCam = document.querySelector('#local-video-undefined')
+        if (publisherCam == null) {
+          publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+        }
+        publisherCam.classList.remove('highlight')
+      }
+    })
   }
 }
 </script>
 
-<style scoped>
+<style>
+  html, body, #app {
+    width: 100%;
+    height: 100%;
+  }
+
   .conference-page {
     display: flex;
     flex-direction: column;

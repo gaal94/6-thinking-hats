@@ -1,35 +1,37 @@
 <template>
-  <div id="recgo">
-    <header class="pagename">
-    <h1>공지사항</h1>
-    </header>
-  <table class="table">
-  <thead class="Rechead">
-    <tr class="headrow">
-      <th scope="col">글번호</th>
-      <th scope ="col" colspan="4">제목</th>
-      <th scope="col">작성자</th>
-      <th scope="col">작성일</th>
-      <th scope="col">조회수</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(no,idx) in boards" :key ="idx">
-      <td scope="row">{{idx+1}}</td>
-      <td colspan="4"><router-link :to ="{
-              path: '/qnacontentspage/' + no.boardId
-            }">
-      {{no.title}}</router-link></td>
-      <td>{{no.name}}</td>
-      <td>{{no.boardCreatedAt}}</td>
-      <td>{{no.views}}</td>
-    </tr>
-  </tbody>
-</table>
-<div class ="boardbtn">
-   <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+  <div class="qna-page">
+    <div id="recgo">
+      <header class="pagename">
+      <h1>Q&A</h1>
+      </header>
+    <table class="table">
+    <thead class="Rechead">
+      <tr class="headrow">
+        <th scope="col">글번호</th>
+        <th scope ="col" colspan="4">제목</th>
+        <th scope="col">작성자</th>
+        <th scope="col">작성일</th>
+        <th scope="col">조회수</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(no,idx) in boards" :key ="idx">
+        <td scope="row">{{idx+1}}</td>
+        <td colspan="4"><router-link :to ="{
+                path: '/qnacontentspage/' + no.boardId
+              }">
+        {{no.title}}</router-link></td>
+        <td>{{no.name}}</td>
+        <td>{{no.boardCreatedAt}}</td>
+        <td>{{no.views}}</td>
+      </tr>
+    </tbody>
+    </table>
+    <div class ="boardbtn">
+      <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+    </div>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -68,6 +70,10 @@ export default {
 </script>
 
 <style>
+.qna-page {
+  width: 100%;
+  height: calc(100% - 144px);
+}
 #recgo{
   width:60%;
   margin:auto;
