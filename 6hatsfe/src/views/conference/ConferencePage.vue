@@ -133,8 +133,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 // const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
-const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
+// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -273,7 +273,7 @@ export default {
           type: 'changeConf'
         })
         .then(() => {
-          console.log('conference just started!');
+          console.log('conference just ended!');
         })
 
       } else {
@@ -476,7 +476,19 @@ export default {
         if (this.session) this.session.disconnect();
         if (this.screenSession) this.screenSession.disconnect()
         if (this.recordingSession) this.recordingSession.disconnect()
-  
+
+        let opinionTexts = ''
+        for (let opinionText of this.opinions) {
+          if (opinionText.category == 'subject') {
+            opinionTexts += '회의 주제 : ' + opinionText.content
+          } else if (opinionText.category == 'opinion') {
+            opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
+          }
+          opinionTexts += '\n'
+        }
+        opinionTexts = opinionTexts.slice(0, -2)
+        console.log(opinionTexts)
+
         this.session = undefined;
         this.setSession(undefined)
         this.mainStreamManager = undefined;
@@ -856,6 +868,9 @@ export default {
       let speakingData = JSON.parse(data)
       if (this.subscribers.length == 0) {
         let publisherCam = document.querySelector('#local-video-undefined')
+        if (publisherCam == null) {
+          publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+        }
         publisherCam.classList.add('highlight')
       } else if (this.subscribers.length == 1) {
         if (this.subscribers[0].stream.connection.connectionId == speakingData.connectionId) {
@@ -916,6 +931,37 @@ export default {
         }
         publisherCam.classList.remove('highlight')
       }
+    })
+
+    // 주제가 변화될 때
+    this.session.on('signal:update-subject', event => {
+      const subjectData = JSON.parse(event.data)
+      this.addOpinion(subjectData)
+      this.setConfSubject(subjectData.content)
+    })
+    
+    // 타이머를 실행할 때
+    this.session.on('signal:start-timer', () => {
+      this.startTimer()
+    })
+    
+    // 타이머를 멈출 때
+    this.session.on('signal:stop-timer', () => {
+      this.stopTimer()
+    })
+
+    // 타이머를 재설정할 때
+    this.session.on('signal:reset-timer', () => {
+      this.resetTimer()
+    })
+
+    // 의견창구에 의견을 보낼 때 실행됨
+    this.session.on('signal:send-opinion', ({data}) => {
+      const opinionData = JSON.parse(data)
+      this.addOpinion(opinionData).then(() => {
+        const opScroll = document.querySelector('.opinion-contents')
+        opScroll.scrollTop = opScroll.scrollHeight
+      })
     })
   }
 }
