@@ -28,7 +28,7 @@
                     댓글
                     <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
                 </div>
-                <div>
+                <div style="display:flex; justify-content: flex-end;">
                     <router-link :to ="{
                         path: '/noticemodifypage/' + this.boardId
                         }">
