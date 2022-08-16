@@ -3,6 +3,7 @@
 		<header class="pagename">
     <h1>QnA 작성</h1>
     </header>
+	<div id="bar"></div>
 		<div class="input-group">
   		<div class="input-group-prepend">
     		<span class="input-group-text" id="basic-addon1">제목</span>

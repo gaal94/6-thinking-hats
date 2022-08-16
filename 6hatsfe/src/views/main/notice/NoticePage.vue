@@ -18,7 +18,7 @@
           <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
           <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
-              }">
+              }" style="color: #000000">
             {{no.title}}</router-link></td>
           <td>{{no.name}}</td>
           <td>{{no.boardCreatedAt}}</td>
@@ -117,4 +117,17 @@ export default {
 </script>
 
 <style scoped lang="css" src="@/assets/css/views/main/notice/NoticePage.css">
+.pagination{
+
+}
+.page-item{
+
+}
+.page-link{
+
+}
+.sr-only{
+
+}
+
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="main-notice-contents">
         <h2 style="padding:15px">공지사항</h2>
-        <hr style="height:50px;border-width:0;color:black; background-color:black; z-index:5">
+        <div id="bar"></div>
         
         <div style="margin-left:20px">
             <table class="main-contents" style="width:100%; ">
@@ -32,8 +32,8 @@
                     <router-link :to ="{
                         path: '/noticemodifypage/' + this.boardId
                         }">
-                    <button>수정</button></router-link>
-                    <button @click="boarddelete">삭제</button>
+                    <button type="button" class="btn btn-primary">수정</button></router-link>
+                    <button @click="boarddelete" type="button" class="btn btn-primary">삭제</button>
                 </div>
         </div>
     </div>
