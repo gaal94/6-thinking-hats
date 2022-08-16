@@ -8,7 +8,7 @@
 <script>
 import NavBar from "@/views/main/header/NavBar.vue"
 import BackgroundWave from "@/views/main/background/BackgroundWave.vue"
-//import MainFooter from '@/views/main/footer/MainFooter.vue'
+import MainFooter from '@/views/main/footer/MainFooter.vue'
 import { mapGetters } from 'vuex'
 
 export default{
@@ -16,6 +16,7 @@ export default{
   components : {
     NavBar,
     BackgroundWave,
+    MainFooter
   },
 	computed: {
     ...mapGetters(['isInConferenceRoom',]),
@@ -24,6 +25,11 @@ export default{
 </script>
 
 <style>
+html, body, #app {
+  width: 100%;
+  height: 100%;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

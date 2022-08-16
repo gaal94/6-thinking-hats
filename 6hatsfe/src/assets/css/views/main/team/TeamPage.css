@@ -2,8 +2,8 @@
 
 /* teamPage 바디 css*/
 .team-body {
-    margin: 50px;
-
+  width: 100%;
+  height: calc(100% - 144px);
 }
 
 /*teamPage 전체 바디로 봤을때 한줄 */
@@ -11,9 +11,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+}
 
+.team-row-top {
+  margin-top: 0;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  align-items: center;
 }
 /* fe be 나누는 버튼*/
 .button {
@@ -51,11 +56,13 @@
     text-align: center;
     padding: 10px;
     width:200px;
-
 }
 /*팀원 사진 크기 */
 .profile {
     width: 130px;
     height: 160px;
+}
 
+.logo-team {
+  max-width: 100px;
 }
