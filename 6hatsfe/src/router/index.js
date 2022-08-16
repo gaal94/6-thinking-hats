@@ -80,7 +80,7 @@ const routes = [
     component: () => import('@/views/main/signup/SignupPage.vue')
   },
   {
-    path: '/conferencepage',
+    path: '/conferencepage/:sessionCode',
     name: 'ConferencePage',
     //conference router
 
