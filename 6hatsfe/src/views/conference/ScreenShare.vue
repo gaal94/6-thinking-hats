@@ -4,7 +4,7 @@
       <p 
       class="no-screen-share-word"
       v-if="!screenSub">
-        화면 공유 안 하고 있음
+        화면공유 중이 아닙니다
       </p>
       <ov-video 
       class="shared-screen" :stream-manager="screenSub"
@@ -43,13 +43,31 @@ export default {
 </script>
 
 <style scoped>
+  .screen-share-modal-box {
+    justify-content: space-around;
+    background-color: #121212;
+    height: 91.4634vh;
+    width: 66.9271vw;;
+    z-index: 999;
+  }
+
   .screen-share-modal-close-btn {
     border: none;
     background-color: #121212;
+    position: absolute;
+    bottom: 12px;
   }
 
   .screen-share-modal-close-btn:hover {
     cursor: pointer;
+  }
+
+  .no-screen-share-word {
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    margin-top: 330px;
+    margin-bottom: 0;
   }
 
   .bxs-caret-up-circle {
@@ -58,8 +76,9 @@ export default {
   }
 
   .shared-screen {
-    width: 600px;
-    height: 400px;
+    margin-top: 20px;
+    width: 52.0833vw;
+    height: 83.1486vh;
   }
 
 </style>

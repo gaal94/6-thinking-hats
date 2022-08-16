@@ -6,28 +6,34 @@
     <div class="hat-type-setting">
       <div v-if="isHost">
         <input type="radio" name="hat-type" id="sixhats" :checked="hatMode === 'sixhats'"
-        @click="clickChangeHatMode('sixhats')">
-        <label for="sixhats">6hats</label>
+        @click="clickChangeHatMode('sixhats')" class="sixhats-mode-btn">
+        <label for="sixhats" class="sixhats-label">
+          <img src="@/assets/sixhats_mode.png" alt="" class="sixhats-img host-img" 
+          :class="{'hat-mode-checked': hatMode === 'sixhats'}">
+        </label>
         <input type="radio" name="hat-type" id="onehat" :checked="hatMode === 'onehat'"
-        @click="clickChangeHatMode('onehat')">
-        <label for="onehat">1hat</label>
+        @click="clickChangeHatMode('onehat')" class="onehat-mode-btn">
+        <label for="onehat" class="onehat-label">
+          <img src="@/assets/onehat_mode.png" alt="" class="onehat-img host-img" 
+          :class="{'hat-mode-checked': hatMode === 'onehat'}">
+        </label>
       </div>
 
       <div v-else>
-        <span :class="{'selected-option': hatMode === 'sixhats'}"> 6hats </span>
-        <span :class="{'selected-option': hatMode === 'onehat'}"> 1hat</span>
+        <img src="@/assets/sixhats_mode.png" alt="" class="sixhats-img" :class="{'hat-mode-checked': hatMode === 'sixhats'}">
+        <img src="@/assets/onehat_mode.png" alt="" class="onehat-img" :class="{'hat-mode-checked': hatMode === 'onehat'}">
       </div>
     </div>
 
     <div class="idea-type-setting">
       <p class="idea-type-setting-word">회의 모드</p>
       <div v-if="isHost">
-        <input type="radio" name="idea-type" id="proposal"
+        <input type="radio" name="idea-type" id="suggest"
         @click="clickChangeIdeaMode('ideaSuggest')" :checked="ideaMode === 'ideaSuggest'">
-        <label for="proposal">아이디어 제안</label>
-        <input type="radio" name="idea-type" id="verification"
+        <label for="suggest">아이디어 제안</label>
+        <input type="radio" name="idea-type" id="judge"
         @click="clickChangeIdeaMode('ideaJudge')" :checked="ideaMode === 'ideaJudge'">
-        <label for="verification">아이디어 검증</label>
+        <label for="judge">아이디어 검증</label>
       </div>
 
       <div v-else>
@@ -114,4 +120,28 @@ export default {
 .selected-option {
   color: brown;
 }
+
+.sixhats-mode-btn, .onehat-mode-btn {
+  display: none;
+}
+
+.hat-type-setting {
+  margin-bottom: 12px;
+}
+
+.host-img:hover {
+  cursor: pointer;
+}
+
+.sixhats-img, .onehat-img {
+  width: 8.5938vw;
+  height: 10.4167vw;
+  border-radius: 0.6510vw;
+  margin-right: 8px;
+}
+
+.hat-mode-checked {
+  box-shadow: 2px 2px 4px rgb(155, 155, 155);
+}
+
 </style>

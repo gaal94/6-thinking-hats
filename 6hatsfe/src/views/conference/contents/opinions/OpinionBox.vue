@@ -87,7 +87,6 @@ export default {
     },
     updateSubject() {
       const changedSub = document.querySelector('.sub-input').value
-      this.setConfSubject(changedSub)
       this.subUpdating = false
       this.session.signal({
         data: changedSub,  // Any string (optional)
