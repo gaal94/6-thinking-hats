@@ -18,7 +18,7 @@
           <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
           <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
-              }">
+              }" style="color: #000000">
             {{no.title}}</router-link></td>
           <td>{{no.name}}</td>
           <td>{{no.boardCreatedAt}}</td>

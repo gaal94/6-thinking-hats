@@ -18,7 +18,7 @@
           <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
           <td colspan="4"><router-link :to ="{
               path: '/qnacontentspage/' + no.boardId
-            }">
+            }" style="color: #000000">
           {{no.title}}</router-link></td>
           <td>{{no.name}}</td>
           <td>{{no.boardCreatedAt}}</td>

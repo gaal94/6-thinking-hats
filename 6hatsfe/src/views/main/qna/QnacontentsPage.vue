@@ -1,7 +1,7 @@
 <template>
     <div class="main-qna-contents">
         <h2 style="padding:15px">QnA</h2>
-        <hr style="height:50px;border-width:0;color:black; background-color:black; z-index:5">
+        <div id="bar"></div>
 
         <div style="margin-left:20px">
             <table class="main-contents" style="width:100%; ">
@@ -29,8 +29,8 @@
                 <router-link :to ="{
                     path: '/qnamodifypage/' + this.boardId
                     }">
-                <button style="margin-right:5px">게시글 수정</button></router-link>
-                <button @click="boarddelete">게시글 삭제</button>
+                <button style="margin-right:5px" type="button" class="btn btn-primary">게시글 수정</button></router-link>
+                <button @click="boarddelete" type="button" class="btn btn-primary">게시글 삭제</button>
             </div>
             
             <div style="margin-top:50px">
@@ -69,7 +69,7 @@
                 </nav>    
             </div>
             <div>
-                <input v-model="postComment.commentContents" type="text" style="width:80%" > <button   v-on:click="PostComment" style="float:right">댓글 쓰기</button>
+                <input v-model="postComment.commentContents" type="text" style="width:80%" > <button   v-on:click="PostComment" style="float:right" type="button" class="btn btn-primary">댓글 쓰기</button>
             </div>
             
         </div>
