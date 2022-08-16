@@ -22,6 +22,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css" scoped>
   @import url("@/assets/css/views/main/landing/LandingPage.css");
 </style>

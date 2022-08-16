@@ -66,7 +66,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 /* #logo:hover{
   background-color: white;
 } */

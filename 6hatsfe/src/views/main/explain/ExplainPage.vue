@@ -2,7 +2,7 @@
   <div class="explain-container">
     <!-- 모자라지않은회의 로고-->
     <div class="explain-body">
-      <img class="logo" src="@/assets/logoExplain.png" alt="logo">
+      <img class="hatslogopng" src="@/assets/logoExplain.png" alt="logo">
     </div>
 
     <!--모자라지않은회의 설명-->
@@ -168,6 +168,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css" scoped>
   @import url("@/assets/css/views/main/explain/ExplainPage.css");
 </style>
