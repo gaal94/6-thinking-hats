@@ -8,6 +8,7 @@
     <screen-share class="screen-share" v-if="seeScreen"
     @closeScreenShareModal="closeScreenShare"
     :screen-sub="screenSub"></screen-share>
+    <div class="screen-shared" v-if="seeScreen || isMyScreenShared"></div>
 
     <div class="conference-body">
       <!-- 왼쪽 캠화면 + 모자 키워드 -->
@@ -110,8 +111,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -869,6 +870,7 @@ export default {
 
   .screen-share {
     position: absolute;
+    top: 0px;
   }
 
   .screen-share-btn-icon {
@@ -884,6 +886,10 @@ export default {
 
   .screen-share-btn:hover {
     cursor: pointer;
+  }
+
+  .screen-shared{
+    height: 50px;
   }
 
   .in-conference-screen {
