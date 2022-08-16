@@ -287,8 +287,10 @@ export default {
           .then(() => {
             console.log('conference just started!');
           })
+          const subjectData = {content: this.subject, category: 'subject'}
+          const jsonSubjectData = JSON.stringify(subjectData)
           this.session.signal({
-            data: this.subject,
+            data: jsonSubjectData,
             type: 'update-subject'
           })
           this.subject = ''

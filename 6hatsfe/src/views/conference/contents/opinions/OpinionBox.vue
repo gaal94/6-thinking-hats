@@ -88,10 +88,13 @@ export default {
     updateSubject() {
       const changedSub = document.querySelector('.sub-input').value
       this.subUpdating = false
+      let subjectData = { content: changedSub,
+                          category: 'subject'}
+      const jsonSubjectData = JSON.stringify(subjectData)
       this.session.signal({
-        data: changedSub,  // Any string (optional)
-        to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-        type: 'update-subject'             // The type of message (optional)
+        data: jsonSubjectData,  
+        to: [],
+        type: 'update-subject' 
       })
       .then(() => {
           console.log('Message successfully sent');
@@ -119,13 +122,17 @@ export default {
       if (op) {
         let opinionData = {}
         if (this.hatMode === 'sixhats' || this.hatColor === 'blue-hat' ) {
-          opinionData = { userName: this.myName, content: this.opinion, 
+          opinionData = { userName: this.myName, 
+                          content: this.opinion, 
                           connectionId: this.publisher.stream.session.connection.connectionId,
-                          hatColor: this.hatColor}
+                          hatColor: this.hatColor,
+                          category: 'opinion'}
         } else {
-          opinionData = { userName: this.myName, content: this.opinion, 
+          opinionData = { userName: this.myName, 
+                          content: this.opinion, 
                           connectionId: this.publisher.stream.session.connection.connectionId,
-                          hatColor: this.speechOrder[this.currentTurn]}
+                          hatColor: this.speechOrder[this.currentTurn],
+                          category: 'opinion'}
         }
         const jsonOpinionData = JSON.stringify(opinionData)
         this.session.signal({
@@ -140,7 +147,9 @@ export default {
   created() {
   // 주제가 변화될 때
   this.session.on('signal:update-subject', event => {
-    this.setConfSubject(event.data)
+    const subjectData = JSON.parse(event.data)
+    this.addOpinion(subjectData)
+    this.setConfSubject(subjectData.content)
   })
   
   // 타이머를 실행할 때
