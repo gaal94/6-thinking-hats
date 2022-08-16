@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="(no,idx) in boards" :key ="idx">
-          <td scope="row">{{idx+1}}</td>
+          <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
           <td colspan="4"><router-link :to ="{
               path: '/qnacontentspage/' + no.boardId
             }">
@@ -26,6 +26,23 @@
         </tr>
       </tbody>
     </table>
+    <nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
+      <ul class="pagination">
+        <li class="page-item">
+          <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+        <li class="page-item">
+          <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>    
     <div class ="boardbtn">
       <button v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
     </div>
@@ -42,28 +59,44 @@ export default {
     return {
       boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
       length: '',
+      pageNum: 0,
+      pageSize: 5,
     };
   }, 
   methods: {
     routeToWritePage(){
       router.push({ name: "QnaWritePage" });
+    },
+    getBoardQna(){
+      interceptor({
+        url:'/board/qna?page=' + this.pageNum + '&size=' + this.pageSize + '&sort=boardCreatedAt,boardId,desc',
+        method: 'get'
+      }).then((res) => {
+        this.boards = res.data;
+        this.length = res.data.length;
+      console.log(res.data.length);
+    }).catch((err) => {
+      alert(err);
+    });
+    },
+    addPageNum(){
+      if(this.length == this.pageSize) { // 꼼수 같은 코드
+        this.pageNum++;
+        this.getBoardQna();
+      }
+    }, 
+    substractPageNum(){
+      if(this.pageNum - 1 >= 0 ) {
+        this.pageNum--;
+        this.getBoardQna();
+      }
     }
   },
     mounted() {
+      this.getBoardQna();
           // Intercepotor 시작
-    interceptor({
-            url: '/board/qna',
-            method: 'get'
-          }).then((res) => {
-            console.log("qna data");
-            console.log(res.data);
-            this.boards = res.data;
-            console.log();
-            this.length = res.data.length;
-          }).catch((err) => {
-            alert(err);
-          });
-      }
+    
+    }
 }
 </script>
 

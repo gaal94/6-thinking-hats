@@ -16,9 +16,6 @@
   		<textarea v-model="board.boardContents" class="form-control" aria-label="With textarea"></textarea>
 		</div>
 		<button v-on:click="PostBoard" type="button" class="btn btn-primary" style="float: right;">저장</button>
-		<div>
-
-		</div>
 	</div>
 </template>
 
@@ -55,26 +52,6 @@ export default {
 }
 </script>
 
-<style>
-.write-body {
-	margin-top: 2%;
-	margin-left: 30%;
-	margin-right: 30%;
-	height: 50%;
-}
-.pagename {
-  position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 75px;
-  padding: 1rem;
-  color:black;
-  /* background: #C1EFFF; */
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+<style scoped lang="css" src="@/assets/css/views/main/qna/QnaWritePage.css">
+
 </style>

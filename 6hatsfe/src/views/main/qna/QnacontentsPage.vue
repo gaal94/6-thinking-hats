@@ -1,5 +1,5 @@
 <template>
-    <div class="main-notice-contents">
+    <div class="main-qna-contents">
         <h2 style="padding:15px">QnA</h2>
         <hr style="height:50px;border-width:0;color:black; background-color:black; z-index:5">
 

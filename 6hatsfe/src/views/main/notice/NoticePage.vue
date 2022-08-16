@@ -27,22 +27,22 @@
       </tbody>
     </table>
     <nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
-  <ul class="pagination">
-    <li class="page-item">
-      <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only">Previous</span>
-      </a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
-    <li class="page-item">
-      <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">Next</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+      <ul class="pagination">
+        <li class="page-item">
+          <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+        <li class="page-item">
+          <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
     <div class ="boardbtn">
       <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary">글쓰기</button>
     </div>
