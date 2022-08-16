@@ -581,23 +581,6 @@ export default {
     },
 
     changeVideo(){
-            axios
-                .post(
-                    `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
-                    {},
-                    {
-                        auth: {
-                            username: "OPENVIDUAPP",
-                            password: OPENVIDU_SERVER_SECRET,
-                        },
-                    }
-                )
-                .then((res) => {
-                    console.log(res);
-                    console.log(res.data.url);
-                    this.recordingUrl = res.data.url;
-                });
-
       this.video = !this.video
       if (this.video) {
         this.turnOnVideo()
