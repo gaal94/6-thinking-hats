@@ -78,7 +78,8 @@
     @menuModal="menuModal"
     class="icon-bar"
     @record="recording"
-    :isRecording="isRecording"></icon-bar>
+    :isRecording="isRecording"
+    ref="iconBar"></icon-bar>
 
     <!-- <button @click="testDown">test</button> -->
     
@@ -793,7 +794,7 @@ export default {
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
         if (this.audio) {
-          this.changeMicrophone()
+          this.$refs.iconBar.changeMic()
         }
 
         // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
