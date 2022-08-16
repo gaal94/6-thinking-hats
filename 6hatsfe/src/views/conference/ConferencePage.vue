@@ -15,12 +15,26 @@
       <div class="left-side">
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
-        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
+        <div class="cam-arrow-btn">
+          <i @click="leftCamUp" v-show="leftCamStartIndex > 0" 
+            class='bx bx-chevron-up cam-arrow-icon'></i>
+        </div>
         <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"
         class="cam"></cam-screen>
-        <cam-screen v-for="sub in leftSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"
-        class="cam"></cam-screen>
-        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
+        <div v-if="isConferencing && myHat === 'spectator'">
+          <cam-screen v-for="sub in leftSubscribers.slice(leftCamStartIndex, leftCamEndIndex + 1)" 
+          :key="sub.stream.connection.connectionId" :stream-manager="sub"
+          class="cam"></cam-screen>
+        </div>
+        <div v-else>
+          <cam-screen v-for="sub in leftSubscribers.slice(leftCamStartIndex, leftCamEndIndex)" 
+          :key="sub.stream.connection.connectionId" :stream-manager="sub"
+          class="cam"></cam-screen>
+        </div>
+        <div class="cam-arrow-btn">
+          <i @click="leftCamDown" v-show="leftCamEndIndex < leftSubscribers.length" 
+          class='bx bx-chevron-down cam-arrow-icon' ></i>
+        </div>
       </div>
 
       <!-- 셋팅할 때 -->
@@ -39,9 +53,16 @@
       <!-- 오른쪽 캠화면 + 발언 순서 -->
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
-        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen v-for="sub in rightSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
-        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
+        <div class="cam-arrow-btn">
+          <i @click="rightCamUp" v-show="rightCamStartIndex > 0" 
+            class='bx bx-chevron-up cam-arrow-icon' ></i>
+        </div>
+        <cam-screen v-for="sub in rightSubscribers.slice(rightCamStartIndex, rightCamEndIndex)" 
+        :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <div class="cam-arrow-btn">
+          <i @click="rightCamDown" v-show="rightCamEndIndex < rightSubscribers.length" 
+          class='bx bx-chevron-down cam-arrow-icon' ></i>
+        </div>
       </div>  
     </div>
 
@@ -159,6 +180,10 @@ export default {
       seeMenu: false,
       seeChat: false,
       seeUserList: false,
+      leftCamStartIndex: 0,
+      leftCamEndIndex: 2,
+      rightCamStartIndex: 0,
+      rightCamEndIndex: 3,
 		}
 	},
 	computed: {
@@ -502,6 +527,10 @@ export default {
         this.setHostConnectionId(undefined)
         this.exitConferenceRoom()
         this.$router.push({name: 'LandingPage'})
+        this.leftCamStartIndex = 0
+        this.leftCamEndIndex = 2
+        this.rightCamStartIndex = 0
+        this.rightCamEndIndex = 3
       })
 
 			window.removeEventListener('beforeunload', this.leaveSession);
@@ -748,7 +777,23 @@ export default {
     },
     testDown() {
       this.localRecorder.download()
-    }
+    },
+    leftCamUp() {
+      this.leftCamStartIndex -= 1
+      this.leftCamEndIndex -= 1
+    },
+    leftCamDown() {
+      this.leftCamStartIndex += 1
+      this.leftCamEndIndex += 1 
+    },
+    rightCamUp() {
+      this.rightCamStartIndex -= 1
+      this.rightCamEndIndex -= 1
+    },
+    rightCamDown() {
+      this.rightCamStartIndex += 1
+      this.rightCamEndIndex += 1
+    },
 	},
   watch: {
     // 회의화면에서 뒤로가기 했을 때 회의 나가기
@@ -927,13 +972,19 @@ export default {
     width: 15.3646vw;
   }
 
+  .cam-arrow-btn {
+    width: 40px;
+    height: 40px;
+  }
+
   .cam-arrow-icon {
     font-size: 40px;
-    color: white;
+    color: rgb(116, 116, 116);
   }
 
   .cam-arrow-icon:hover {
     cursor: pointer;
+    color: white;
   }
 
   .icon-bar {
