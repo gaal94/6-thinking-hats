@@ -60,7 +60,7 @@ export default {
     created() {
         this.boardId = this.$route.params.boardId;
     	interceptor({
-            url: '/board/notice/'+this.boardId,
+            url: '/board/qna/'+this.boardId,
             method: 'get',
         }).then((res) => {
             this.board = res.data;

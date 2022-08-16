@@ -76,15 +76,6 @@ export default {
       }).catch((err) => {
         alert(err);
       });
-      interceptor({
-        url: '/board/notice',
-        method: 'get'
-      }).then((res) => {
-        this.boards = res.data;
-        this.length = res.data.length;
-      }).catch((err) => {
-        alert(err);
-      });
     
     }
   }
