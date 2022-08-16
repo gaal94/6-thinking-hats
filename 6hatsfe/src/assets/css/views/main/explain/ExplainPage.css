@@ -23,9 +23,8 @@
 
 }
 
-.hatslogopng{
+.logo-explain {
   max-width: 100px;
-
 }
 
 /* explain.page 모자회의 설명 div css*/
@@ -62,8 +61,6 @@
 /* explain.page 모자회의 자세한 설명 div css*/
 .explain-conference-detail {
   text-align: left;
-  line-height: 0.9;
-  
 }
 
 /* explain.page 색깔모자 png div css*/

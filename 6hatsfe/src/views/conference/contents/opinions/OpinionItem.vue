@@ -1,5 +1,6 @@
 <template>
-  <div class="opinion-item-box" :class="opinion.hatColor">
+  <div v-if="opinion.category === 'opinion'" class="opinion-item-box" :class="opinion.hatColor">
+    <!-- 의견일 때 -->
     <img v-if="opinion.hatColor === 'red-hat'" src="@/assets/redhat_circle.png" alt="" class="opinion-item-hatface">
     <img v-else-if="opinion.hatColor === 'yellow-hat'" src="@/assets/yellowhat_circle.png" alt="" class="opinion-item-hatface">
     <img v-else-if="opinion.hatColor === 'green-hat'" src="@/assets/greenhat_circle.png" alt="" class="opinion-item-hatface">
@@ -20,6 +21,11 @@
     <span class="opinion-word">{{ opinion.content }}</span>
     <i class='bx bx-x delete-icon' v-if="myHat === 'blue-hat'"
     @click="clickDeleteOpinion(opinionIndex)"></i>
+  </div>
+
+  <!-- 주제일 때 -->
+  <div class="subject-word" v-else-if="opinion.category === 'subject'">
+    <span>회의 주제: </span><strong>{{ opinion.content }}</strong>
   </div>
 </template>
 
@@ -60,6 +66,11 @@ export default {
 
 p {
   margin: 0;
+}
+
+.subject-word {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .opinion-item-box {

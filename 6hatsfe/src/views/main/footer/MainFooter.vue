@@ -1,13 +1,17 @@
 <template>
-  <footer class="footer">
-    <p class="team-contact">Team Contact : 010-8756-2387</p>
-    <p class="team-github">Team Github : 
-      <a href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709</a>
-    </p>
-    <a class="git-icon" href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">
-      <img src="@/assets/giticon.png" alt="giticon">
+  <div class="footer">
+    <div class="dummy">
+    </div>
+    <div class="footer-text">
+      <p class="team-contact">Team Contact : 010-8756-2387</p>
+      <p class="team-github">Team Github : 
+        <a href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709</a>
+      </p>
+    </div>
+    <a class="git-icon-link" href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">
+      <img class="git-icon" src="@/assets/giticon.png" alt="giticon">
     </a>
-  </footer>
+  </div>
 </template>
 
 <script>
@@ -28,12 +32,30 @@ export default {
 
 <style>
   .footer {
+    display: flex;
+    position: fixed;
     width: 100%;
     height: 72px;
     bottom: 0px;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid black;
+    background-color: white;
+  }
+
+  .footer-text {
+    display: flex;
+    flex-direction: column;
   }
 
   .team-contact, .team-github {
-    font-size: 24px;
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+
+  .dummy, .git-icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 16px;
   }
 </style>

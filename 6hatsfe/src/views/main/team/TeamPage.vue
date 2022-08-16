@@ -2,10 +2,10 @@
     <div class="team-body">
 
 		<!--맨위 팀 소개 -->
-		<div class="team-row" style="align-items: center;padding:20px;">
-			<img class="hatslogo" src="@/assets/logoExplain.png" alt="logo">
+		<div class="team-row team-row-top">
+			<img class="logo-team" src="@/assets/logoExplain.png" alt="logo-team">
 			<p style="font-weight: bold;font-size:30px">모자라지 않은 회의 프로젝트 팀을 소개합니다</p>
-			<img class="hatslogo" src="@/assets/logoExplain.png" alt="logo">
+			<img class="logo-team" src="@/assets/logoExplain.png" alt="logo-team">
 		</div>	
 
 		<!--fe be 나누는 회색 바 -->

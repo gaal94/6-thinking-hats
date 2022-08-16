@@ -2,7 +2,7 @@
   <div class="explain-container">
     <!-- 모자라지않은회의 로고-->
     <div class="explain-body">
-      <img class="hatslogopng" src="@/assets/logoExplain.png" alt="logo">
+      <img class="logo-explain" src="@/assets/logoExplain.png" alt="logo-explain">
     </div>
 
     <!--모자라지않은회의 설명-->

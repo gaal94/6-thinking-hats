@@ -8,18 +8,33 @@
     <screen-share class="screen-share" v-if="seeScreen"
     @closeScreenShareModal="closeScreenShare"
     :screen-sub="screenSub"></screen-share>
+    <div class="screen-shared" v-if="seeScreen || isMyScreenShared"></div>
 
     <div class="conference-body">
       <!-- 왼쪽 캠화면 + 모자 키워드 -->
       <div class="left-side">
         <role-keyword :hat-color="myHat" class="role-keyword"
         v-if="isConferencing"></role-keyword>
-        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
+        <div class="cam-arrow-btn">
+          <i @click="leftCamUp" v-show="leftCamStartIndex > 0" 
+            class='bx bx-chevron-up cam-arrow-icon'></i>
+        </div>
         <cam-screen v-if="!isConferencing || (isConferencing && myHat !== 'spectator')" :stream-manager="publisher"
         class="cam"></cam-screen>
-        <cam-screen v-for="sub in leftSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"
-        class="cam"></cam-screen>
-        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
+        <div v-if="isConferencing && myHat === 'spectator'">
+          <cam-screen v-for="sub in leftSubscribers.slice(leftCamStartIndex, leftCamEndIndex + 1)" 
+          :key="sub.stream.connection.connectionId" :stream-manager="sub"
+          class="cam"></cam-screen>
+        </div>
+        <div v-else>
+          <cam-screen v-for="sub in leftSubscribers.slice(leftCamStartIndex, leftCamEndIndex)" 
+          :key="sub.stream.connection.connectionId" :stream-manager="sub"
+          class="cam"></cam-screen>
+        </div>
+        <div class="cam-arrow-btn">
+          <i @click="leftCamDown" v-show="leftCamEndIndex < leftSubscribers.length" 
+          class='bx bx-chevron-down cam-arrow-icon' ></i>
+        </div>
       </div>
 
       <!-- 셋팅할 때 -->
@@ -38,9 +53,16 @@
       <!-- 오른쪽 캠화면 + 발언 순서 -->
       <div class="right-side">
         <speech-order class="speech-order" v-if="isConferencing"></speech-order>
-        <i class='bx bx-chevron-up cam-arrow-icon' ></i>
-        <cam-screen v-for="sub in rightSubscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
-        <i class='bx bx-chevron-down cam-arrow-icon' ></i>
+        <div class="cam-arrow-btn">
+          <i @click="rightCamUp" v-show="rightCamStartIndex > 0" 
+            class='bx bx-chevron-up cam-arrow-icon' ></i>
+        </div>
+        <cam-screen v-for="sub in rightSubscribers.slice(rightCamStartIndex, rightCamEndIndex)" 
+        :key="sub.stream.connection.connectionId" :stream-manager="sub"></cam-screen>
+        <div class="cam-arrow-btn">
+          <i @click="rightCamDown" v-show="rightCamEndIndex < rightSubscribers.length" 
+          class='bx bx-chevron-down cam-arrow-icon' ></i>
+        </div>
       </div>  
     </div>
 
@@ -56,7 +78,8 @@
     @menuModal="menuModal"
     class="icon-bar"
     @record="recording"
-    :isRecording="isRecording"></icon-bar>
+    :isRecording="isRecording"
+    ref="iconBar"></icon-bar>
 
     <!-- <button @click="testDown">test</button> -->
     
@@ -88,6 +111,11 @@
 
     <div v-if="subjectModalOpend" class="modal-bg"></div>
 
+    <div v-if="isConferencing && myHat === speechOrder[currentTurn]" 
+          class="turn-alert-modal" :class="myHat">
+      <span>당신의 차례입니다!</span>
+    </div>
+
   </div>
 </template>
 
@@ -110,6 +138,7 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
 const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
 // const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
@@ -158,6 +187,10 @@ export default {
       seeMenu: false,
       seeChat: false,
       seeUserList: false,
+      leftCamStartIndex: 0,
+      leftCamEndIndex: 2,
+      rightCamStartIndex: 0,
+      rightCamEndIndex: 3,
 		}
 	},
 	computed: {
@@ -192,7 +225,7 @@ export default {
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
                     'joinConferenceRoom', 'exitConferenceRoom', 'someoneTurnOffAudio',
                     'someoneTurnOnAudio', 'someoneTurnOffVideo', 'someoneTurnOnVideo',
-                    'setConfSubject',]),
+                    'setConfSubject', 'clearOpinions',]),
 
     sendChat (chat) {
       this.session.signal({
@@ -246,7 +279,7 @@ export default {
           type: 'changeConf'
         })
         .then(() => {
-          console.log('conference just started!');
+          console.log('conference just ended!');
         })
 
       } else {
@@ -260,7 +293,12 @@ export default {
           .then(() => {
             console.log('conference just started!');
           })
-          this.setConfSubject(this.subject)
+          const subjectData = {content: this.subject, category: 'subject'}
+          const jsonSubjectData = JSON.stringify(subjectData)
+          this.session.signal({
+            data: jsonSubjectData,
+            type: 'update-subject'
+          })
           this.subject = ''
         } else {
           alert('안건을 입력해주세요!')
@@ -289,12 +327,9 @@ export default {
           this.screenSub = screen
         }
         if (stream.typeOfVideo === 'CAMERA') {
-          console.log('카메라 생성')
           const subscriber = this.session.subscribe(stream);
           subscriber.hatColor = 'spectator'
-          this.subscribers.push(subscriber);
-          console.log(subscriber)
-          console.log(this.subscribers)
+          this.subscribers.push(subscriber)
         }
 			});
 
@@ -377,60 +412,24 @@ export default {
       })
 
       this.session.on('publisherStartSpeaking', ({ connection }) => {
-        if (this.subscribers.length == 0) {
-          let publisherCam = document.querySelector('#local-video-undefined')
-          publisherCam.classList.add('highlight')
-        } else if (this.subscribers.length == 1) {
-          if (this.subscribers[0].stream.connection.connectionId == connection.connectionId) {
-            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-            subcriberCam.classList.add('highlight')
-          } else {
-            let publisherCam = document.querySelector('#local-video-undefined')
-            publisherCam.classList.add('highlight')
-          }
-        } else {
-          let isSubscriber = false
-          for (let idx in this.subscribers) {
-            if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
-              isSubscriber = true
-              let currentSubscriber = this.subscribers[idx]
-              this.subscribers.splice(idx, 1)
-              this.subscribers.splice(0, 0, currentSubscriber)
-              if (idx == 0) {
-                let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-                subcriberCam.classList.add('highlight')
-              } else {
-                setTimeout(() => {
-                  let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-                  subcriberCam.classList.add('highlight')
-                }, 200);
-              }
-              break
-            }
-          }
-          if (!isSubscriber) {
-            let publisherCam = document.querySelector('#local-video-undefined')
-            publisherCam.classList.add('highlight')
-          }
-        }
+        this.session.signal({
+          data: JSON.stringify({
+            connectionId: connection.connectionId,
+            streamId: connection.stream.streamId
+          }),
+          type: 'start-speaking'
+        })
       })
 
       this.session.on('publisherStopSpeaking', ({ connection }) => {
-        let isSubscriber = false
-        for (let idx in this.subscribers) {
-          if (this.subscribers[idx].stream.connection.connectionId == connection.connectionId) {
-            isSubscriber = true
-            let subcriberCam = document.querySelector('#remote-video-' + connection.stream.streamId)
-            subcriberCam.classList.remove('highlight')
-            break
-          }
-        }
-        if (!isSubscriber) {
-          let publisherCam = document.querySelector('#local-video-undefined')
-          publisherCam.classList.remove('highlight')
-        }
+        this.session.signal({
+          data: JSON.stringify({
+            connectionId: connection.connectionId,
+            streamId: connection.stream.streamId
+          }),
+          type: 'stop-speaking'
+        })
       })
-
 			// --- Connect to the session with a valid user token ---
 
 			// 'getToken' method is simulating what your server-side should do.
@@ -483,7 +482,19 @@ export default {
         if (this.session) this.session.disconnect();
         if (this.screenSession) this.screenSession.disconnect()
         if (this.recordingSession) this.recordingSession.disconnect()
-  
+
+        let opinionTexts = ''
+        for (let opinionText of this.opinions) {
+          if (opinionText.category == 'subject') {
+            opinionTexts += '회의 주제 : ' + opinionText.content
+          } else if (opinionText.category == 'opinion') {
+            opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
+          }
+          opinionTexts += '\n'
+        }
+        opinionTexts = opinionTexts.slice(0, -2)
+        console.log(opinionTexts)
+
         this.session = undefined;
         this.setSession(undefined)
         this.mainStreamManager = undefined;
@@ -498,6 +509,11 @@ export default {
         this.setHostConnectionId(undefined)
         this.exitConferenceRoom()
         this.$router.push({name: 'LandingPage'})
+        this.leftCamStartIndex = 0
+        this.leftCamEndIndex = 2
+        this.rightCamStartIndex = 0
+        this.rightCamEndIndex = 3
+        this.clearOpinions()
       })
 
 			window.removeEventListener('beforeunload', this.leaveSession);
@@ -586,23 +602,6 @@ export default {
     },
 
     changeVideo(){
-            axios
-                .post(
-                    `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
-                    {},
-                    {
-                        auth: {
-                            username: "OPENVIDUAPP",
-                            password: OPENVIDU_SERVER_SECRET,
-                        },
-                    }
-                )
-                .then((res) => {
-                    console.log(res);
-                    console.log(res.data.url);
-                    this.recordingUrl = res.data.url;
-                });
-
       this.video = !this.video
       if (this.video) {
         this.turnOnVideo()
@@ -744,7 +743,23 @@ export default {
     },
     testDown() {
       this.localRecorder.download()
-    }
+    },
+    leftCamUp() {
+      this.leftCamStartIndex -= 1
+      this.leftCamEndIndex -= 1
+    },
+    leftCamDown() {
+      this.leftCamStartIndex += 1
+      this.leftCamEndIndex += 1 
+    },
+    rightCamUp() {
+      this.rightCamStartIndex -= 1
+      this.rightCamEndIndex -= 1
+    },
+    rightCamDown() {
+      this.rightCamStartIndex += 1
+      this.rightCamEndIndex += 1
+    },
 	},
   watch: {
     // 회의화면에서 뒤로가기 했을 때 회의 나가기
@@ -755,8 +770,8 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params.sessionCode);
-		this.mySessionId = this.$route.params.sessionCode;
+    // console.log(this.$route.params.sessionCode);
+		// this.mySessionId = this.$route.params.sessionCode;
     this.joinSession()
 
     // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
@@ -778,7 +793,9 @@ export default {
         this.startTimer()
         this.startConference()
         // 회의 시작시 무조건 오디오 끄기
-        this.turnOffAudio()
+        if (this.audio) {
+          this.$refs.iconBar.changeMic()
+        }
 
         // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
         if (this.myHat === 'spectator') {
@@ -852,11 +869,116 @@ export default {
     })
 
     this.joinConferenceRoom()
+
+    this.session.on('signal:start-speaking', ({data}) => {
+      let speakingData = JSON.parse(data)
+      if (this.subscribers.length == 0) {
+        let publisherCam = document.querySelector('#local-video-undefined')
+        if (publisherCam == null) {
+          publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+        }
+        publisherCam.classList.add('highlight')
+      } else if (this.subscribers.length == 1) {
+        if (this.subscribers[0].stream.connection.connectionId == speakingData.connectionId) {
+          let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+          subcriberCam.classList.add('highlight')
+        } else {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          if (publisherCam == null) {
+            publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+          }
+          publisherCam.classList.add('highlight')
+        }
+      } else {
+        let isSubscriber = false
+        for (let idx in this.subscribers) {
+          if (this.subscribers[idx].stream.connection.connectionId == speakingData.connectionId) {
+            isSubscriber = true
+            let currentSubscriber = this.subscribers[idx]
+            this.subscribers.splice(idx, 1)
+            this.subscribers.splice(0, 0, currentSubscriber)
+            if (idx == 0) {
+              let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+              subcriberCam.classList.add('highlight')
+            } else {
+              setTimeout(() => {
+                let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+                subcriberCam.classList.add('highlight')
+              }, 200);
+            }
+            break
+          }
+        }
+        if (!isSubscriber) {
+          let publisherCam = document.querySelector('#local-video-undefined')
+          if (publisherCam == null) {
+            publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+          }
+          publisherCam.classList.add('highlight')
+        }
+      }
+    })
+
+    this.session.on('signal:stop-speaking', ({data}) => {
+      let speakingData = JSON.parse(data)
+      let isSubscriber = false
+      for (let idx in this.subscribers) {
+        if (this.subscribers[idx].stream.connection.connectionId == speakingData.connectionId) {
+          isSubscriber = true
+          let subcriberCam = document.querySelector('#remote-video-' + speakingData.streamId)
+          subcriberCam.classList.remove('highlight')
+          break
+        }
+      }
+      if (!isSubscriber) {
+        let publisherCam = document.querySelector('#local-video-undefined')
+        if (publisherCam == null) {
+          publisherCam = document.querySelector('#local-video-' + speakingData.streamId)
+        }
+        publisherCam.classList.remove('highlight')
+      }
+    })
+
+    // 주제가 변화될 때
+    this.session.on('signal:update-subject', event => {
+      const subjectData = JSON.parse(event.data)
+      this.addOpinion(subjectData)
+      this.setConfSubject(subjectData.content)
+    })
+    
+    // 타이머를 실행할 때
+    this.session.on('signal:start-timer', () => {
+      this.startTimer()
+    })
+    
+    // 타이머를 멈출 때
+    this.session.on('signal:stop-timer', () => {
+      this.stopTimer()
+    })
+
+    // 타이머를 재설정할 때
+    this.session.on('signal:reset-timer', () => {
+      this.resetTimer()
+    })
+
+    // 의견창구에 의견을 보낼 때 실행됨
+    this.session.on('signal:send-opinion', ({data}) => {
+      const opinionData = JSON.parse(data)
+      this.addOpinion(opinionData).then(() => {
+        const opScroll = document.querySelector('.opinion-contents')
+        opScroll.scrollTop = opScroll.scrollHeight
+      })
+    })
   }
 }
 </script>
 
-<style scoped>
+<style>
+  html, body, #app {
+    width: 100%;
+    height: 100%;
+  }
+
   .conference-page {
     display: flex;
     flex-direction: column;
@@ -869,6 +991,7 @@ export default {
 
   .screen-share {
     position: absolute;
+    top: 0px;
   }
 
   .screen-share-btn-icon {
@@ -879,11 +1002,15 @@ export default {
   .screen-share-btn {
     border: none;
     background-color: #121212;
-    margin-top: 12px;
+    margin-top: 10px;
   }
 
   .screen-share-btn:hover {
     cursor: pointer;
+  }
+
+  .screen-shared{
+    height: 50px;
   }
 
   .in-conference-screen {
@@ -918,13 +1045,19 @@ export default {
     width: 15.3646vw;
   }
 
+  .cam-arrow-btn {
+    width: 40px;
+    height: 40px;
+  }
+
   .cam-arrow-icon {
     font-size: 40px;
-    color: white;
+    color: rgb(116, 116, 116);
   }
 
   .cam-arrow-icon:hover {
     cursor: pointer;
+    color: white;
   }
 
   .icon-bar {
@@ -1003,5 +1136,69 @@ export default {
 
   .sub-modal-invisible {
     display: none;
+  }
+
+  .turn-alert-modal {
+    position: absolute;
+    border-radius: 10px;
+    width: 200px;
+    top: 180px;
+    padding: 12px;
+    z-index: 1000;
+    animation-name: turnAlert;
+    animation-duration: 1.8s;
+    animation-fill-mode: forwards;
+  }
+
+   .turn-alert-modal span {
+    color: white;
+   }
+
+   @keyframes turnAlert {
+    0% {
+      top: 0px;
+      opacity: 0;
+    }
+    90% {
+      top: 180px;
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+   }
+
+  .white-hat {
+    background-color: white;
+  }
+
+  .white-hat span {
+    color: black;
+  }
+
+  .red-hat {
+    background-color: #EA4335;
+    color: white;
+  }
+
+  .yellow-hat {
+    background-color: #FBBC05;
+    color: white;
+  }
+
+  .black-hat {
+    background-color: black;
+    color: white;
+  }
+
+  .green-hat {
+    background-color: #34A853;
+    color: white;
+  }
+
+  .blue-hat {
+    background-color: #4285F4;
+    color: white;
   }
 </style>

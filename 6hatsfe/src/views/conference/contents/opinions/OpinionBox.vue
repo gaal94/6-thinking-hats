@@ -87,12 +87,14 @@ export default {
     },
     updateSubject() {
       const changedSub = document.querySelector('.sub-input').value
-      this.setConfSubject(changedSub)
       this.subUpdating = false
+      let subjectData = { content: changedSub,
+                          category: 'subject'}
+      const jsonSubjectData = JSON.stringify(subjectData)
       this.session.signal({
-        data: changedSub,  // Any string (optional)
-        to: [],                     // Array of Connection objects (optional. Broadcast to everyone if empty)
-        type: 'update-subject'             // The type of message (optional)
+        data: jsonSubjectData,  
+        to: [],
+        type: 'update-subject' 
       })
       .then(() => {
           console.log('Message successfully sent');
@@ -120,13 +122,17 @@ export default {
       if (op) {
         let opinionData = {}
         if (this.hatMode === 'sixhats' || this.hatColor === 'blue-hat' ) {
-          opinionData = { userName: this.myName, content: this.opinion, 
+          opinionData = { userName: this.myName, 
+                          content: this.opinion, 
                           connectionId: this.publisher.stream.session.connection.connectionId,
-                          hatColor: this.hatColor}
+                          hatColor: this.hatColor,
+                          category: 'opinion'}
         } else {
-          opinionData = { userName: this.myName, content: this.opinion, 
+          opinionData = { userName: this.myName, 
+                          content: this.opinion, 
                           connectionId: this.publisher.stream.session.connection.connectionId,
-                          hatColor: this.speechOrder[this.currentTurn]}
+                          hatColor: this.speechOrder[this.currentTurn],
+                          category: 'opinion'}
         }
         const jsonOpinionData = JSON.stringify(opinionData)
         this.session.signal({
@@ -138,36 +144,6 @@ export default {
       }
     },
 	},
-  created() {
-  // 주제가 변화될 때
-  this.session.on('signal:update-subject', event => {
-    this.setConfSubject(event.data)
-  })
-  
-  // 타이머를 실행할 때
-  this.session.on('signal:start-timer', () => {
-    this.startTimer()
-  })
-  
-  // 타이머를 멈출 때
-  this.session.on('signal:stop-timer', () => {
-    this.stopTimer()
-  })
-
-  // 타이머를 재설정할 때
-  this.session.on('signal:reset-timer', () => {
-    this.resetTimer()
-  })
-
-  // 의견창구에 의견을 보낼 때 실행됨
-  this.session.on('signal:send-opinion', ({data}) => {
-    const opinionData = JSON.parse(data)
-    this.addOpinion(opinionData).then(() => {
-      const opScroll = document.querySelector('.opinion-contents')
-      opScroll.scrollTop = opScroll.scrollHeight
-    })
-  })
-  }
 }
 </script>
 
