@@ -144,38 +144,6 @@ export default {
       }
     },
 	},
-  created() {
-  // 주제가 변화될 때
-  this.session.on('signal:update-subject', event => {
-    const subjectData = JSON.parse(event.data)
-    this.addOpinion(subjectData)
-    this.setConfSubject(subjectData.content)
-  })
-  
-  // 타이머를 실행할 때
-  this.session.on('signal:start-timer', () => {
-    this.startTimer()
-  })
-  
-  // 타이머를 멈출 때
-  this.session.on('signal:stop-timer', () => {
-    this.stopTimer()
-  })
-
-  // 타이머를 재설정할 때
-  this.session.on('signal:reset-timer', () => {
-    this.resetTimer()
-  })
-
-  // 의견창구에 의견을 보낼 때 실행됨
-  this.session.on('signal:send-opinion', ({data}) => {
-    const opinionData = JSON.parse(data)
-    this.addOpinion(opinionData).then(() => {
-      const opScroll = document.querySelector('.opinion-contents')
-      opScroll.scrollTop = opScroll.scrollHeight
-    })
-  })
-  }
 }
 </script>
 
