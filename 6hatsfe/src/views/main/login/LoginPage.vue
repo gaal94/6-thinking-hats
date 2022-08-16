@@ -48,6 +48,7 @@ export default {
           }).then((res) => {
             localStorage.setItem("username", res.data.user.name);
             this.$store.commit('ChangeName', res.data.user.name);
+            location.reload();
           }).catch((err) => {
             alert(err);
           });
