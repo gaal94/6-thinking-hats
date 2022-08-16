@@ -1,35 +1,35 @@
 <template>
-  <div id="recgo">
+  <div class="recgo">
     <header class="pagename">
     <h1>공지사항</h1>
     </header>
-  <table class="table">
-  <thead class="Rechead">
-    <tr class="headrow">
-      <th scope="col" style="width : 8%">글번호</th>
-      <th scope ="col" style="width : 60%">제목</th>
-      <th scope="col" >작성자</th>
-      <th scope="col">작성일</th>
-      <th scope="col">조회수</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
-      <td scope="row">{{idx+1}}</td>
-      <td><router-link :to ="{
+    <table class="table">
+      <thead class="Rechead">
+        <tr class="headrow">
+          <th scope="col" style="width : 8%">글번호</th>
+          <th scope ="col" style="width : 60%">제목</th>
+          <th scope="col" >작성자</th>
+          <th scope="col">작성일</th>
+          <th scope="col">조회수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
+          <td scope="row">{{idx+1}}</td>
+          <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
-            }">
-      {{no.title}}</router-link></td>
-      <td>{{no.name}}</td>
-      <td>{{no.boardCreatedAt}}</td>
-      <td>{{no.views}}</td>
-    </tr>
-  </tbody>
-</table>
-  <div class ="boardbtn">
-   <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+              }">
+            {{no.title}}</router-link></td>
+          <td>{{no.name}}</td>
+          <td>{{no.boardCreatedAt}}</td>
+          <td>{{no.views}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class ="boardbtn">
+      <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary">글쓰기</button>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -82,47 +82,5 @@ export default {
 }
 </script>
 
-<style>
-#recgo{
-  position :relative;
-  width:60%;
-  margin:auto;
-  background-color: white;
-}
-.pagename {
-  position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 75px;
-  padding: 1rem;
-  color:black;
-  /* background: #C1EFFF; */
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-h1, p {
-  margin: 0;
-}
-.Rechead{
-  background: #4285F4;
-  color:#FFFFFF;
-}
-.table{
-  font-size: 14px;
-}
-.boardbody:hover{
-  background-color: #C7C6C6;
-}
-.boardbtn{
-  position: absolute;
-  width : 100%;
-}
-#boardwritingbtn{
-  right :0;
-  position: absolute;
-}
+<style scoped lang="css" src="@/assets/css/views/main/notice/NoticePage.css">
 </style>
