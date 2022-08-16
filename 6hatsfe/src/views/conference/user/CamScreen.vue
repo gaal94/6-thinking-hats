@@ -13,6 +13,7 @@
     <div class="cam-screen-box">
 			<div v-if="streamManager">
         <ov-video class="cam-screen" :stream-manager="streamManager"/>
+        <p class="user-name">{{ clientData }}</p>
       </div>
     </div>
   </div>
@@ -73,7 +74,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
   }
 
   .cam-screen {
@@ -82,14 +83,20 @@ export default {
     border-radius: 1.9531vw;
   }
 
+  .user-name {
+    margin: 0;
+    color: white;
+    font-size: 12px;
+  }
+
   .hat-img-box {
-    min-width: 2.0833vw;
-    min-height: 2.0833vw;
+    min-width: 1.8229vw;
+    min-height: 1.8229vw;
   }
 
   .hat-img {
-    width: 2.0833vw;
-    height: 2.0833vw;
+    width: 1.8229vw;
+    height: 1.8229vw;
   }
 
   .highlight {

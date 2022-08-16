@@ -234,6 +234,9 @@ export default {
         }
       }
     },
+    clearOpinions(state) {
+      state.opinions = []
+    }
   },
   actions: {
     setSession({commit}, session) {
@@ -351,5 +354,8 @@ export default {
     someoneTurnOnVideo({commit}, conId) {
       commit('someoneTurnOnVideo', conId)
     },
+    clearOpinions({commit}) {
+      commit('clearOpinions')
+    }
   },
 }

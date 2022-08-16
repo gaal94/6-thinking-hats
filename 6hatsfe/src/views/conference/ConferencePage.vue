@@ -133,8 +133,8 @@ import UserListModal from '@/views/conference/modal/UserListModal.vue'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 // const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":4443";
-const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
-// const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+// const OPENVIDU_SERVER_URL = "https://" + 'i7a709.p.ssafy.io' + ":5000";
+const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
 const OPENVIDU_SERVER_SECRET = "MY_SECRET";
 
 export default {
@@ -219,7 +219,7 @@ export default {
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
                     'joinConferenceRoom', 'exitConferenceRoom', 'someoneTurnOffAudio',
                     'someoneTurnOnAudio', 'someoneTurnOffVideo', 'someoneTurnOnVideo',
-                    'setConfSubject',]),
+                    'setConfSubject', 'clearOpinions',]),
 
     sendChat (chat) {
       this.session.signal({
@@ -493,6 +493,7 @@ export default {
         this.leftCamEndIndex = 2
         this.rightCamStartIndex = 0
         this.rightCamEndIndex = 3
+        this.clearOpinions()
       })
 
 			window.removeEventListener('beforeunload', this.leaveSession);
@@ -964,7 +965,7 @@ export default {
   .screen-share-btn {
     border: none;
     background-color: #121212;
-    margin-top: 12px;
+    margin-top: 10px;
   }
 
   .screen-share-btn:hover {

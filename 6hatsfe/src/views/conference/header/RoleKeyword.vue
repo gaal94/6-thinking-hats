@@ -112,7 +112,7 @@ export default {
 
 .role-keyword-box {
   width: 9.1146vw;
-  min-height: 5.2083vw;
+  min-height: 4.6875vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
