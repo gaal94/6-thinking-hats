@@ -1,35 +1,52 @@
 <template>
-  <div id="recgo">
+  <div class="recgo">
     <header class="pagename">
     <h1>공지사항</h1>
     </header>
-  <table class="table">
-  <thead class="Rechead">
-    <tr class="headrow">
-      <th scope="col" style="width : 8%">글번호</th>
-      <th scope ="col" style="width : 60%">제목</th>
-      <th scope="col" >작성자</th>
-      <th scope="col">작성일</th>
-      <th scope="col">조회수</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
-      <td scope="row">{{idx+1}}</td>
-      <td><router-link :to ="{
+    <table class="table">
+      <thead class="Rechead">
+        <tr class="headrow">
+          <th scope="col" style="width : 8%">글번호</th>
+          <th scope ="col" style="width : 60%">제목</th>
+          <th scope="col" >작성자</th>
+          <th scope="col">작성일</th>
+          <th scope="col">조회수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
+          <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
+          <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
-            }">
-      {{no.title}}</router-link></td>
-      <td>{{no.name}}</td>
-      <td>{{no.boardCreatedAt}}</td>
-      <td>{{no.views}}</td>
-    </tr>
-  </tbody>
-</table>
-  <div class ="boardbtn">
-   <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary" id="boardwritingbtn">글쓰기</button>
+              }">
+            {{no.title}}</router-link></td>
+          <td>{{no.name}}</td>
+          <td>{{no.boardCreatedAt}}</td>
+          <td>{{no.views}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
+      <ul class="pagination">
+        <li class="page-item">
+          <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+        <li class="page-item">
+          <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class ="boardbtn">
+      <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary">글쓰기</button>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -45,25 +62,42 @@ export default {
       boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
       length: '', 
       userType:'',
+      pageNum: 0,
+      pageSize: 5,
     };
   }, 
   methods: {
     routeToWritePage(){
       router.push({ name: "NoticeWritePage" });
-    }
-  },
-  mounted() {
-    // Intercepotor 시작
-    interceptor({
-      url: '/board/notice',
+    },
+    getBoardNotice(){
+      interceptor({
+      url: '/board/notice?page=' + this.pageNum + '&size=' + this.pageSize + '&sort=boardCreatedAt,boardId,desc',
       method: 'get'
     }).then((res) => {
       this.boards = res.data;
       this.length = res.data.length;
-      console.log(res.data);
+      console.log(res.data.length);
     }).catch((err) => {
       alert(err);
     });
+    },
+    addPageNum(){
+      if(this.length == this.pageSize) { // 꼼수 같은 코드
+        this.pageNum++;
+        this.getBoardNotice();
+      }
+    }, 
+    substractPageNum(){
+      if(this.pageNum - 1 >= 0 ) {
+        this.pageNum--;
+        this.getBoardNotice();
+      }
+    }
+  },
+  mounted() {
+    // Intercepotor 시작
+    this.getBoardNotice();
 
     if (localStorage.getItem('access-token')){
 
@@ -76,62 +110,11 @@ export default {
       }).catch((err) => {
         alert(err);
       });
-      interceptor({
-        url: '/board/notice',
-        method: 'get'
-      }).then((res) => {
-        this.boards = res.data;
-        this.length = res.data.length;
-      }).catch((err) => {
-        alert(err);
-      });
     
     }
   }
 }
 </script>
 
-<style>
-#recgo{
-  position :relative;
-  width:60%;
-  margin:auto;
-  background-color: white;
-}
-.pagename {
-  position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 75px;
-  padding: 1rem;
-  color:black;
-  /* background: #C1EFFF; */
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-h1, p {
-  margin: 0;
-}
-.Rechead{
-  background: #4285F4;
-  color:#FFFFFF;
-}
-.table{
-  font-size: 14px;
-}
-.boardbody:hover{
-  background-color: #C7C6C6;
-}
-.boardbtn{
-  position: absolute;
-  width : 100%;
-}
-#boardwritingbtn{
-  right :0;
-  position: absolute;
-}
+<style scoped lang="css" src="@/assets/css/views/main/notice/NoticePage.css">
 </style>

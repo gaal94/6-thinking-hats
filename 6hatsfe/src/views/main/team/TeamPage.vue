@@ -126,6 +126,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="css" scoped>
   @import url("@/assets/css/views/main/team/TeamPage.css");
 </style>

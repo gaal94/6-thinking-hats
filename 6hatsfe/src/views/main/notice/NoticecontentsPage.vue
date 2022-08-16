@@ -1,47 +1,44 @@
 <template>
-<div class="main-notice-contents">
-
-    <h2 style="padding:15px">공지사항</h2>
-
-    <hr style="height:50px;border-width:0;color:black; background-color:black; z-index:5">
-    <div style="margin-left:20px">
-        <table class="main-contents" style="width:100%; ">
-            <tr>
-                <td style="width:60%;">제목 : {{title}}</td>
-                <td>작성일시 : {{boardCreatedAt}}</td>
-            </tr>
-            <tr>
-                <td style="width:60%">작성자 : {{name}}</td>
-                <td>조회수 : {{views}}</td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td style="font-weight: bold;">내용</td>
-            </tr>
-
-        </table>
+    <div class="main-notice-contents">
+        <h2 style="padding:15px">공지사항</h2>
+        <hr style="height:50px;border-width:0;color:black; background-color:black; z-index:5">
+        
+        <div style="margin-left:20px">
+            <table class="main-contents" style="width:100%; ">
+                <tr>
+                    <td style="width:60%;">제목 : {{title}}</td>
+                    <td>작성일시 : {{boardCreatedAt}}</td>
+                </tr>
+                <tr>
+                    <td style="width:60%">작성자 : {{name}}</td>
+                    <td>조회수 : {{views}}</td>
+                </tr>
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr>
+                    <td style="font-weight: bold;">내용</td>
+                </tr>
+            </table>
                 <div>
-                <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
-                {{boardContents}}
+                    <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
+                    {{boardContents}}
                 </div>
                 <div>
                     댓글
                     <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
                 </div>
-                <div>
-                        <router-link :to ="{
+                <div style="display:flex; justify-content: flex-end;">
+                    <router-link :to ="{
                         path: '/noticemodifypage/' + this.boardId
                         }">
-                     <button>수정</button></router-link>
+                    <button>수정</button></router-link>
                     <button @click="boarddelete">삭제</button>
                 </div>
-
+        </div>
     </div>
-
-</div>
 </template>
+
 <script>
 import interceptor from "@/api/interceptors";
 import router from "@/router";
@@ -101,20 +98,6 @@ export default {
 
 </script>
 
-<style>
-
-.main-notice-contents{
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 70%;
-    text-align: left;
-}
-
-table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-}
-
+<style scoped lang="css" src="@/assets/css/views/main/notice/NoticecontentsPage.css">
 
 </style>

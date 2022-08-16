@@ -168,6 +168,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
   @import url("@/assets/css/views/main/explain/ExplainPage.css");
 </style>
