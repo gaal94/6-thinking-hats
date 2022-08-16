@@ -261,7 +261,10 @@ export default {
           .then(() => {
             console.log('conference just started!');
           })
-          this.setConfSubject(this.subject)
+          this.session.signal({
+            data: this.subject,
+            type: 'update-subject'
+          })
           this.subject = ''
         } else {
           alert('안건을 입력해주세요!')
