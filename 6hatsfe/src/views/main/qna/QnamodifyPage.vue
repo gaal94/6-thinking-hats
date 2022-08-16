@@ -27,7 +27,7 @@
 import router from "@/router";
 import interceptor from "@/api/interceptors";
 export default {
-  name: 'NoticemodifyPage',
+  name: 'modifyPage',
   data() {
       return {
     boardId:'',
@@ -49,11 +49,11 @@ export default {
             },
           }).then((res) => {
             if(res.status == 201) {
-							router.push({ path: '/noticecontentspage/' + this.boardId });
+							router.push({ path: '/qnacontentspage/' + this.boardId });
 						}
           }).catch((err) => {
             alert(err);
-						router.push({ name: "NoticePage" });
+						router.push({ name: "QnaPage" });
           });
 			}
     },

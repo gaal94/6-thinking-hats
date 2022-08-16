@@ -53,6 +53,7 @@
 </template>
 <script>
 import interceptor from "@/api/interceptors";
+import router from "@/router";
 export default {
     name: 'QnacontentsPage',
     data() {
@@ -79,7 +80,7 @@ export default {
     created() {
         this.boardId = this.$route.params.boardId;
     interceptor({
-            url: '/board/notice/'+this.boardId,
+            url: '/board/qna/'+this.boardId,
             method: 'get',
           }).then((res) => {
               console.log(res);
@@ -89,7 +90,8 @@ export default {
               this.views = res.data.views;
               this.boardCreatedAt = res.data.boardCreatedAt;
           }).catch((err) => {
-            alert(err);
+              console.log(err);
+              router.push({ path: "/qnapage" });
           });
                 
 
@@ -105,9 +107,9 @@ export default {
             this.length = res.data.length;
             this.comments = res.data;
             console.log(this.comments);
-
         }).catch((err) => {
-        alert(err);
+            console.log(err);
+            router.push({ path: "/qnapage" });
         });
         
 
