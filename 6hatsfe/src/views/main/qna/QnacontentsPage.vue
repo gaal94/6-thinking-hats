@@ -43,13 +43,30 @@
                     </tr>
                     <tr v-for="(no,idx) in comments" :key="idx">
                         <div v-if="!no.commentUpdate">
-                        {{idx+1}}. 작성자 {{no.userName}} : {{no.comment_contents}} <i class='bx bxs-trash' @click="deleteComment(no.commentId)" style="float:right"></i>  <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right; margin-right:5px;"></i>
+                        {{pageNum * pageSize + idx + 1}}. 작성자 {{no.userName}} : {{no.comment_contents}} <i class='bx bxs-trash' @click="deleteComment(no.commentId)" style="float:right"></i>  <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right; margin-right:5px;"></i>
                         </div>
                         <div v-else>
                             {{idx+1}}. {{no.userName}} : <input type="text" v-model="no.comment_contents"> <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right;"></i>
                         </div>
                     </tr>
                 </table>
+                <nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+                        <li class="page-item">
+                            <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>    
             </div>
             <div>
                 <input v-model="postComment.commentContents" type="text" style="width:80%" > <button   v-on:click="PostComment" style="float:right">댓글 쓰기</button>
@@ -58,6 +75,7 @@
         </div>
     </div>
 </template>
+
 
 <script>
 import interceptor from "@/api/interceptors";
@@ -87,13 +105,27 @@ export default {
             views:'',
             boardCreatedAt:'',
             length: '',
-
+            pageNum: 0,
+            pageSize: 5,
 
         }
     },
     created() {
         this.boardId = this.$route.params.boardId;
-    interceptor({
+        this.getQna();
+        this.getCommentList();
+
+    },
+
+    mounted(){
+
+
+
+    },
+
+    methods: {
+        getQna() {
+            interceptor({
             url: '/board/qna/'+this.boardId,
             method: 'get',
           }).then((res) => {
@@ -107,30 +139,36 @@ export default {
               console.log(err);
               router.push({ path: "/qnapage" });
           });
-                
-
-    },
-
-    mounted(){
-        interceptor({
-        url: '/comment?boardId='+this.boardId,
+        },
+        getCommentList() {
+            interceptor({
+        url: '/comment?boardId='+this.boardId + '&page=' + this.pageNum + '&size=' + this.pageSize + '&sort=commentCreatedAt,commentId,desc',
         method: 'get',
         }).then((res) => {
             console.log("commnet data");
             console.log(res.data);
             this.length = res.data.length;
             this.comments = res.data;
-            
+
             console.log(this.comments);
         }).catch((err) => {
             console.log(err);
             router.push({ path: "/qnapage" });
         });
-        
+        },
+        addPageNum(){
+            if(this.length == this.pageSize) { // 꼼수 같은 코드
+                this.pageNum++;
+                    this.getCommentList();
+            }
+        }, 
+        substractPageNum(){
+             if(this.pageNum - 1 >= 0 ) {
+             this.pageNum--;
+                this.getCommentList();
+            }
+        },
 
-    },
-
-    methods: {
         deleteComment(commentId) {
                 if(confirm("댓글을 삭제하시겠습니까?")){
 
@@ -207,7 +245,19 @@ export default {
 }
 </script>
 
-<style scoped lang="css" src="@/assets/css/views/main/qna/QnacontentsPage.css">
 
+<style scoped lang="css" src="@/assets/css/views/main/qna/QnacontentsPage.css">
+.pagination{
+
+}
+.page-item{
+
+}
+.page-link{
+
+}
+.sr-only{
+
+}
 
 </style>

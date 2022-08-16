@@ -117,4 +117,17 @@ export default {
 </script>
 
 <style scoped lang="css" src="@/assets/css/views/main/notice/NoticePage.css">
+.pagination{
+
+}
+.page-item{
+
+}
+.page-link{
+
+}
+.sr-only{
+
+}
+
 </style>

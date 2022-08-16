@@ -101,6 +101,17 @@ export default {
 </script>
 
 <style scoped lang="css" src="@/assets/css/views/main/qna/QnaPage.css">
+.pagination{
 
+}
+.page-item{
+
+}
+.page-link{
+
+}
+.sr-only{
+
+}
 
 </style>
