@@ -28,6 +28,7 @@
     <div class="cam-screen-box">
 			<div v-if="streamManager">
         <ov-video class="cam-screen" :stream-manager="streamManager"/>
+        <p class="user-name">{{ clientData }}</p>
       </div>
     </div>
   </div>
