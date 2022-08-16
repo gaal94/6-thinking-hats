@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="(no,idx) in boards" :key ="idx" class="boardbody">
-          <td scope="row">{{idx+1}}</td>
+          <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
           <td><router-link :to ="{
               path: '/noticecontentspage/' + no.boardId
               }">
@@ -26,6 +26,23 @@
         </tr>
       </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+    <li class="page-item">
+      <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
     <div class ="boardbtn">
       <button v-if ="userType==='ADMIN'" v-on:click="routeToWritePage" type="button" class="btn btn-primary">글쓰기</button>
     </div>
@@ -45,25 +62,42 @@ export default {
       boards: { name: '', boardId: '', title: '', boardType: '', views: '',boardCreatedAt:'' },
       length: '', 
       userType:'',
+      pageNum: 0,
+      pageSize: 5,
     };
   }, 
   methods: {
     routeToWritePage(){
       router.push({ name: "NoticeWritePage" });
-    }
-  },
-  mounted() {
-    // Intercepotor 시작
-    interceptor({
-      url: '/board/notice',
+    },
+    getBoardNotice(){
+      interceptor({
+      url: '/board/notice?page=' + this.pageNum + '&size=' + this.pageSize + '&sort=boardCreatedAt,boardId,desc',
       method: 'get'
     }).then((res) => {
       this.boards = res.data;
       this.length = res.data.length;
-      console.log(res.data);
+      console.log(res.data.length);
     }).catch((err) => {
       alert(err);
     });
+    },
+    addPageNum(){
+      if(this.length == this.pageSize) { // 꼼수 같은 코드
+        this.pageNum++;
+        this.getBoardNotice();
+      }
+    }, 
+    substractPageNum(){
+      if(this.pageNum - 1 >= 0 ) {
+        this.pageNum--;
+        this.getBoardNotice();
+      }
+    }
+  },
+  mounted() {
+    // Intercepotor 시작
+    this.getBoardNotice();
 
     if (localStorage.getItem('access-token')){
 
