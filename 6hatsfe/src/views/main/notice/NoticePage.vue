@@ -26,7 +26,7 @@
         </tr>
       </tbody>
     </table>
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
   <ul class="pagination">
     <li class="page-item">
       <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
