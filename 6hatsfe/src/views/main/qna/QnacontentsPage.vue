@@ -43,8 +43,11 @@
                     
                 </div>
                 <div>
-                    <button>수정</button>
-                    <button>삭제</button>
+                        <router-link :to ="{
+                        path: '/qnamodifypage/' + this.boardId
+                        }">
+                     <button>수정</button></router-link>
+                    <button @click="boarddelete">삭제</button>
                 </div>
 
     </div>
@@ -113,6 +116,26 @@ export default {
         });
         
 
+    },
+    methods: {
+        boarddelete() {
+            if (confirm("정말로 삭제하시겠습니까?") == true) {
+                interceptor({
+                    url: '/board/' + this.boardId,
+                    method: 'delete'
+                }).then((res) => {
+                    console.log(res);
+                    console.log("완료되었습니다.");
+                    router.push({ name: "QnaPage" });
+
+                }).catch((err) => {
+                    alert(err);
+                });
+            }
+            else {
+                console.log("취소되었습니다");
+            }
+        }
     }
 }
 </script>
