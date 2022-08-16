@@ -110,6 +110,11 @@
 
     <div v-if="subjectModalOpend" class="modal-bg"></div>
 
+    <div v-if="isConferencing && myHat === speechOrder[currentTurn]" 
+          class="turn-alert-modal" :class="myHat">
+      <span>당신의 차례입니다!</span>
+    </div>
+
   </div>
 </template>
 
@@ -752,8 +757,8 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params.sessionCode);
-		this.mySessionId = this.$route.params.sessionCode;
+    // console.log(this.$route.params.sessionCode);
+		// this.mySessionId = this.$route.params.sessionCode;
     this.joinSession()
 
     // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
@@ -1084,5 +1089,69 @@ export default {
 
   .sub-modal-invisible {
     display: none;
+  }
+
+  .turn-alert-modal {
+    position: absolute;
+    border-radius: 10px;
+    width: 200px;
+    top: 180px;
+    padding: 12px;
+    z-index: 1000;
+    animation-name: turnAlert;
+    animation-duration: 1.8s;
+    animation-fill-mode: forwards;
+  }
+
+   .turn-alert-modal span {
+    color: white;
+   }
+
+   @keyframes turnAlert {
+    0% {
+      top: 0px;
+      opacity: 0;
+    }
+    90% {
+      top: 180px;
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+   }
+
+  .white-hat {
+    background-color: white;
+  }
+
+  .white-hat span {
+    color: black;
+  }
+
+  .red-hat {
+    background-color: #EA4335;
+    color: white;
+  }
+
+  .yellow-hat {
+    background-color: #FBBC05;
+    color: white;
+  }
+
+  .black-hat {
+    background-color: black;
+    color: white;
+  }
+
+  .green-hat {
+    background-color: #34A853;
+    color: white;
+  }
+
+  .blue-hat {
+    background-color: #4285F4;
+    color: white;
   }
 </style>
