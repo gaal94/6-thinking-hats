@@ -18,8 +18,10 @@
       <td scope="row">{{idx+1}}</td>
       <td colspan="2">{{conversionTime(no.roomStartTime)}}</td>
       <td>{{timeGapcal(no.roomStartTime,no.roomEndTime)}}</td>
-      <td v-if="!no.opinionFileValid"><a>다운로드</a></td>
-      <td v-else><a>다운로드</a></td>
+      <td v-if="no.opinionFileUrl && no.opinionFileValid">
+        <a @click="getTxt(no.opinionFileUrl)">다운로드</a>
+      </td>
+      <td v-else>불가</td>
       <td><router-link :to="{
               path: '/recpage/' + no.roomId,
             }"
@@ -27,12 +29,30 @@
     </tr>
   </tbody>
 </table>
+<nav aria-label="Page navigation example" style="display:flex; justify-content: center; padding:5px;">
+      <ul class="pagination">
+        <li class="page-item">
+          <a v-on:click="substractPageNum" class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">{{ pageNum + 1}}</a></li>
+        <li class="page-item">
+          <a v-on:click="addPageNum" class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 </div>
 </template>
 
 <script>
 import interceptor from "@/api/interceptors";
 import jwt_decode from "jwt-decode";
+import axios from 'axios';
 export default {
   name: 'HistoryPage'
   ,
@@ -46,7 +66,9 @@ export default {
         roomId: '',
         roomStartTime: '',
         userId: ''
-      }
+      },
+      pageNum: 0,
+      pageSize: 5,
     }
   }
   , 
@@ -71,6 +93,10 @@ export default {
         var minute = Math.floor((differenceTravel) / (1000 * 60));
 
         let value= hours%60+" 시간 "+minute+" 분"
+
+        if(hours < 0){
+          return "진행중";
+        }
         return value;
       },
       clickRecdownload(value) {
@@ -78,23 +104,53 @@ export default {
           path: "RecPage",
           query:{roomId:value},
         });
-      }
-      
-  },
-  created() {
+      },
+      getHistories(){
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
           this.$store.commit('ChangeId',decoded.userId);
-
-          // Intercepotor 시작
+        // Intercepotor 시작
           interceptor({
-            url: '/user/' + decoded.userId +'/rooms',
+            url: '/user/' + decoded.userId +'/rooms?page='+ this.pageNum + '&size=' + this.pageSize + '&sort=userRoomId,desc',
             method: 'get'
           }).then((res) => {
-            this.rooms = res.data.rooms;
+            console.log(res.data.rooms);
+            this.rooms = res.data.rooms.reverse();
           }).catch((err) => {
             alert(err);
           });
+      },
+       addPageNum(){
+      if(this.rooms.length == this.pageSize) { // 꼼수 같은 코드
+        this.pageNum++;
+        this.getHistories();
+      }
+      }, 
+      substractPageNum(){
+      if(this.pageNum - 1 >= 0 ) {
+        this.pageNum--;
+        this.getHistories();
+      }
+      },
+      getTxt(file){
+        alert(file);
+        axios.get('https://i7a709.p.ssafy.io:8081/file/txt?opinionFileUrl=' + file, {
+                responseType: "blob"
+            }).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', "file.txt"); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+            }).catch(exception => {
+                alert(exception);
+            })
+      },
+      
+  },
+  created() {
+    this.getHistories();
   }
 
 }
@@ -103,8 +159,9 @@ export default {
 <style>
 #recgo{
   width:60%;
-  margin:auto;
-  background-color: white;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.7);
+  height: calc(100% - 72px);
 }
 .pagename {
   position: relative;

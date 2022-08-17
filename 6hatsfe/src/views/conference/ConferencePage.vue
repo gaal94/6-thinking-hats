@@ -493,6 +493,7 @@ export default {
           }
           opinionTexts = opinionTexts.slice(0, -2);
 
+          // 의견창구 파일 저장
           interceptor({
             url: '/file/txt',
             method: 'post',
@@ -508,9 +509,13 @@ export default {
             alert(err);
           })
 
+          // 의견 창구 파일 url 저장 및 회의 종료
           interceptor({
             url: '/room/' + this.mySessionId,
             method: 'patch',
+            data: {
+              opinionFileUrl: this.mySessionId
+            }
           })
           .then((res) => {
             console.log(res);  
