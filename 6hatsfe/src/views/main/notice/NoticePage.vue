@@ -63,7 +63,7 @@ export default {
       length: '', 
       userType:'',
       pageNum: 0,
-      pageSize: 5,
+      pageSize: 10,
     };
   }, 
   methods: {

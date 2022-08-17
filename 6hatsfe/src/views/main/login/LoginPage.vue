@@ -1,18 +1,19 @@
 <template>
   <div>
-      <h2>로그인</h2>
-          <input placeholder="ID" v-model="user.email" >
-          <br>
-          <input placeholder="password" v-model="user.password" type = "password"><br>
-          <button type="submit" v-on:click="getUserToken">Login</button>
-          <br>
-          <a href="https://kauth.kakao.com/oauth/authorize?client_id=519439ce954029ab868883d1f092d2dc&redirect_uri=http://localhost:8080/kakaologinpage&response_type=code">
-            KAKAO LOGIN
-          </a>
-          <br>
-          <a href="">
-            GOOGLE LOGIN
-          </a>
+    <h2>로그인</h2>
+    <input placeholder="ID" v-model="user.email">
+    <br>
+    <input placeholder="password" v-model="user.password" type="password"><br>
+    <button type="submit" v-on:click="getUserToken">Login</button>
+    <br>
+    <a
+      href="https://kauth.kakao.com/oauth/authorize?client_id=519439ce954029ab868883d1f092d2dc&redirect_uri=http://localhost:8080/kakaologinpage&response_type=code">
+      KAKAO LOGIN
+    </a>
+    <br>
+    <a href="">
+      GOOGLE LOGIN
+    </a>
   </div>
 </template>
 <script>
@@ -32,14 +33,14 @@ export default {
   methods: {
     getUserToken() {
       http
-        .post("/user/login", this.user )
+        .post("/user/login", this.user)
         .then((data) => {
           localStorage.setItem("access-token", data.data["access-token"]);//access-token 로컬 스토리지에 저장
           this.$store.commit('ChangeToken', data.data["access-token"]);
           this.$store.commit('ChangeLoginstatus', true);
-          var token=localStorage.getItem('access-token');
+          var token = localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
-          this.$store.commit('ChangeId',decoded.userId);
+          this.$store.commit('ChangeId', decoded.userId);
 
           // Intercepotor 시작
           interceptor({
@@ -61,12 +62,12 @@ export default {
     }
 
 
-},
-  computed:{
-  }}
+  },
+  computed: {
+  }
+}
 
 </script>
 
 <style>
-
 </style>

@@ -482,18 +482,6 @@ export default {
         if (this.screenSession) this.screenSession.disconnect()
         if (this.recordingSession) this.recordingSession.disconnect()
 
-        let opinionTexts = ''
-        for (let opinionText of this.opinions) {
-          if (opinionText.category == 'subject') {
-            opinionTexts += '회의 주제 : ' + opinionText.content
-          } else if (opinionText.category == 'opinion') {
-            opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
-          }
-          opinionTexts += '\n'
-        }
-        opinionTexts = opinionTexts.slice(0, -2)
-        console.log(opinionTexts)
-
         this.session = undefined;
         this.setSession(undefined)
         this.mainStreamManager = undefined;
@@ -508,6 +496,7 @@ export default {
         this.setHostConnectionId(undefined)
         this.exitConferenceRoom()
         this.$router.push({name: 'LandingPage'})
+
         this.leftCamStartIndex = 0
         this.leftCamEndIndex = 2
         this.rightCamStartIndex = 0
@@ -972,7 +961,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   html, body, #app {
     width: 100%;
     height: 100%;
