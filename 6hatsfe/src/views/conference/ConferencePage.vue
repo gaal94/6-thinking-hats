@@ -129,9 +129,9 @@ import SpeechOrder from '@/views/conference/header/SpeechOrder.vue'
 import CamScreen from '@/views/conference/user/CamScreen.vue'
 import ScreenShare from '@/views/conference/ScreenShare.vue'
 import axios from 'axios';
+import interceptor from '@/api/interceptors';
 import { OpenVidu } from 'openvidu-browser';
 import { mapActions, mapGetters } from 'vuex'
-// import UserVideo from './components/UserVideo';
 import MenuModal from '@/views/conference/modal/MenuModal.vue'
 import ChatModal from '@/views/conference/modal/ChatModal.vue'
 import UserListModal from '@/views/conference/modal/UserListModal.vue'
@@ -474,7 +474,6 @@ export default {
 			});
 			window.addEventListener('beforeunload', this.leaveSession)
 		},
-
 		leaveSession () {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       this.resetTimer()
@@ -516,9 +515,19 @@ export default {
         this.clearOpinions()
       })
 
+      interceptor({
+        url: '/room/' + this.mySessionId,
+        method: 'patch',
+      })
+      .then((res) => {
+        console.log(res);  
+      })
+      .catch((err) => {
+        alert(err);
+      })
+
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
-
 		updateMainVideoStreamManager (stream) {
 			if (this.mainStreamManager === stream) return;
 			this.mainStreamManager = stream;
@@ -770,10 +779,26 @@ export default {
     }
   },
   created() {
-    // console.log(this.$route.params.sessionCode);
-		// this.mySessionId = this.$route.params.sessionCode;
+    console.log(this.$route.params.sessionCode);
+		this.mySessionId = this.$route.params.sessionCode;
+    // 방을 참가했다
+    interceptor({
+      url: 'user_room',
+      method: 'post',
+      data: {
+        sessionId: this.$route.params.sessionCode
+      }
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      alert(err);
+      this.$router.push({
+          name: "LandingPage"
+      })
+    })
     this.joinSession()
-
     // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
     this.session.on('signal:changeConf', () => {
       this.resetTurn()

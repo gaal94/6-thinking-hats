@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import interceptor from "@/api/interceptors";
 import { mapGetters } from "vuex"
 
 export default {
@@ -45,13 +46,27 @@ export default {
       this.$router.push('/')
     },
     createRoom() {
-      const sessionCode = Math.random().toString(22).substring(2,22);
-      alert(sessionCode);
-      this.$router.push({
-        name: "ConferencePage",
-        params: {
-          sessionCode: sessionCode
+      const sessionId = Math.random().toString(22).substring(2,22);
+      interceptor({
+        url: '/room',
+        method: 'post',
+        data: {
+          sessionId: sessionId
         }
+      })
+      .then((res) => {
+          console.log(res);
+          
+          this.$router.push({
+          name: "ConferencePage",
+          params: {
+            sessionCode: sessionId
+          }
+          
+        })
+      })
+      .catch((err) => {
+        alert(err);
       })
     }
   },

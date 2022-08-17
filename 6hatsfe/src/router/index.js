@@ -87,18 +87,18 @@ const routes = [
     component: () => import('@/views/conference/ConferencePage.vue')
   },
   {
-    path: '/roompage/:sessionCode',
-    name: 'RoomPage',
-    //conference router
-
-    component: () => import('@/views/conference/RoomPage.vue')
-  },
-  {
     path: '/profilepage',
     name: 'ProfilePage',
     //profile router
 
     component: () => import('@/views/main/profile/ProfilePage')
+  },
+  {
+    path: '/testpage',
+    name: 'TestPage',
+    //profile router
+
+    component: () => import('@/views/main/profile/TestPage')
   },
   {
     path: '/recpage/:roomId',

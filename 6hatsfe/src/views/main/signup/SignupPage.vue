@@ -1,6 +1,15 @@
 <template>
   <div>
       <h2>회원가입</h2>
+        <div id="myprofilebox">
+            <img :src="image" id="myprofileimg"/>
+        </div>
+        <a>
+            <i class='bx bxs-camera-plus' @click="Profileupbtn"></i>
+        </a>
+        
+        <input id="customFile" type="file" @change="handleFileChange">
+        <br>
         Email
         <input placeholder="입력해주세요" v-model="user.email">
         <br>
@@ -27,13 +36,14 @@
   <option value="JOBLESS">무직</option>
   <option value="OTHER">기타</option>
 </select>
+    <br>
         <button type="submit" v-on:click="SignupUser">회원가입</button>
   </div>
 </template>
 
 <script>
-import http from "@/api/http.js";
 import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
     name: 'SignupPage',
@@ -45,25 +55,45 @@ export default {
         gender: '',
         birth: '',
         job: '',
-        name:''
-
+        name:'',
+        image: '',
       },
+      image: require('@/assets/melong.jpg'),
     };
   },
   methods: {
     SignupUser() { // user 회원가입 함수
-      console.log(this.user);
-      alert("");
-      http
-        .post("/user", this.user)
-        .then((data) => {
-          console.log(data);
-          alert();
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    }
+      const frm = new FormData();
+		  frm.append('name', this.user.name);
+      frm.append('profileImage', this.user.image);
+      frm.append('email', this.user.email);
+      frm.append('password', this.user.password);
+      frm.append('gender', this.user.gender);
+      frm.append('birth', this.user.birth);
+      frm.append('job', this.user.job);
+
+      console.log(frm.get('name'));
+
+      axios.post('http://localhost:8081/user', frm, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then((res) => {
+                // 응답 처리
+                console.log(res);
+            })
+            .catch((err) => {
+                // 예외 처리
+                alert(err);
+            })
+    },
+    handleFileChange(e) {
+			const image = e.target.files[0];
+      this.user.image = image;
+			const url = URL.createObjectURL(image);
+			this.image = url;
+    },
   },
   computed:{
     ...mapGetters(['token'])
@@ -71,4 +101,18 @@ export default {
 }
 </script>
 <style>
+
+#myprofilebox {
+    margin:auto;
+    width: 200px;
+    height: 200px; 
+    border-radius: 70%;
+    overflow: hidden;
+    
+}
+#myprofileimg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 </style>
