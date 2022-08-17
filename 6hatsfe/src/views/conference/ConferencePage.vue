@@ -111,7 +111,7 @@
 
     <div v-if="subjectModalOpend" class="modal-bg"></div>
 
-    <div v-if="isConferencing && myHat === speechOrder[currentTurn]" 
+    <div v-if="isConferencing && myHat === speechOrder[currentTurn] && hatMode === 'sixhats'" 
           class="turn-alert-modal" :class="myHat">
       <span>당신의 차례입니다!</span>
     </div>
@@ -858,7 +858,10 @@ export default {
 
         // 관전자일 때 회의가 시작되면 카메라 끄고 캠 화면 없앰
         if (this.myHat === 'spectator') {
-          this.turnOffVideo()
+          // this.turnOffVideo()
+          if (this.video) {
+            this.$refs.iconBar.changeVideo()
+          }
           this.session.unpublish(this.publisher)
         }
       }
