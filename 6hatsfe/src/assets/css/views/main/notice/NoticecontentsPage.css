@@ -7,8 +7,7 @@
     width: 70%;
     text-align: left;
     background: rgba(255, 255, 255, 0.7);
-    height: auto;
-    min-height: 100%;
+    height: calc(100% - 72px);
 }
 
 .main-contents {
