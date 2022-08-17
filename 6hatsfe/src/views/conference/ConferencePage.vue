@@ -760,7 +760,7 @@ export default {
   },
   created() {
     // console.log(this.$route.params.sessionCode);
-		// this.mySessionId = this.$route.params.sessionCode;
+		this.mySessionId = this.$route.params.sessionCode;
     this.joinSession()
 
     // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
