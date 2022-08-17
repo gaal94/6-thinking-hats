@@ -190,6 +190,7 @@ export default {
       leftCamEndIndex: 2,
       rightCamStartIndex: 0,
       rightCamEndIndex: 3,
+      recordingCount: 0,
 		}
 	},
 	computed: {
@@ -700,7 +701,7 @@ export default {
         this.recordingOV = new OpenVidu()
         this.recordingSession = this.recordingOV.initSession()
 
-        this.getToken(this.mySessionId + 'A').then(token => {
+        this.getToken(this.mySessionId + 'A' + this.recordingCount).then(token => {
         //녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
 				this.recordingSession.connect(token)
 					.then(() => {
@@ -736,7 +737,7 @@ export default {
         .post(
           `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`,
           {
-            session: this.mySessionId + 'A',
+            session: this.mySessionId + 'A' + this.recordingCount++,
             // session: 녹화용 세션 아이디(기존 세션 아이디에 A 붙인 것)
           },
           {
@@ -747,13 +748,10 @@ export default {
           }
         )
         .then((res) => {
-            console.log(res);
             this.recordingId = res.data.id;
-            console.log(this.recordingId);
         })
     },
     recordingStop () {
-      console.log(this.recordingId);
       axios
         .post(
           `${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.recordingId}`,
@@ -769,6 +767,21 @@ export default {
           console.log(res);
           console.log(res.data.url);
           this.recordingUrl = res.data.url;
+
+          interceptor({
+            url: '/video',
+            method: 'post',
+            data: {
+              videoFileUrl: this.recordingId,
+              sessionId: this.mySessionId
+            }
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            alert(err);
+          }) 
         })
     },
     testDown() {

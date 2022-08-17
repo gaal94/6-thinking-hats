@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     <tr v-for ="(no,idx) in rooms" :key="idx" class="boardbody">
-      <td scope="row">{{idx+1}}</td>
+      <td scope="row">{{pageNum * pageSize + idx + 1}}</td>
       <td colspan="2">{{conversionTime(no.roomStartTime)}}</td>
       <td>{{timeGapcal(no.roomStartTime,no.roomEndTime)}}</td>
       <td v-if="no.opinionFileUrl && no.opinionFileValid">
@@ -23,7 +23,7 @@
       </td>
       <td v-else>불가</td>
       <td><router-link :to="{
-              path: '/recpage/' + no.roomId,
+              path: '/recpage/' + no.opinionFileUrl,
             }"
             >녹화파일</router-link></td>
     </tr>
@@ -68,7 +68,7 @@ export default {
         userId: ''
       },
       pageNum: 0,
-      pageSize: 5,
+      pageSize: 10,
     }
   }
   , 

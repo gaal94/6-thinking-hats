@@ -101,7 +101,7 @@ const routes = [
     component: () => import('@/views/main/profile/TestPage')
   },
   {
-    path: '/recpage/:roomId',
+    path: '/recpage/:sessionId',
     name: 'RecPage',
     //record router
 

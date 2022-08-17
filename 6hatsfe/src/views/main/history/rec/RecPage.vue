@@ -14,9 +14,9 @@
     <tr v-for ="(no,idx) in roomVideos" :key="idx">
       <td scope="row">{{idx+1}}</td>
       <td colspan="2" v-if="no.videoValid">
-        <router-link to="">{{no.videoFileUrl}}</router-link>
+        <a @click="getVideo(no.videoFileUrl)">다운로드</a>
       </td>
-      <td v-else>{{no.videoFileUrl}}</td>
+      <td v-else>다운로드 불가</td>
     </tr>
   </tbody>
 </table>
@@ -26,6 +26,7 @@
 <script>
 import interceptor from "@/api/interceptors";
 import jwt_decode from "jwt-decode";
+import axios from "axios";
 export default {
   name: 'RecPage',
   data() {
@@ -33,19 +34,35 @@ export default {
       roomVideos:{
         videoFileUrl: '',
         videoValid: '',
-        roomId:'',
+        sessionId:'',
       }
     }
-  }
-  ,
+  },
+  methods: {
+    getVideo(videoFileUrl) {
+      axios.get('https://i7a709.p.ssafy.io:8081/file/video?videoUrl=' + videoFileUrl, {
+                responseType: "blob"
+            }).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', "test.mp4"); //or any other extension
+                document.body.appendChild(link);
+                link.click();
+            }).catch(exception => {
+                alert(exception);
+            })
+    }
+  },  
      created() {
           var token=localStorage.getItem('access-token');
           var decoded = jwt_decode(token);//token 디코드
           this.$store.commit('ChangeId',decoded.userId);
-          this.roomId = this.$route.params.roomId;
+          this.sessionId = this.$route.params.sessionId;
+
           // Intercepotor 시작
           interceptor({
-            url: '/room/' + this.roomId +'/videos',
+            url: '/room/' + this.sessionId +'/videos',
             method: 'get'
           }).then((res) => {
             this.roomVideos = res.data.roomVideos;
