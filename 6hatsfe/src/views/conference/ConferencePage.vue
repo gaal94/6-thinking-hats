@@ -466,7 +466,9 @@ export default {
             const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
                               userName: this.name, isHost: this.isHost, camOn: false, micOn: false }
             this.addUser(userInfo)
-						this.session.publish(this.publisher);
+						if (!this.isConferencing) {
+              this.session.publish(this.publisher);
+            }
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
