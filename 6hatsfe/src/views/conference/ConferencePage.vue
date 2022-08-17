@@ -179,7 +179,6 @@ export default {
       subject: '',
 
 			mySessionId: 'SessionAAAAAA',
-			myUserName: 'Participant' + Math.floor(Math.random() * 100),
       audio: false,
       video: false,
       isMyScreenShared: false,
@@ -197,7 +196,7 @@ export default {
     ...mapGetters(['publisher', 'users', 'myHat', 'isHost', 'ideaMode', 'hatMode',
                     'speechOrder', 'currentTurn', 'baseTime', 'totalTime',
                     'confSubject', 'opinions', 'hostConnectionId', 'isConferencing',
-                    'conferenceStatus', 'timer',]),
+                    'conferenceStatus', 'timer', 'name',]),
     leftSubscribers () {
       let leftSubscribers = []
       for (let idx in this.subscribers) {
@@ -435,10 +434,10 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			this.getToken(this.mySessionId).then(token => {
-				this.session.connect(token, { clientData: this.myUserName })
+				this.session.connect(token, { clientData: this.name })
 					.then(() => {
             
-            this.setMyName(this.myUserName)
+            this.setMyName(this.name)
 						// --- Get your own camera stream with the desired properties ---
 
 						let publisher = this.OV.initPublisher(undefined, {
@@ -464,7 +463,7 @@ export default {
             }
 
             const userInfo = { hatColor: 'spectator', connectionId: publisher.stream.session.connection.connectionId,
-                              userName: this.myUserName, isHost: this.isHost, camOn: false, micOn: false }
+                              userName: this.name, isHost: this.isHost, camOn: false, micOn: false }
             this.addUser(userInfo)
 						this.session.publish(this.publisher);
 					})
@@ -759,7 +758,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.$route.params.sessionCode);
+    console.log(this.$route.params.sessionCode);
 		this.mySessionId = this.$route.params.sessionCode;
     this.joinSession()
 
