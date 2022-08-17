@@ -133,7 +133,6 @@ export default {
       }
       },
       getTxt(file){
-        alert(file);
         axios.get('https://i7a709.p.ssafy.io:8081/file/txt?opinionFileUrl=' + file, {
                 responseType: "blob"
             }).then(response => {
