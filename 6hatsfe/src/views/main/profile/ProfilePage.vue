@@ -1,8 +1,9 @@
 <template>
     <div id="myprofile">
         <div id="myprofilebox">
-            <img src="@/assets/melong.jpg" id="myprofileimg" />
-        </div><i class='bx bxs-camera-plus'></i>
+            <img :src="image" id="myprofileimg" />
+        </div>
+        <input id="customFile" type="file" @change="handleFileChange">
         <h1 v-if="nameUpdatebtnon"><br>{{ name }}<a><i class='bx bxs-pen' @click="Nameupbtn"
                     style="font-size:20px;"></i></a></h1>
         <h1 v-else><input @keyup.enter="Nameupbtn" v-model="tname" /><a><i class='bx bxs-pen' @click="Nameupbtn"
@@ -52,6 +53,7 @@
 
 <script>
 import http from "@/api/http";
+import axios from "axios";
 import { mapGetters } from "vuex";
 import interceptor from "@/api/interceptors";
 import jwt_decode from "jwt-decode";
@@ -63,11 +65,16 @@ export default {
             tname: this.$store.name,
             tgender: this.$store.gender,
             tjob: this.$store.job,
-            tbirth: this.$store.birth
+            tbirth: this.$store.birth,
+            image:'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=basic',
+            img: '',
+            profileImageUrl: '',
         }
     },
     created() {//프로필 출력시 개인정보 띄워줌
         var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
+        this.image = 'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=' + (localStorage.getItem("profileImageUrl")? localStorage.getItem("profileImageUrl"): "basic");
+        this.profileImageUrl = (localStorage.getItem("profileImageUrl")? localStorage.getItem("profileImageUrl"): "basic");
         interceptor({
             url: '/user/' + decoded.userId,
             method: 'get'
@@ -87,6 +94,29 @@ export default {
     },
     methods: {
         UserUpdate() {
+            const frm = new FormData();
+            if(this.image != 'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=basic'){
+                frm.append('image', this.img);
+
+                axios.post('https://i7a709.p.ssafy.io:8081/file/image', frm, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+                })
+                .then((res) => {
+                    // 응답 처리
+                    this.profileImageUrl = res.data.fileName;
+                    this.putUser();
+                })
+                .catch((err) => {
+                    // 예외 처리
+                    alert(err);
+                })
+            } else {
+                this.putUser();
+            }
+        },
+        putUser() {
             var decoded = jwt_decode(localStorage.getItem('access-token'));//token 디코드
             http
                 .put("/user/" + decoded.userId, { //수정할 데이터를 json형태로 전달
@@ -95,14 +125,14 @@ export default {
                     gender: this.gender,
                     job: this.job,
                     email: this.email,
-                    
+                    profileImageUrl: this.profileImageUrl
                 })
                 .then(() => {
                     localStorage.setItem('username', this.name);
+                    localStorage.setItem('profileImageUrl', this.profileImageUrl);
                     alert('회원정보 수정 완료');
                 });
-
-        },
+        },  
         Nameupbtn() {
             if (!this.nameUpdatebtnon) {
                 this.$store.commit('ChangeName', this.tname);
@@ -135,7 +165,13 @@ export default {
         ProfileupCanclebtn() {
             alert('회원정보 수정을 취소하였습니다.');
             window.location.reload();
-        }
+        },
+        handleFileChange(e) {
+            const image = e.target.files[0];
+            this.img = image;
+            const url = URL.createObjectURL(image);
+            this.image = url;
+        },
 
     }
 }
