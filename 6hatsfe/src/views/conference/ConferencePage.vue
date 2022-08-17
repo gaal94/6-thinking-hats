@@ -482,17 +482,44 @@ export default {
         if (this.screenSession) this.screenSession.disconnect()
         if (this.recordingSession) this.recordingSession.disconnect()
 
-        let opinionTexts = ''
-        for (let opinionText of this.opinions) {
-          if (opinionText.category == 'subject') {
-            opinionTexts += '회의 주제 : ' + opinionText.content
-          } else if (opinionText.category == 'opinion') {
-            opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
+        if(this.isHost) {
+          let opinionTexts = ''
+          for (let opinionText of this.opinions) {
+            if (opinionText.category == 'subject') {
+              opinionTexts += '회의 주제 : ' + opinionText.content
+            } else if (opinionText.category == 'opinion') {
+              opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
+            }
+            opinionTexts += '\n'
           }
-          opinionTexts += '\n'
+          opinionTexts = opinionTexts.slice(0, -2);
+
+          interceptor({
+            url: '/file/txt',
+            method: 'post',
+            data: {
+              sessionId: this.mySessionId,
+              contents: opinionTexts,
+            }
+          })
+          .then((res) => {
+            console.log(res);  
+          })
+          .catch((err) => {
+            alert(err);
+          })
+
+          interceptor({
+            url: '/room/' + this.mySessionId,
+            method: 'patch',
+          })
+          .then((res) => {
+            console.log(res);  
+          })
+          .catch((err) => {
+            alert(err);
+          })
         }
-        opinionTexts = opinionTexts.slice(0, -2)
-        console.log(opinionTexts)
 
         this.session = undefined;
         this.setSession(undefined)
@@ -513,17 +540,6 @@ export default {
         this.rightCamStartIndex = 0
         this.rightCamEndIndex = 3
         this.clearOpinions()
-      })
-
-      interceptor({
-        url: '/room/' + this.mySessionId,
-        method: 'patch',
-      })
-      .then((res) => {
-        console.log(res);  
-      })
-      .catch((err) => {
-        alert(err);
       })
 
 			window.removeEventListener('beforeunload', this.leaveSession);
