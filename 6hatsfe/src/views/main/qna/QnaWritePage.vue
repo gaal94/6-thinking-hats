@@ -10,13 +10,13 @@
   			</div>
   			<input v-model="board.title" type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
 			</div>
-			<div class="input-group h-75" >
+			<div class="input-group" >
   			<div class="input-group-prepend">
     			<span class="input-group-text">내용</span>
   			</div>
   			<textarea v-model="board.boardContents" class="form-control" aria-label="With textarea" style="height:200px"></textarea>
 		</div>
-		<button v-on:click="PostBoard" type="button" class="btn btn-primary" style="float: right;">저장</button>
+		<button v-on:click="PostBoard" type="button" class="btn btn-primary" style="float: right;">글쓰기</button>
 	</div>
 </template>
 

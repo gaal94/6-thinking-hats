@@ -25,16 +25,10 @@
                 {{boardContents}}
             </div>
 
-            <div style="float:right; margin-top:10px">
-                <router-link :to ="{
-                    path: '/qnamodifypage/' + this.boardId
-                    }">
-                <button style="margin-right:5px" type="button" class="btn btn-primary">게시글 수정</button></router-link>
-                <button @click="boarddelete" type="button" class="btn btn-primary">게시글 삭제</button>
-            </div>
             
             <div style="margin-top:50px">
                 <table style="width:100%">
+
                     <tr>
                         댓글 ({{length}})
                     </tr>
@@ -43,7 +37,7 @@
                     </tr>
                     <tr v-for="(no,idx) in comments" :key="idx">
                         <div v-if="!no.commentUpdate">
-                        {{pageNum * pageSize + idx + 1}}. 작성자 {{no.userName}} : {{no.comment_contents}} <i class='bx bxs-trash' @click="deleteComment(no.commentId)" style="float:right"></i>  <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right; margin-right:5px;"></i>
+                        {{pageNum * pageSize + idx + 1}}. {{no.userName}} : {{no.comment_contents}} <i class='bx bxs-trash' @click="deleteComment(no.commentId)" style="float:right"></i>  <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right; margin-right:5px;"></i>
                         </div>
                         <div v-else>
                             {{idx+1}}. {{no.userName}} : <input type="text" v-model="no.comment_contents"> <i class='bx bxs-pen' @click="UpdateComment(idx)" style="float:right;"></i>
@@ -73,6 +67,13 @@
             </div>
             
         </div>
+            <div style="float:right; margin-top:10px">
+                <router-link :to ="{
+                    path: '/qnamodifypage/' + this.boardId
+                    }">
+                <button style="margin-right:5px" type="button" class="btn btn-primary">게시글 수정</button></router-link>
+                <button @click="boarddelete" type="button" class="btn btn-danger">게시글 삭제</button>
+            </div>
     </div>
 </template>
 

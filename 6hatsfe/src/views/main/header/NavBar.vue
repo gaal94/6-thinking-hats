@@ -133,7 +133,7 @@ li a:hover {
 }
 #logoutbtn:hover{
     background-color: black;
-  color: white;
+    color: white;
 }
 #createroom:hover{
   background-color: black;
