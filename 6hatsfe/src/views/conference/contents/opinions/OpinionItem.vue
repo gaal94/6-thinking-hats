@@ -110,26 +110,32 @@ p {
 
 .red-hat {
   background-color: #FFDCD9;
+  color: black;
 }
 
 .yellow-hat {
   background-color: #FFF1CA;
+  color: black;
 }
 
 .green-hat {
   background-color: #CFF3D9;
+  color: black;
 }
 
 .blue-hat {
   background-color: #CEE0FF;
+  color: black;
 }
 
 .white-hat {
   background-color: #FFFFFF;
+  color: black;
 }
 
 .black-hat {
   background-color: #8E8E8E;
+  color: black;
 }
 
 </style>

@@ -8,37 +8,43 @@
         <input type="radio" name="hat-type" id="sixhats" :checked="hatMode === 'sixhats'"
         @click="clickChangeHatMode('sixhats')" class="sixhats-mode-btn">
         <label for="sixhats" class="sixhats-label">
-          <img src="@/assets/sixhats_mode.png" alt="" class="sixhats-img host-img" 
+          <img src="@/assets/sixhats_mode.svg" alt="" class="sixhats-img host-img" 
           :class="{'hat-mode-checked': hatMode === 'sixhats'}">
         </label>
         <input type="radio" name="hat-type" id="onehat" :checked="hatMode === 'onehat'"
         @click="clickChangeHatMode('onehat')" class="onehat-mode-btn">
         <label for="onehat" class="onehat-label">
-          <img src="@/assets/onehat_mode.png" alt="" class="onehat-img host-img" 
+          <img src="@/assets/onehat_mode.svg" alt="" class="onehat-img host-img" 
           :class="{'hat-mode-checked': hatMode === 'onehat'}">
         </label>
       </div>
 
       <div v-else>
-        <img src="@/assets/sixhats_mode.png" alt="" class="sixhats-img" :class="{'hat-mode-checked': hatMode === 'sixhats'}">
-        <img src="@/assets/onehat_mode.png" alt="" class="onehat-img" :class="{'hat-mode-checked': hatMode === 'onehat'}">
+        <img src="@/assets/sixhats_mode.svg" alt="" class="sixhats-img" :class="{'hat-mode-checked': hatMode === 'sixhats'}">
+        <img src="@/assets/onehat_mode.svg" alt="" class="onehat-img" :class="{'hat-mode-checked': hatMode === 'onehat'}">
       </div>
     </div>
 
     <div class="idea-type-setting">
       <p class="idea-type-setting-word">회의 모드</p>
       <div v-if="isHost">
-        <input type="radio" name="idea-type" id="suggest"
+        <input type="radio" name="idea-type" id="suggest" class="suggest-mode-btn"
         @click="clickChangeIdeaMode('ideaSuggest')" :checked="ideaMode === 'ideaSuggest'">
-        <label for="suggest">아이디어 제안</label>
-        <input type="radio" name="idea-type" id="judge"
+        <label for="suggest">
+          <img src="@/assets/ideasuggest.svg" alt="idea-suggest" class="suggest-img host-img"
+          :class="{'idea-mode-checked' : ideaMode === 'ideaSuggest'}">
+        </label>
+        <input type="radio" name="idea-type" id="judge" class="judge-mode-btn"
         @click="clickChangeIdeaMode('ideaJudge')" :checked="ideaMode === 'ideaJudge'">
-        <label for="judge">아이디어 검증</label>
+        <label for="judge">
+          <img src="@/assets/ideajudge.svg" alt="idea-judge" class="judge-img host-img"
+          :class="{'idea-mode-checked' : ideaMode === 'ideaJudge'}">
+        </label>
       </div>
 
       <div v-else>
-        <span :class="{'selected-option': ideaMode === 'ideaSuggest'}">아이디어 제안</span>
-        <span :class="{'selected-option': ideaMode === 'ideaJudge'}">아이디어 검증</span>
+        <img src="@/assets/ideasuggest.svg" alt="idea-suggest" class="suggest-img" :class="{'idea-mode-checked' : ideaMode === 'ideaSuggest'}">
+        <img src="@/assets/ideajudge.svg" alt="idea-judge" class="judge-img" :class="{'idea-mode-checked' : ideaMode === 'ideaJudge'}">
       </div>
     </div>
     
@@ -121,7 +127,7 @@ export default {
   color: brown;
 }
 
-.sixhats-mode-btn, .onehat-mode-btn {
+.sixhats-mode-btn, .onehat-mode-btn, .suggest-mode-btn, .judge-mode-btn {
   display: none;
 }
 
@@ -133,14 +139,14 @@ export default {
   cursor: pointer;
 }
 
-.sixhats-img, .onehat-img {
+.sixhats-img, .onehat-img, .suggest-img, .judge-img {
   width: 8.5938vw;
   height: 10.4167vw;
   border-radius: 0.6510vw;
   margin-right: 8px;
 }
 
-.hat-mode-checked {
+.hat-mode-checked, .idea-mode-checked {
   box-shadow: 2px 2px 4px rgb(155, 155, 155);
 }
 
