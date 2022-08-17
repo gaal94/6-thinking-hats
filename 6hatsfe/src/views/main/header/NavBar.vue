@@ -20,7 +20,9 @@
         {{name}}님
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <li><div id="navbarprofilebox"><img src="@/assets/melong.jpg" id="navbarprofileimg"></div></li>
+          <li><div id="navbarprofilebox">
+            <img :src="image" id="navbarprofileimg">
+          </div></li>
           <li><router-link to="/profilepage" class = "dropdown-item">내정보</router-link></li>
           <li><router-link to="/historypage" class = "dropdown-item">회의이력</router-link></li>
           <li><button class="dropdown-item" id= "logoutbtn" @click = "logout">로그아웃</button></li>
@@ -37,6 +39,11 @@ import { mapGetters } from "vuex"
 
 export default {
   name : 'NavBar',
+  data() {
+    return {
+      image: 'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=basic',
+    }
+  },
   methods: {
     logout() {
       localStorage.clear('access-token');
@@ -73,6 +80,7 @@ export default {
     ...mapGetters(['loginstatus','name','token'])
   },
   created() {
+    this.image = 'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=' + (localStorage.getItem("profileImageUrl")? localStorage.getItem("profileImageUrl"): "basic");
     this.$store.commit("ChangeName", localStorage.getItem('username'));
   }
 

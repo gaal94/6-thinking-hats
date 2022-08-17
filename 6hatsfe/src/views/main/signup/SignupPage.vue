@@ -57,6 +57,8 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios";
+import http from "@/api/http";
+import router from "@/router";
 export default {
   name: 'SignupPage',
   data() {
@@ -69,36 +71,34 @@ export default {
         job: '',
         name: '',
         image: '',
+        profileImageUrl: 'basic',
       },
-      image: require('@/assets/melong.jpg'),
+      image:'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=basic',
     };
   },
   methods: {
     SignupUser() { // user 회원가입 함수
       const frm = new FormData();
-      frm.append('name', this.user.name);
-      frm.append('profileImage', this.user.image);
-      frm.append('email', this.user.email);
-      frm.append('password', this.user.password);
-      frm.append('gender', this.user.gender);
-      frm.append('birth', this.user.birth);
-      frm.append('job', this.user.job);
+      if(this.image != 'https://i7a709.p.ssafy.io:8081/file/image?profileImageUrl=basic'){
+        frm.append('image', this.user.image);
 
-      console.log(frm.get('name'));
-
-      axios.p('http://localhost:8081/user', frm, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+        axios.post('https://i7a709.p.ssafy.io:8081/file/image', frm, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then((res) => {
           // 응답 처리
-          console.log(res);
+          this.user.profileImageUrl = res.data.fileName;
+          this.postUser();
         })
         .catch((err) => {
           // 예외 처리
           alert(err);
         })
+      } else {
+        this.postUser();
+      }
     },
     handleFileChange(e) {
       const image = e.target.files[0];
@@ -106,6 +106,20 @@ export default {
       const url = URL.createObjectURL(image);
       this.image = url;
     },
+    postUser() {
+      http
+        .post("/user", this.user)
+        .then((data) => {
+          console.log(data);
+          alert("회원가입에 성공하셨습니다!")
+          router.push({ name: "LandingPage" });
+        })
+        .catch((err) => {
+          alert(err);
+          router.push({ name: "LandingPage" });
+        });
+
+    }
   },
   computed: {
     ...mapGetters(['token'])
