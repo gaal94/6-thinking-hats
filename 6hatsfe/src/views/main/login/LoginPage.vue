@@ -1,19 +1,31 @@
 <template>
-  <div>
-    <h2>로그인</h2>
-    <input placeholder="ID" v-model="user.email">
+  <div id="logindiv">
+  <header class="pagename">
+    <h1>로그인</h1>
+  </header>
+    <div id="bar"></div>
+    <div class="logincontent">
+    <table>
+      <tr>
+        <td>Email : </td>
+        <td><input placeholder="입력해주세요" v-model="user.email"></td>
+      </tr>
+      <tr>
+        <td>비밀번호 : </td>
+        <td><input placeholder="입력해주세요" v-model="user.password" type="password"></td>
+      </tr>
+    </table>
     <br>
-    <input placeholder="password" v-model="user.password" type="password"><br>
-    <button type="submit" v-on:click="getUserToken">Login</button>
-    <br>
-    <a
+    <!-- <a
       href="https://kauth.kakao.com/oauth/authorize?client_id=519439ce954029ab868883d1f092d2dc&redirect_uri=http://localhost:8080/kakaologinpage&response_type=code">
       KAKAO LOGIN
     </a>
-    <br>
     <a href="">
       GOOGLE LOGIN
-    </a>
+    </a> -->
+    <button type="button" v-on:click="getUserToken" class="btn btn-primary">Login</button>
+  </div>
+
   </div>
 </template>
 <script>
@@ -70,4 +82,37 @@ export default {
 </script>
 
 <style>
+#logindiv {
+  width: 40%;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.7);
+  height: calc(100% - 72px);
+}
+h1, p {
+    margin: 0;
+}
+.pagename {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 75px;
+    padding: 1rem;
+    color:black;
+    /* background: #C1EFFF; */
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#bar{
+  width: 100%;
+  height: 37.5px;
+  background-color: #4285F4;
+  margin-bottom: 2%;
+}
+.logincontent table{
+  margin :auto;
+  position:relative;
+}
 </style>
