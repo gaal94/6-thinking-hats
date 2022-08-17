@@ -43,7 +43,7 @@
     <!--랜덤 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/randomhat.png" alt="randomhat" class="hatspng">
+        <img src="@/assets/randomhat.svg" alt="randomhat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#000000;font-weight: bold">랜덤 모자</p>
@@ -55,7 +55,7 @@
     <!--파란 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/bluehat.png" alt="bluehat" class="hatspng">
+        <img src="@/assets/bluehat.svg" alt="bluehat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#4285f4;font-weight: bold">파란 모자</p>
@@ -70,7 +70,7 @@
     <!--초록 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/greenhat.png" alt="greenhat" class="hatspng">
+        <img src="@/assets/greenhat.svg" alt="greenhat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#34a853;font-weight: bold">초록 모자</p>
@@ -84,7 +84,7 @@
     <!--빨간 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/redhat.png" alt="redhat" class="hatspng">
+        <img src="@/assets/redhat.svg" alt="redhat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#EA4335;font-weight: bold">빨간 모자</p>
@@ -98,7 +98,7 @@
     <!--노란 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/yellowhat.png" alt="yellowhat" class="hatspng">
+        <img src="@/assets/yellowhat.svg" alt="yellowhat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#FBBC05;font-weight: bold">노란 모자</p>
@@ -112,7 +112,7 @@
     <!--검정 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/blackhat.png" alt="blackhat" class="hatspng">
+        <img src="@/assets/blackhat.svg" alt="blackhat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#000000;font-weight: bold">까만 모자</p>
@@ -126,7 +126,7 @@
     <!--하얀 모자-->
     <div class="explain-body">
       <div class="explain-hats-png">
-        <img src="@/assets/whitehat.png" alt="whitehat" class="hatspng">
+        <img src="@/assets/whitehat.svg" alt="whitehat" class="hatspng">
       </div> 
       <div class="explain-hats"> 
         <p style="color:#000000;font-weight: bold">하얀 모자</p>

@@ -4,7 +4,7 @@
 	margin-top: 2%;
 	margin-left: 30%;
 	margin-right: 30%;
-	height: 50%;
+  height: calc(100% - 72px);
 }
 
 .pagename {

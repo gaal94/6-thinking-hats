@@ -2,16 +2,16 @@
     <div class="main-notice-contents">
         <h2 style="padding:15px">공지사항</h2>
         <div id="bar"></div>
-        
+
         <div style="margin-left:20px">
             <table class="main-contents" style="width:100%; ">
                 <tr>
-                    <td style="width:60%;">제목 : {{title}}</td>
-                    <td>작성일시 : {{boardCreatedAt}}</td>
+                    <td style="width:60%;">제목 : {{ title }}</td>
+                    <td>작성일시 : {{ boardCreatedAt }}</td>
                 </tr>
                 <tr>
-                    <td style="width:60%">작성자 : {{name}}</td>
-                    <td>조회수 : {{views}}</td>
+                    <td style="width:60%">작성자 : {{ name }}</td>
+                    <td>조회수 : {{ views }}</td>
                 </tr>
                 <tr></tr>
                 <tr></tr>
@@ -20,21 +20,22 @@
                     <td style="font-weight: bold;">내용</td>
                 </tr>
             </table>
-                <div>
-                    <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
-                    {{boardContents}}
-                </div>
-                <div>
-                    댓글
-                    <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
-                </div>
-                <div style="display:flex; justify-content: flex-end;">
-                    <router-link :to ="{
-                        path: '/noticemodifypage/' + this.boardId
-                        }">
-                    <button type="button" class="btn btn-primary">수정</button></router-link>
-                    <button @click="boarddelete" type="button" class="btn btn-primary">삭제</button>
-                </div>
+            <div>
+                <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
+                {{ boardContents }}
+            </div>
+            <div>
+                댓글
+                <hr style="width:100%; height:2px;border-width:0;color:black; background-color:black;">
+            </div>
+            <div style="display:flex; justify-content: flex-end;">
+                <router-link :to="{
+                    path: '/noticemodifypage/' + this.boardId
+                }">
+                    <button type="button" class="btn btn-primary">수정</button>
+                </router-link>
+                <button @click="boarddelete" type="button" class="btn btn-primary">삭제</button>
+            </div>
         </div>
     </div>
 </template>
@@ -99,5 +100,4 @@ export default {
 </script>
 
 <style scoped lang="css" src="@/assets/css/views/main/notice/NoticecontentsPage.css">
-
 </style>

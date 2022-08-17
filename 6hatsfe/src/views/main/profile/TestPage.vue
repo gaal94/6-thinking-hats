@@ -1,12 +1,12 @@
 <template>
     <div id="myprofile">
         <div id="myprofilebox">
-            <img :src="image" id="myprofileimg"/>
+            <img :src="image" id="myprofileimg" />
         </div>
         <a>
             <i class='bx bxs-camera-plus' @click="Profileupbtn"></i>
         </a>
-        
+
         <input id="customFile" type="file" @change="handleFileChange">
 
     </div>
@@ -108,14 +108,14 @@ export default {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            .then((res) => {
-                // 응답 처리
-                console.log(res);
-            })
-            .catch((err) => {
-                // 예외 처리
-                alert(err);
-            })		
+                .then((res) => {
+                    // 응답 처리
+                    console.log(res);
+                })
+                .catch((err) => {
+                    // 예외 처리
+                    alert(err);
+                })
         },
     }
 }

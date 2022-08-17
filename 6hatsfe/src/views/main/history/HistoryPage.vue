@@ -67,6 +67,7 @@ export default {
 
         var differenceTravel = toTime.getTime() - fromTime.getTime();
         var hours = Math.floor((differenceTravel) / (1000 * 60 * 60));
+        differenceTravel -= hours * 1000 * 60 * 60;
         var minute = Math.floor((differenceTravel) / (1000 * 60));
 
         let value= hours%60+" 시간 "+minute+" 분"
