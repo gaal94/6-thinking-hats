@@ -33,14 +33,16 @@ export default {
 <style>
   .footer {
     display: flex;
-    position: fixed;
-    width: 100%;
+    position : relative;
+    transform : translateY(-100%);
+    width:100%;
     height: 72px;
     bottom: 0px;
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid black;
     background-color: white;
+    
   }
 
   .footer-text {

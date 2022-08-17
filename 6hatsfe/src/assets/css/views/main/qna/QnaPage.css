@@ -3,7 +3,10 @@
 #recgo{
     width:60%;
     margin:auto;
-    background: rgba(255, 255, 255, 0.7) 
+    background: rgba(255, 255, 255, 0.7);
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 72px;
 }
 
 .pagename {
