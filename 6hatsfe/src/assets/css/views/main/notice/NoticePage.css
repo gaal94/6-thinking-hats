@@ -36,6 +36,9 @@ h1, p {
 .table{
     font-size: 14px;
 }
+td a{
+    text-decoration: none;
+}
 
 .boardbody:hover{
     background-color: #C7C6C6;

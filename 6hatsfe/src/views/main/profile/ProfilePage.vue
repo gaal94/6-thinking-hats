@@ -3,8 +3,8 @@
         <div id="myprofilebox">
             <img src="@/assets/melong.jpg" id="myprofileimg"/>
         </div><i class='bx bxs-camera-plus' ></i>
-        <h1 v-if="nameUpdatebtnon"><br>{{name}}<a><i class='bx bxs-pen' @click="Nameupbtn" ></i></a></h1>
-        <h1 v-else><input @keyup.enter="Nameupbtn" v-model="tname"/><a><i class='bx bxs-pen' @click="Nameupbtn"></i></a></h1>
+        <h1 v-if="nameUpdatebtnon"><br>{{name}}<a><i class='bx bxs-pen' @click="Nameupbtn" style="font-size:20px;" ></i></a></h1>
+        <h1 v-else><input @keyup.enter="Nameupbtn" v-model="tname"/><a><i class='bx bxs-pen' @click="Nameupbtn" style="font-size:20px;"></i></a></h1>
         <div id="profilebody">
         <div class="profilecontent" id="profilecontentleft">
             <ul class="leftul">
@@ -40,8 +40,8 @@
             </ul>
         </div>
         </div>
-    </div>
     <div id ="profilebtn"><button type="button" class="btn btn-primary" @click="UserUpdate">정보수정</button>  <button type="button" class="btn btn-danger" @click="ProfileupCanclebtn">취소</button></div>
+    </div>
 </template>
 
 <script>
@@ -137,7 +137,9 @@ export default {
 
 <style>
 #myprofile{
-    margin-top:5%;
+    margin:auto;
+    height: calc(100% - 72px);
+    padding: 5%;
 }
 #myprofilebox {
     margin:auto;

@@ -5,7 +5,7 @@
     <div class="footer-text">
       <p class="team-contact">Team Contact : 010-8756-2387</p>
       <p class="team-github">Team Github : 
-        <a href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709</a>
+        <a id="gitlink" href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709</a>
       </p>
     </div>
     <a class="git-icon-link" href="https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709">
@@ -59,5 +59,9 @@ export default {
     width: 50px;
     height: 50px;
     margin: 0 16px;
+  }
+  #gitlink{
+    text-decoration: none;
+    color: black;
   }
 </style>

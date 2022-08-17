@@ -27,7 +27,7 @@
         </ul>
       </div>
     </li>
-    <li @click="createRoom" class = "navbarright">방 생성</li>
+    <li id = "createroom" @click="createRoom" class = "navbarright">방 생성</li>
     <li><router-link to="/conferencepage" class = "navbarright">방 참가</router-link></li>
   </ul>
 </template>
@@ -74,7 +74,9 @@ export default {
   width : 60px;
   height: 60px;
   float : left;
-  margin : 5px;
+  margin-top : 5px;
+  margin-left: 10px;
+  margin-right: 10px;
   padding:0px;
 }
 #dropdown-menu{
@@ -122,6 +124,7 @@ li a:hover {
     height: 60px; 
     border-radius: 70%;
     overflow: hidden;
+    margin-bottom: 5px;
 }
 #navbarprofileimg{
     width: 100%;
@@ -130,6 +133,10 @@ li a:hover {
 }
 #logoutbtn:hover{
     background-color: black;
+  color: white;
+}
+#createroom:hover{
+  background-color: black;
   color: white;
 }
 

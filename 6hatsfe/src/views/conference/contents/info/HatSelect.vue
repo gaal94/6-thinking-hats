@@ -2,7 +2,7 @@
   <div class="hat-select-box">
     <img 
     @click="chooseHat(hat)" 
-    :src="require(`@/assets/${hat.replace('-', '')}.png`)" alt="" class="hat-img">
+    :src="require(`@/assets/${hat.replace('-', '')}.svg`)" alt="" class="hat-img">
     
     <!-- 6hats 모드 -->
     <div v-if="hatMode === 'sixhats'" class="user-list-box" :class="hat">
