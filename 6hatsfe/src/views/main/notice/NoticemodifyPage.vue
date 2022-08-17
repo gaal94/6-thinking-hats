@@ -14,7 +14,7 @@
   		<div class="input-group-prepend">
     		<span class="input-group-text">내용</span>
   		</div>
-  		<textarea v-model="board.boardContents" class="form-control" aria-label="With textarea"></textarea>
+  		<textarea v-model="board.boardContents" class="form-control" aria-label="With textarea" style="height:200px"></textarea>
 		</div>
 		<button v-on:click="modifyBoard" type="button" class="btn btn-primary" style="float: right; margin:4px">저장</button>
 	</div>
