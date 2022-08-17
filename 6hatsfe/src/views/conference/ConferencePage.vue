@@ -129,9 +129,9 @@ import SpeechOrder from '@/views/conference/header/SpeechOrder.vue'
 import CamScreen from '@/views/conference/user/CamScreen.vue'
 import ScreenShare from '@/views/conference/ScreenShare.vue'
 import axios from 'axios';
+import interceptor from '@/api/interceptors';
 import { OpenVidu } from 'openvidu-browser';
 import { mapActions, mapGetters } from 'vuex'
-// import UserVideo from './components/UserVideo';
 import MenuModal from '@/views/conference/modal/MenuModal.vue'
 import ChatModal from '@/views/conference/modal/ChatModal.vue'
 import UserListModal from '@/views/conference/modal/UserListModal.vue'
@@ -473,7 +473,6 @@ export default {
 			});
 			window.addEventListener('beforeunload', this.leaveSession)
 		},
-
 		leaveSession () {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       this.resetTimer()
@@ -481,6 +480,45 @@ export default {
         if (this.session) this.session.disconnect();
         if (this.screenSession) this.screenSession.disconnect()
         if (this.recordingSession) this.recordingSession.disconnect()
+
+        if(this.isHost) {
+          let opinionTexts = ''
+          for (let opinionText of this.opinions) {
+            if (opinionText.category == 'subject') {
+              opinionTexts += '회의 주제 : ' + opinionText.content
+            } else if (opinionText.category == 'opinion') {
+              opinionTexts += opinionText.userName + '[' + opinionText.hatColor + '] : ' + opinionText.content
+            }
+            opinionTexts += '\n'
+          }
+          opinionTexts = opinionTexts.slice(0, -2);
+
+          interceptor({
+            url: '/file/txt',
+            method: 'post',
+            data: {
+              sessionId: this.mySessionId,
+              contents: opinionTexts,
+            }
+          })
+          .then((res) => {
+            console.log(res);  
+          })
+          .catch((err) => {
+            alert(err);
+          })
+
+          interceptor({
+            url: '/room/' + this.mySessionId,
+            method: 'patch',
+          })
+          .then((res) => {
+            console.log(res);  
+          })
+          .catch((err) => {
+            alert(err);
+          })
+        }
 
         this.session = undefined;
         this.setSession(undefined)
@@ -506,7 +544,6 @@ export default {
 
 			window.removeEventListener('beforeunload', this.leaveSession);
 		},
-
 		updateMainVideoStreamManager (stream) {
 			if (this.mainStreamManager === stream) return;
 			this.mainStreamManager = stream;
@@ -760,8 +797,24 @@ export default {
   created() {
     console.log(this.$route.params.sessionCode);
 		this.mySessionId = this.$route.params.sessionCode;
+    // 방을 참가했다
+    interceptor({
+      url: 'user_room',
+      method: 'post',
+      data: {
+        sessionId: this.$route.params.sessionCode
+      }
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      alert(err);
+      this.$router.push({
+          name: "LandingPage"
+      })
+    })
     this.joinSession()
-
     // 회의를 시작하거나 종료할 때 신호를 받고 실행됨
     this.session.on('signal:changeConf', () => {
       this.resetTurn()
