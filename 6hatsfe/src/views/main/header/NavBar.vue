@@ -23,7 +23,7 @@
           <li><div id="navbarprofilebox"><img src="@/assets/melong.jpg" id="navbarprofileimg"></div></li>
           <li><router-link to="/profilepage" class = "dropdown-item">내정보</router-link></li>
           <li><router-link to="/historypage" class = "dropdown-item">회의이력</router-link></li>
-          <li><button class="dropdown-item" @click = "logout">로그아웃</button></li>
+          <li><button class="dropdown-item" id= "logoutbtn" @click = "logout">로그아웃</button></li>
         </ul>
       </div>
     </li>
@@ -127,6 +127,10 @@ li a:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+#logoutbtn:hover{
+    background-color: black;
+  color: white;
 }
 
 </style>
