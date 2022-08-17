@@ -94,10 +94,11 @@ export default {
                     birth: this.birth,
                     gender: this.gender,
                     job: this.job,
-                    email: this.email
-
+                    email: this.email,
+                    
                 })
                 .then(() => {
+                    localStorage.setItem('username', this.name);
                     alert('회원정보 수정 완료');
                 });
 
