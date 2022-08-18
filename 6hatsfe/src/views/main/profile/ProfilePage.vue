@@ -130,6 +130,7 @@ export default {
                 .then(() => {
                     localStorage.setItem('username', this.name);
                     localStorage.setItem('profileImageUrl', this.profileImageUrl);
+                    location.reload();
                     alert('회원정보 수정 완료');
                 });
         },  
