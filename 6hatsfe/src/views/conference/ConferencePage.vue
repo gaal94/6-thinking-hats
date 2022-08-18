@@ -1060,6 +1060,13 @@ export default {
 </script>
 
 <style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Noto Sans KR', sans-serif;
+}
   html, body, #app {
     width: 100%;
     height: 100%;

@@ -62,10 +62,6 @@ export default {
 </script>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-}
-
 .user-setting-word {
   font-weight: bold;
   font-size: 20px;
