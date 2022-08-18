@@ -123,6 +123,11 @@ export default {
 </script>
 
 <style scoped>
+.mode-setting-word {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .selected-option {
   color: brown;
 }
@@ -148,6 +153,14 @@ export default {
 
 .hat-mode-checked, .idea-mode-checked {
   box-shadow: 2px 2px 4px rgb(155, 155, 155);
+}
+
+.timer-setting {
+  margin-top: 12px;
+}
+
+.timer-word {
+  margin-bottom: 4px;
 }
 
 </style>

@@ -66,6 +66,11 @@ export default {
   box-sizing: border-box;
 }
 
+.user-setting-word {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .user-setting-box, .sixhats-setting-box, .onehat-setting-box {
   display: flex;
   flex-direction: column;
