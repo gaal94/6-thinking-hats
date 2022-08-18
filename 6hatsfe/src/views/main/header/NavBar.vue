@@ -112,7 +112,8 @@ export default {
   background-color: white;
   position: sticky;
   top: 0;
-  height: 72px
+  box-sizing: border-box;
+  height: 72px;
 }
 .navbarleft {
     color: black;

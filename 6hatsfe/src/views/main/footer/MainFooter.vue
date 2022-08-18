@@ -42,6 +42,7 @@ export default {
     align-items: center;
     border-top: 1px solid #939393;
     background-color: white;
+    box-sizing: border-box;
     
   }
 

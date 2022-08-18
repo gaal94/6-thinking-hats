@@ -10,8 +10,9 @@
 			<button class="button button5">Back-End</button>
 		</div>
 		<!--팀원 각자 소개 -->
+		<div>
 		<div class="flip-card">
-			<div class="flip-card-inner" style="border-color: #FFFFFF;">
+			<div class="flip-card-inner">
 				<div class="flip-card-front">
 					<div>
 						<img class="profile" src="@/assets/cbs.png" alt="최병성">
@@ -33,7 +34,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="flip-card-inner" style="border-color: #FFFFFF;">
+			<div class="flip-card-inner">
 				<div class="flip-card-front">
 					<div>
 						<img class="profile" src="@/assets/ksr.png" alt="권수린">
@@ -53,7 +54,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="flip-card-inner" style="border-color: #FFFFFF;">
+			<div class="flip-card-inner">
 				<div class="flip-card-front">
 					<div>
 						<img class="profile" src="@/assets/hsy.png" alt="황석영">
@@ -73,33 +74,34 @@
 					</div>
 				</div>
 			</div>
+			</div>
 		</div>
 		<!--팀문서 링크 걸어놓음 -->
 		<div class="team-row">
-			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
+			<div class="polaroid">
 				<div>
-					<img src="@/assets/notion.png" alt="노션" style="width:100px;height100px;justify-content: center;"
+					<img src="@/assets/notion.png" alt="노션" style="width:100px; height:100px;justify-content: center;"
 						onclick="window.open('https://www.notion.so/9fab16fcf2344d6bbc8076c9e4f85383')">
 				</div>
 			</div>
 
-			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
+			<div class="polaroid">
 				<div>
-					<img src="@/assets/gitlab.png" alt="깃랩" style="width:100px;height100px;"
+					<img src="@/assets/gitlab.png" alt="깃랩" style="width:100px; height:100px;"
 						onclick="window.open('https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709')">
 				</div>
 			</div>
 
 			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
 				<div>
-					<img src="@/assets/jira.png" alt="지라" style="width:100px;height100px;"
+					<img src="@/assets/jira.png" alt="지라" style="width:100px; height:100px;"
 						onclick="window.open('https://jira.ssafy.com/secure/RapidBoard.jspa?rapidView=12687&projectKey=S07P12A709&view=planning.nodetail&issueLimit=100')">
 				</div>
 			</div>
 
 			<div class="polaroid" style="justify-content: center;border-color: #FFFFFF;">
 				<div>
-					<img src="@/assets/youtube.png" alt="유투브" style="width:100px;height100px;"
+					<img src="@/assets/youtube.png" alt="유투브" style="width:100px; height:100px;"
 						onclick="window.open('')">
 				</div>
 			</div>

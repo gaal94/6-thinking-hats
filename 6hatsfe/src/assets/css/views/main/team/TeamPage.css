@@ -3,7 +3,7 @@
 /* teamPage 바디 css*/
 .team-body {
   width: 100%;
-  height: calc(100% - 72px);
+  height: calc(100% - 92px);
   margin: auto;
 }
 
@@ -43,13 +43,13 @@
     background-color: #34A853;
     color: white;
     font-weight: bolder;
-    width: 40%;
+    width: 30%;
 }
 .button5 {
     background-color: #4285F4;
     color: white;
     font-weight: bolder;
-    width: 40%;
+    width: 25%;
 }
 /* 팀원 한명 칸*/
 .polaroid {
@@ -59,6 +59,7 @@
     background-color: #FFFFFF;
     margin: 5px;
     border-radius: 8px;
+    cursor: pointer;
 }
 .polaroid:hover {
     display: flex;
@@ -68,6 +69,7 @@
     margin: 5px;
     box-shadow: 10px 10px 5px #C7C6C6;
     border-radius: 8px;
+    transition: 1s;
 }
 /*팀원 한명 칸에서 이미지와 소개 글 나눔*/
 .polaroid div{
@@ -91,7 +93,7 @@
 }
 .flip-card {
     background-color: transparent;
-    width: 70%;
+    width: 100%;
     height: 280px;
     perspective: 1000px;
     display: flex;
@@ -101,41 +103,35 @@
 
   }
   
-  /* This container is needed to position the front and back side */
   .flip-card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     text-align: center;
-    transition: transform 0.8s;
+    transition: transform 1s;
     transform-style: preserve-3d;
   }
   
-  /* Do an horizontal flip when you move the mouse over the flip box container */
   .flip-card:hover .flip-card-inner {
     transform: rotateY(180deg);
   }
   
-  /* Position the front and back side */
   .flip-card-front, .flip-card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
     backface-visibility: hidden;
   }
   
-  /* Style the front side (fallback if image is missing) */
   .flip-card-front {
     background-color: #34A853;
     color: white;
-    padding: 10px;
+    padding: 30px;
   }
   
-  /* Style the back side */
   .flip-card-back {
     background-color: dodgerblue;
     color: white;
-    transform: rotateY(180deg);
-    padding: 10px;
+    transform: rotateY(-180deg);
+    padding: 30px;
   }
