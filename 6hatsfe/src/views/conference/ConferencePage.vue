@@ -225,7 +225,7 @@ export default {
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
                     'joinConferenceRoom', 'exitConferenceRoom', 'someoneTurnOffAudio',
                     'someoneTurnOnAudio', 'someoneTurnOffVideo', 'someoneTurnOnVideo',
-                    'setConfSubject', 'clearOpinions',]),
+                    'setConfSubject', 'clearOpinions', 'stopTimer',]),
 
     sendChat (chat) {
       this.session.signal({
