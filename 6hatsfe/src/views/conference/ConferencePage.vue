@@ -69,6 +69,8 @@
     <!-- 아이콘바 -->
     <icon-bar 
     :hat-color="myHat"
+    :audio="audio"
+    :video="video"
     @startConference="popSubjectModal"
     @endConference="changeConf"
     @leaveRoom="leaveSession"
@@ -225,7 +227,8 @@ export default {
                     'turnOffVideo', 'turnOnVideo', 'endConference', 'startConference',
                     'joinConferenceRoom', 'exitConferenceRoom', 'someoneTurnOffAudio',
                     'someoneTurnOnAudio', 'someoneTurnOffVideo', 'someoneTurnOnVideo',
-                    'setConfSubject', 'clearOpinions', 'stopTimer',]),
+                    'setConfSubject', 'clearOpinions', 'stopTimer', 'passTurn', 'backToPreTurn',
+                    ]),
 
     sendChat (chat) {
       this.session.signal({
@@ -494,7 +497,7 @@ export default {
             }
             opinionTexts += '\n'
           }
-          opinionTexts = opinionTexts.slice(0, -2);
+          opinionTexts = opinionTexts.slice(0, -1);
 
           // 의견창구 파일 저장
           interceptor({
@@ -1006,7 +1009,10 @@ export default {
     // 주제가 변화될 때
     this.session.on('signal:update-subject', event => {
       const subjectData = JSON.parse(event.data)
-      this.addOpinion(subjectData)
+      this.addOpinion(subjectData).then(() => {
+        const opScroll = document.querySelector('.opinion-contents')
+        opScroll.scrollTop = opScroll.scrollHeight
+      })
       this.setConfSubject(subjectData.content)
     })
     
@@ -1032,6 +1038,22 @@ export default {
         const opScroll = document.querySelector('.opinion-contents')
         opScroll.scrollTop = opScroll.scrollHeight
       })
+    })
+
+    // 파란모자가 차례를 이전으로 돌릴 때
+    this.session.on('signal:back-to-pre-turn', () => {
+      this.backToPreTurn()
+      if (this.myHat !=='blue-hat' && this.hatMode === 'sixhats' && this.myHat !== this.speechOrder[this.currentTurn]) {
+        this.audio = false
+      }
+    })
+
+    // 파란모자가 차례를 이후로 넘길 때
+    this.session.on('signal:pass-turn', () => {
+      this.passTurn()
+      if (this.myHat !=='blue-hat' && this.hatMode === 'sixhats' && this.myHat !== this.speechOrder[this.currentTurn]) {
+        this.audio = false
+      }
     })
   }
 }
