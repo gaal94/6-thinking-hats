@@ -88,6 +88,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
 /* #logo:hover{
   background-color: white;
 } */
@@ -104,6 +105,7 @@ export default {
   float: right;
 }
 .navbarul {
+  font-family: 'Noto Sans KR', sans-serif;
   border-bottom: 1px solid #939393;
   list-style-type: none;
   margin: 0;
@@ -119,14 +121,14 @@ export default {
     color: black;
     text-decoration: none;
   padding: 14px 16px;
-  margin : 10px;
+  margin : 8px;
   float : left;
 }
 .navbarright{
     color: black;
     text-decoration: none;
   padding: 14px 16px;
-    margin : 10px;
+    margin : 8px;
   float : right;
 }
 #dropdownMenuButton1{

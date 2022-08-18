@@ -31,6 +31,8 @@ export default {
 </script>
 
 <style>
+  @import url("@/assets/css/views/main/landing/LandingPage.css");
+
   .footer {
     display: flex;
     position : relative;
@@ -43,6 +45,7 @@ export default {
     border-top: 1px solid #939393;
     background-color: white;
     box-sizing: border-box;
+      font-family: 'Noto Sans KR', sans-serif;
     
   }
 
