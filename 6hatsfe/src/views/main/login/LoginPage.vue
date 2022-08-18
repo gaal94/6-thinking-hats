@@ -59,10 +59,9 @@ export default {
             url: '/user/' + decoded.userId,
             method: 'get'
           }).then((res) => {
-            alert(res.data.user.profileImageUrl);
             localStorage.setItem("profileImageUrl", res.data.user.profileImageUrl);
             localStorage.setItem("username", res.data.user.name);
-            this.$store.commit('ChangeName', res.data.user.name);
+            //this.$store.commit('ChangeName', res.data.user.name);
             location.reload();
           }).catch((err) => {
             alert(err);

@@ -46,8 +46,7 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.clear('access-token');
-      localStorage.clear('username');
+      localStorage.clear();
       this.$store.commit('ChangeToken', '');
       this.$router.push('/')
     },
