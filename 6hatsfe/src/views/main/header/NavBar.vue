@@ -104,7 +104,7 @@ export default {
   float: right;
 }
 .navbarul {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #939393;
   list-style-type: none;
   margin: 0;
   padding: 0;

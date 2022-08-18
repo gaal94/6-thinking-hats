@@ -11,7 +11,7 @@
       <input v-model="board.title" type="text" class="form-control" aria-label="Username"
         aria-describedby="basic-addon1">
     </div>
-    <div class="input-group h-75">
+    <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text">내용</span>
       </div>

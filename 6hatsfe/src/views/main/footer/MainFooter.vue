@@ -40,7 +40,7 @@ export default {
     bottom: 0px;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid black;
+    border-top: 1px solid #939393;
     background-color: white;
     
   }

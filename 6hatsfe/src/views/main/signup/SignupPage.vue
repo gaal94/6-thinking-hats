@@ -132,6 +132,7 @@ export default {
   margin: auto;
   background: rgba(255, 255, 255, 0.7);
   height: calc(100% - 72px);
+  font-size: small;
 }
 
 #myprofilebox {
