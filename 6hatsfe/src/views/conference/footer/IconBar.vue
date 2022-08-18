@@ -5,13 +5,16 @@
     :disabled="
     (isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn] && hatMode === 'sixhats')
     || (isConferencing && hatMode === 'onehat' && speechOrder[currentTurn] === 'blue-hat' && hatColor !== 'blue-hat')">
-    <i class='bx bxs-microphone-off mic' 
+    <i class='bx bxs-microphone-off mic' v-if="!audio"
     :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]
                             && hatMode === 'sixhats'}"></i>
+    <i clsss='bx bxs-microphone-on mic' v-if="audio"></i>
     </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
-    @click="changeVideo"><i class='bx bxs-video-off video'></i></button>
+    @click="changeVideo"><i class='bx bxs-video-off video' v-if='!video'></i>
+    <i class='bx bxs-video-on video' v-if='video'></i>
+    </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="shareScreen"><i class='bx bx-window-open'></i></button>
@@ -59,6 +62,8 @@ export default {
   props: {
     hatColor: String,
     isRecording: Boolean,
+    audio: Boolean,
+    video: Boolean,
   },
 	data: () => {
 		return {
@@ -147,21 +152,9 @@ export default {
     },
     changeMic() {
       this.$emit('changeMic')
-      const micIcon = document.querySelector('.mic')
-      if (micIcon.classList.item(1) === 'bxs-microphone-off') {
-        micIcon.classList.replace('bxs-microphone-off', 'bxs-microphone')
-      } else if (micIcon.classList.item(1) === 'bxs-microphone') {
-        micIcon.classList.replace('bxs-microphone', 'bxs-microphone-off')
-      }
     },
     changeVideo() {
       this.$emit('changeVideo')
-      const videoIcon = document.querySelector('.video')
-      if (videoIcon.classList.item(1) === 'bxs-video-off') {
-        videoIcon.classList.replace('bxs-video-off', 'bxs-video')
-      } else if (videoIcon.classList.item(1) === 'bxs-video') {
-        videoIcon.classList.replace('bxs-video', 'bxs-video-off')
-      }
     },
     shareScreen() {
       this.$emit('shareScreen')
@@ -194,17 +187,6 @@ export default {
       alert("URL이 복사되었습니다.")
     },
 	},
-  created() {
-    // 파란모자가 차례를 이전으로 돌릴 때
-    this.session.on('signal:back-to-pre-turn', () => {
-      this.backToPreTurn()
-    })
-
-    // 파란모자가 차례를 이후로 넘길 때
-    this.session.on('signal:pass-turn', () => {
-      this.passTurn()
-    })
-  }
 }
 </script>
 
