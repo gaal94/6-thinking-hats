@@ -5,15 +5,15 @@
     :disabled="
     (isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn] && hatMode === 'sixhats')
     || (isConferencing && hatMode === 'onehat' && speechOrder[currentTurn] === 'blue-hat' && hatColor !== 'blue-hat')">
-    <i class='bx bxs-microphone-off mic' v-if="!audio"
+    <i v-if="!audio" class='bx bxs-microphone-off mic' 
     :class="{'disabled' : isConferencing && hatColor !== 'blue-hat' && hatColor !== speechOrder[currentTurn]
                             && hatMode === 'sixhats'}"></i>
-    <i clsss='bx bxs-microphone-on mic' v-if="audio"></i>
+    <i v-else class='bx bxs-microphone mic' ></i>
     </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
     @click="changeVideo"><i class='bx bxs-video-off video' v-if='!video'></i>
-    <i class='bx bxs-video-on video' v-if='video'></i>
+    <i class='bx bxs-video video' v-if='video'></i>
     </button>
 
     <button v-if="(isConferencing && hatColor !== 'spectator') || !isConferencing"
