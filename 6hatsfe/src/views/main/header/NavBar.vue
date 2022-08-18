@@ -1,19 +1,19 @@
 <template>
   <ul v-if="!token" class="navbarul">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/" class="navbarleft"></router-link></li>
-    <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
-    <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
-    <li><router-link to="/teampage" class="navbarleft">팀소개</router-link></li>
-    <li><router-link to="/qnapage" class="navbarleft">Q&A</router-link></li>
-    <li><router-link to="/signuppage" class="navbarright">회원가입</router-link></li>
-    <li><router-link to="/loginpage" class="navbarright">로그인</router-link></li>
+    <li><router-link to="/noticepage" class="navbarleft link1">공지사항</router-link></li>
+    <li><router-link to="/explainpage" class="navbarleft link1">설명</router-link></li>
+    <li><router-link to="/teampage" class="navbarleft link1">팀소개</router-link></li>
+    <li><router-link to="/qnapage" class="navbarleft link1">Q&A</router-link></li>
+    <li><router-link to="/signuppage" class="navbarright link1">회원가입</router-link></li>
+    <li><router-link to="/loginpage" class="navbarright link1">로그인</router-link></li>
   </ul>
   <ul v-else class="navbarul">
     <li><router-link to="/"><img src = "@/assets/logoAlphabet.png" id="logo" href="/"></router-link></li>
-    <li><router-link to="/noticepage" class="navbarleft">공지사항</router-link></li>
-    <li><router-link to="/explainpage" class="navbarleft">설명</router-link></li>
-    <li><router-link to="/teampage" class="navbarleft">팀소개</router-link></li>
-    <li><router-link to="/qnapage" class="navbarleft">Q&A</router-link></li>
+    <li><router-link to="/noticepage" class="navbarleft link1">공지사항</router-link></li>
+    <li><router-link to="/explainpage" class="navbarleft link1">설명</router-link></li>
+    <li><router-link to="/teampage" class="navbarleft link1">팀소개</router-link></li>
+    <li><router-link to="/qnapage" class="navbarleft link1">Q&A</router-link></li>
     <li>
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -23,13 +23,13 @@
           <li><div id="navbarprofilebox">
             <img :src="image" id="navbarprofileimg">
           </div></li>
-          <li><router-link to="/profilepage" class = "dropdown-item">내정보</router-link></li>
-          <li><router-link to="/historypage" class = "dropdown-item">회의이력</router-link></li>
-          <li><button class="dropdown-item" id= "logoutbtn" @click = "logout">로그아웃</button></li>
+          <li><router-link to="/profilepage" class = "dropdown-item link1">내정보</router-link></li>
+          <li><router-link to="/historypage" class = "dropdown-item link1">회의이력</router-link></li>
+          <li><button class="dropdown-item link1" id= "logoutbtn" @click = "logout">로그아웃</button></li>
         </ul>
       </div>
     </li>
-    <li id = "createroom" @click="createRoom" class = "navbarright">방 생성</li>
+    <li id = "createroom" @click="createRoom" class = "navbarright link1">방 생성</li>
   </ul>
 </template>
 
@@ -128,10 +128,6 @@ export default {
     margin : 10px;
   float : right;
 }
-li a:hover {
-  background-color: black;
-  color: white;
-}
 #dropdownMenuButton1{
   float: right;
   margin: 16px;
@@ -152,13 +148,29 @@ li a:hover {
     height: 100%;
     object-fit: cover;
 }
-#logoutbtn:hover{
-    background-color: black;
-    color: white;
-}
-#createroom:hover{
-  background-color: black;
-  color: white;
+.link1::before {
+  content: '[';
+  opacity: 0;
+  margin-left: 10px;
+  transition: all 0.5s;
 }
 
+.link1::after {
+  content: ']';
+  opacity: 0;
+  margin-right: 10px;
+  transition: all 0.5s;
+}
+
+.link1:hover::before {
+  opacity: 1;
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.link1:hover::after {
+  opacity: 1;
+  margin-left: 0;
+  margin-left: 10px;
+}
 </style>

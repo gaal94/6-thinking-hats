@@ -36,7 +36,7 @@ export default {
     position : relative;
     transform : translateY(-100%);
     width:100%;
-    height: 72px;
+    height: 60px;
     bottom: 0px;
     justify-content: space-between;
     align-items: center;
