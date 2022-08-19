@@ -228,21 +228,19 @@ https://i7a709.p.ssafy.io
 
 | 이름                | 포트 번호 |
 | ------------------- | --------- |
-| web server(nginx)   | 80        |
-| springboot (tomcat) | 8080      |
-| django(uwsgi)       | 8000      |
-| openvidu(http)      | 4442      |
-| openvidu(https)     | 4443      |
-| https               | 443       |
-| mysql               | 3306      |
+| Server              | 8081      |
+| Client              | 443       |
+| DB                  | 3306      |
+| OpenVidu            | 5000      |
+
 
 ---
 
 <br>
 
 ### 🛠 프로젝트 빌드 
-&#10004;  
-&#10004;
+&#10004;  [ exec.md ](https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A709/-/blob/master/EXEC/exec.md)
+
 
 <br>
 
