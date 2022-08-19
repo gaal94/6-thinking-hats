@@ -74,9 +74,6 @@ rm -r /var/www/html/dist
 mv dist /var/www/html
 ```
 
-### CLIENT
----
-
 ---
 <br>
 
